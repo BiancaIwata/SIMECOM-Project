@@ -2,16 +2,18 @@ var usersModel = require("../models/usersModel");
 
 function cadastrar(req, res) {
     var name = req.body.name;
+    var surname = req.body.surname
     var email = req.body.email;
     var password = req.body.password;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !surname) {
         return res.status(400).send("Campos obrigatórios não enviados!");
     }
 
     if (typeof name !== "string" ||
         typeof email !== "string" ||
-        typeof password !== "string") {
+        typeof password !== "string" ||
+        typeof surname !== "string" ) {
         return res.status(400).send("Tipos inválidos!");
     }
 
@@ -19,7 +21,7 @@ function cadastrar(req, res) {
         return res.status(400).send("Email inválido!");
     }
 
-    if (name.length > 254 || email.length > 254 || password.length > 254){
+    if (name.length > 254 || surname.length > 254 || email.length > 254 || password.length > 254){
         return res.status(400).send("O texto excede o limite de caracteres.");
     }
 
@@ -31,7 +33,7 @@ function cadastrar(req, res) {
         return res.status(400).send("Senha muito longa!");
     }
 
-    usersModel.cadastrar(name, email, password)
+    usersModel.cadastrar(name, surname, email, password)
         .then(
             function (resultado) {
                 res.json(resultado);
