@@ -71,11 +71,46 @@ body {
 .Card1 {
   background-color: #1f7ae0;
   width: 90%;
-  height: 500px;
+  height: 450px;
   border-radius: 50px;
   background: linear-gradient(to bottom, #2c7fb8 0%, #1f6fa3 40%, #0f4f75 100%);
   box-shadow: 6px 6px 5px 0 #00000096;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
+
+.Card1 img {
+  width: 450px;
+  margin: 20px;
+}
+
+.WhiteText {
+  font-family: "Inter", sans-serif;
+  color: rgb(255, 255, 255);
+  font-size: 40px;
+  padding: 90px;
+}
+
+.WhiteText a {
+  font-family: "Inter", sans-serif;
+  color: rgb(255, 255, 255);
+  margin-top: 70px;
+  font-size: 15px;
+  text-decoration: none;
+  background-color: #1f7ae0;
+  padding: 10px;
+  padding-left: 40px;
+  padding-right: 40px;
+  border-radius: 10px;
+}
+
+.WhiteText p {
+  margin-top: 50px;
+  font-size: 15px;
+}
+
 .text {
   font-family: "Inter", sans-serif;
   color: #153963;
@@ -92,10 +127,77 @@ body {
 }
 
 .SmallCard {
-  margin: 30px;
+  margin: 50px;
   outline: none;
-  height: 500px;
+  height: 300px;
   width: 45%;
-  border: 3px solid #6a7a8a;
+  border: 2.5px solid #7f92a5;
   border-radius: 30px;
+  padding: 50px;
+}
+
+.SmallCard h3 {
+  font-family: "Inter", sans-serif;
+  color: #153963;
+  font-size: 30px;
+  text-align: left;
+  font-weight: normal;
+}
+
+.SmallCard p {
+  font-family: "Inter", sans-serif;
+  color: #153963;
+  font-size: 20px;
+  text-align: left;
+}
+
+.Card2 {
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.Card2 img {
+  width: 40%;
+}
+
+.Card2 .text {
+  text-align: left;
+}
+
+.footer {
+  background-color: #1c6dca;
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(to bottom, #2c7fb8 0%, #1f6fa3 40%, #0f4f75 100%);
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.footer img {
+  width: 25%;
+  margin-left: 150px;
+}
+
+.lineup {
+  display: flex;
+  flex-direction: column;
+  font-family: "Inter", sans-serif;
+  margin: 30px;
+}
+
+.footerButtons {
+  display: flex;
+  align-items: center;
+  display: flex;
+}
+.footerButtons b {
+  margin-bottom: 10px;
+  color: #e4e4e4;
+}
+
+.footerButtons a {
+  text-decoration: none;
+  color: #b1b1b1;
 }
