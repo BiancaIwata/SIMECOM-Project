@@ -3,14 +3,12 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
 
-/* RESET */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Padronizando body */
 body {
     width: 100%;
     margin: 0;
@@ -31,6 +29,14 @@ header {
 header img {
     width: 164px;
 }
+
+h3 {
+    font-size: 60px;
+    font-family: 'Poppins', sans-serif;
+    color: #0B3C5D;
+}
+
+/* ----------------------------------------------------------------------------------------------- */
 
 .header-buttons {
     display: flex;
@@ -84,3 +90,71 @@ header img {
 
     cursor: pointer;
 }
+
+/* ----------------------------------------------------------------------------------------------- */
+
+.div-quem-somos {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.div-texto-img {
+    display: flex;
+}
+
+.div-texto-img img{
+    width: 500px;
+}
+
+.div-texto p{
+    margin-bottom: 23px;
+    font-size: 21px;
+    color: #0B3C5D;
+    text-align: justify;
+}
+
+.div-box {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.div-box img {
+    width: 100%;
+}
+
+.div-valores {
+    width: 70%;
+    position: absolute;
+    top: 100%;
+    left: 10%;
+    border: 2px solid black;
+}
+
+.div-valores h3 {
+    color: #ffffff;
+}
+
+.div-itens {
+    display: flex;
+}
+
+.div-itens img {
+    width: 280px;
+}
+
+.div-itens h5 {
+    font-size: 21px;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+}
+
+.div-itens p {
+    font-size: 15px;
+    color: #ffffff;
+}
+
+.div-icon-plus img {
+    width: 80px;
+}
+
+
