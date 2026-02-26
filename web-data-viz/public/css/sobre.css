@@ -34,7 +34,19 @@ h3 {
     font-size: 60px;
     font-family: 'Poppins', sans-serif;
     color: #0B3C5D;
+    margin-bottom: 20px;
+
 }
+
+footer {
+    display: flex;
+    align-items: center;
+    
+    background-color: #0B3C5D;
+
+    height: 360px;
+}
+
 
 /* ----------------------------------------------------------------------------------------------- */
 
@@ -95,7 +107,7 @@ h3 {
 
 .div-quem-somos {
     width: 80%;
-    margin: 0 auto;
+    margin: 40px auto;
 }
 
 .div-texto-img {
@@ -103,7 +115,8 @@ h3 {
 }
 
 .div-texto-img img{
-    width: 500px;
+    width: 400px;
+    margin-left: 10%;
 }
 
 .div-texto p{
@@ -126,8 +139,7 @@ h3 {
     width: 70%;
     position: absolute;
     top: 100%;
-    left: 10%;
-    border: 2px solid black;
+    left: 15%;
 }
 
 .div-valores h3 {
@@ -136,6 +148,9 @@ h3 {
 
 .div-itens {
     display: flex;
+    align-items: center;
+
+    text-align: center;
 }
 
 .div-itens img {
@@ -157,4 +172,51 @@ h3 {
     width: 80px;
 }
 
+.div-transparencia img{
+    width: 330px;
+}
+
+.div-transparencia h5 {
+    margin-top: 55px;
+}
+
+/* ----------------------------------------------------------------------------------------------- */
+
+.div-solucao {
+    width: 80%;
+    margin: 40px auto;
+}
+
+.div-solucao p {
+    margin-bottom: 23px;
+    font-size: 21px;
+    color: #0B3C5D;
+    text-align: justify;
+}
+
+/* ----------------------------------------------------------------------------------------------- */
+
+.div-footer {
+    display: flex;
+    justify-content: space-between;
+
+    width: 80%;
+    margin: 0 auto;
+}
+
+.div-footer p,
+.div-footer li {
+    color: #ffffff;
+
+    padding: 10px 20px;
+}
+
+.div-footer ul {
+    list-style: none;
+}
+
+.div-footer a{
+    text-decoration: none;
+    color: #ffffff;
+}
 
