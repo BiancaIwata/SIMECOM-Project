@@ -12,95 +12,52 @@ Aqui são armazenados:
 
 ---
 
-# 📌 Padrão de Commits (Conventional Commits)
+# Padrão de Commits (Conventional Commits)
 
 Este projeto utiliza o padrão **Conventional Commits** para manter um histórico de alterações organizado, legível e padronizado.
 
 ---
 
-## 🚀 feat
-Utilizado para adicionar uma nova funcionalidade ou nova implementação ao código.
+# Sobre
 
-Exemplo:
-```
-git commit -m "feat: upload de arquivos csv para atualização da metrica"
-```
+SIMECOM é uma plataforma web que transforma dados públicos de comércio exterior brasileiro em inteligência estratégica para investidores.
 
-## 🐛 fix
-Indica que um bug ou problema foi corrigido.
+O projeto centraliza informações de importação e exportação municipal e as converte em análises visuais, indicadores de risco e insights que auxiliam na tomada de decisão de investimento.
 
-Exemplo:
-```
-git commit -m "fix: bug de loop infinito da pagina login"
-```
+Dados de comércio exterior estão disponíveis publicamente, porém dispersos, técnicos e de difícil interpretação — especialmente para investidores iniciantes.
 
-## 📚 docs
-Usado para mudanças que afetam apenas arquivos de documentação, como o README.
+A SIMECOM surge para reduzir essa barreira, organizando e analisando essas informações em uma interface simples, visual e orientada à decisão.
 
-Exemplo:
-```
-git commit -m "docs: atualizando contexto para detalhar mercado e diretrizes do artesp"
-```
+---
 
-## 🎨 style
-Para alterações na formatação do código que não afetam sua lógica, como:
-```
-git commit -m "style: descrição da alteração"
-```
-- Indentação
-- Espaçamento
-- Remoção de comentários
-- Ajustes visuais
+# Principais Funcionalidades
 
-Exemplo:
-```
-git commit -m "style: criando efeitos de animação do login e cadastro com toast em estado de sucesso"
-```
+- Ranking de municípios por desempenho em importação e exportação
 
-## ♻️ refactor
-Utilizado quando o código é modificado sem adicionar novas funcionalidades ou corrigir bugs.
+- Dashboards intuitivas e interativas
 
-Exemplo:
-```
-git commit -m "refactor: código do UserController seguindo padrão early return e async/await"
-```
+- Comparação entre estados e setores econômicos
 
-## ⚡ perf
-Indica uma alteração que melhora o desempenho da aplicação.
+- Comunidade para discussão sobre mercado exterior
 
-Exemplo:
-```
-git commit -m "perf: criando views para consulta de metricas da dashboard principal com indexação de tabelas"
-```
+---
 
-## 🧪 test
-Para adicionar ou modificar testes unitários ou de integração.
+# Tecnologias Utilizadas
 
-Exemplo:
-```
-git commit -m "test: criando teste unitario do serviço de autenticação de administrador"
-```
+Frontend: HTML, CSS, JavaScript
 
-## 🔧 chore
-Usado para tarefas que não impactam diretamente o código da aplicação, como:
+Backend: Java, Node.js, JavaScript
 
-- Atualização de dependências
-- Configuração de ambiente
-- Ajustes em arquivos de build
-- Scripts auxiliares
+---
 
-Exemplo:
-```
-git commit -m "chore: atualizando dependencias do projeto"
-```
+# Base de Dados
 
-## 🎯 Objetivo do Padrão
-- Melhorar a organização do histórico de commits
-- Facilitar code reviews
-- Permitir geração automática de changelog futuramente
-- Manter padrão profissional de versionamento
+Os dados utilizados são provenientes de bases públicas oficiais do Governo Federal:
 
-## 📎 Boas Práticas
-- Sempre escrever mensagens claras e objetivas
-- Usar verbos no infinitivo
-- Evitar mensagens genéricas como: "ajustes" ou "alterações"
+-> https://dados.gov.br/dados/conjuntos-dados/estatisticos-do-comercio-exterior-brasileiro-de-bens
+
+---
+
+# Status do Projeto
+
+- Em desenvolvimento
