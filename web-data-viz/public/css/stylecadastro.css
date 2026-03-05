@@ -1,0 +1,203 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+
+
+.sessao-esquerda {
+  width: 50%;
+  background: 
+  linear-gradient(rgba(15,59,92,0.85), rgba(10,45,70,0.85));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+
+.overlay {
+  text-align: center;
+  color: white;
+}
+
+.logo {
+  width: 250px;
+  margin-bottom: 20px;
+}
+
+.slogan {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  position: absolute;
+  background: linear-gradient(rgba(15,59,92,0.85), rgba(10,45,70,0.85));
+  z-index: -3;
+  
+}
+
+.sessao-direita {
+  width: 50%;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* necessário para posicionar a logo */
+}
+
+.login-box {
+  width: 320px;
+}
+
+.login-box h2 {
+  color: #0b3c5d;
+  margin-bottom: 5px;
+}
+
+.legenda {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 13px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  color: #333;
+}
+
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  background-color: #eaeaea;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid #3b82f6;
+  background-color: #fff;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2f6fd6;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #1f5cc4;
+}
+
+.registrar {
+  font-size: 12px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.registrar a {
+  color: #2f6fd6;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.registrar a:hover {
+  text-decoration: underline;
+}
+
+.logo-mobile {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 120px;
+  display: none;
+}
+
+
+/* --------------------------------------------------------------------------------------------- */
+@media only screen and (max-width: 992px) {
+
+  .login-box {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .sessao-direita {
+    padding: 40px;
+    width: 100%;
+  }
+
+  .sessao-esquerda {
+    display: none;
+  }
+
+  .logo-mobile {
+    display: block;
+  }
+
+}
+
+/* --------------------------------------------------------------------------------------------- */
+@media only screen and (max-width: 768px) {
+
+  .container {
+    flex-direction: column;
+  }
+
+  .sessao-direita {
+    width: 100%;
+    height: 100vh;
+    padding: 30px;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  input {
+    padding: 12px;
+  }
+
+  button {
+    padding: 12px;
+  }
+
+  .sessao-esquerda {
+    display: none;
+  }
+  
+  .logo-mobile {
+    width: 90px;
+  }
+
+}
