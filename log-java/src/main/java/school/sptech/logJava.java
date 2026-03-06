@@ -4,25 +4,21 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class logJava {
 
-    String usuario() {
-        Integer escolhindo = 0;
-
+    public String usuario() {
         String[] instancias = new String[]{"Eric", "Jefferson", "Adamantina", "Mario", "Bartolomeu"};
-            escolhindo = ThreadLocalRandom.current().nextInt(0, instancias.length);
-            return instancias[escolhindo];
+        int escolhido = ThreadLocalRandom.current().nextInt(0, instancias.length);
+        return instancias[escolhido];
     }
 
-    String action() {
-        Integer escolhindo = 0;
-
+    public String action() {
         String[] instancias = new String[]{"Apertou o Botão X", "Logou", "Deslogou", "Excluiu o item X", "Adicionou o item Y"};
-        escolhindo = ThreadLocalRandom.current().nextInt(0, instancias.length);
-        return instancias[escolhindo];
+        int escolhido = ThreadLocalRandom.current().nextInt(0, instancias.length);
+        return instancias[escolhido];
     }
 
-    Integer id() {
-    usuario();
-        if (usuario().equals("Eric")) {
+    // mudar lógica de id depois :)ximbinnha
+    public Integer id(String usuarioSorteado) {
+        if (usuarioSorteado.equals("Eric")) {
             return 1;
         }
         return 0;
