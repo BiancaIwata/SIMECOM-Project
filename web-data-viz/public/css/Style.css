@@ -7,8 +7,13 @@ body {
    background-color: #F4F6F8; 
 }
 header img {
-    width: 300px;
+    width: 164px;
 }
+
+a {
+    text-decoration: none;
+}
+
 header {
     display: flex;
     justify-content: space-between;
