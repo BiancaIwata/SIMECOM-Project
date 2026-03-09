@@ -1,72 +1,78 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-
-.Header {
-  height: 90px;
-  justify-content: center;
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  margin-bottom: 30px;
-}
-
-.HeaderButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.Header img {
-  width: 200px;
-  margin-right: 600px;
-}
-
 body {
   margin: 0px;
   display: flex;
   flex-direction: column;
   align-items: center;
+   background-color: #F4F6F8; 
 }
-.botaoCircular {
-  justify-content: center;
-  border: 200%;
-  background-color: #ffffff00;
-  height: 40px;
-  border-color: #94a6ba;
-  width: 110px;
-  border-radius: 20px;
-  font-family: "Inter", sans-serif;
-  margin: 10px;
+header img {
+    width: 300px;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    height: 90px;
+    width: 80%;
+    margin: 0 auto;
 }
 
-.botaoCircularAzul {
-  color: #ffffff;
-  justify-content: center;
-  border: none;
-  background-color: #1f7ae0;
-  height: 40px;
-  border-color: #dadada;
-  width: 110px;
-  border-radius: 20px;
-  font-family: "Inter", sans-serif;
-  margin: 10px;
-}
-.botaoNormal {
-  justify-content: center;
-  border: none;
-  background-color: #ffffff;
-  height: 40px;
-  border-color: #dadada;
-  width: 110px;
-  border-radius: 20px;
-  font-family: "Inter", sans-serif;
+.header-buttons {
+    display: flex;
+    align-items: center;
+
+    gap: 50px;
+    flex-wrap: wrap;
 }
 
-.Separate {
-  background-color: #94a6ba;
-  width: 1.9px;
-  height: 40px;
+.botao-normal {
+    justify-content: center;
+    border: none;
+    font-size: 1rem;
+
+    cursor: pointer;
 }
+
+.separate {
+    background-color: #B8BABC;
+    width: 1px;
+    height: 37px;
+}
+
+.botao-circular {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid #B8BABC;
+    background-color: #F4F6F8;
+
+    height: 40px;
+    width: 120px;
+    border-radius: 40px;
+
+    font-size: 1rem;
+
+    cursor: pointer;
+}
+
+.botao-circular-azul {
+    color: #ffffff;
+
+    border: none;
+    background-color: #1F7AE0;
+
+    height: 40px;
+    width: 120px;
+    border-radius: 40px;
+
+    font-size: 1rem;
+
+    cursor: pointer;
+}
+
 
 .Card1 {
   background-color: #1f7ae0;
