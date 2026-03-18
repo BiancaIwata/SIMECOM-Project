@@ -58,7 +58,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* necessário para posicionar a logo */
+  position: relative; 
 }
 
 .login-box {
@@ -68,12 +68,16 @@ body {
 .login-box h2 {
   color: #0b3c5d;
   margin-bottom: 5px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bolder;
 }
 
 .legenda {
   font-size: 13px;
   color: #555;
   margin-bottom: 25px;
+  text-align: center;
 }
 
 form {
