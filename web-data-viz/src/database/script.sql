@@ -1,10 +1,134 @@
+-- ===========================
+-- DATABASE: CREATE DATABASE
+-- ===========================
 DROP DATABASE simecom;
 CREATE DATABASE simecom;
 USE simecom;
-CREATE TABLE users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL,
-    email VARCHAR(254) NOT NULL UNIQUE,
-    password VARCHAR(254) NOT NULL
+
+-- ===========================
+-- TABELA: usuarios (principal)
+-- ===========================
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    sobrenome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    status ENUM('ativo','inativo') DEFAULT 'ativo',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ===========================
+-- TABELA: empresas (depende de usuarios)
+-- ===========================
+CREATE TABLE empresas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    nome VARCHAR(150) NOT NULL,
+    cnpj CHAR(14) NOT NULL UNIQUE,
+    email VARCHAR(150),
+    telefone VARCHAR(20),
+    uf CHAR(2),
+    status ENUM('ativo','inativo') DEFAULT 'ativo',
+    
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ===========================
+-- TABELA: importacoes (independente)
+-- ===========================
+CREATE TABLE importacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ano YEAR,
+    mes TINYINT CHECK (mes BETWEEN 1 AND 12),
+    pais VARCHAR(100),
+    uf CHAR(2),
+    municipio VARCHAR(150)
+);
+
+-- ===========================
+-- TABELA: dados_importacao (produtos e valores)
+-- ===========================
+CREATE TABLE dados_importacao (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    importacao_id INT NOT NULL,
+    produto VARCHAR(150),
+    peso_kg DECIMAL(10,2),
+    valor_usd DECIMAL(15,2),
+    preco DECIMAL(15,2),
+    desconto DECIMAL(10,2),
+    frete DECIMAL(10,2),
+
+    FOREIGN KEY (importacao_id)
+        REFERENCES importacoes(id)
+);
+-- ===========================
+-- Tabela de publicações (posts)
+-- ===========================
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    titulo VARCHAR(200),
+    conteudo TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+-- ===========================
+-- Tabela de comentários
+-- ===========================
+CREATE TABLE comentarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    conteudo TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+-- ===========================
+-- Tabela de reações (like / dislike)
+-- ===========================
+CREATE TABLE reacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    tipo ENUM('like', 'dislike') NOT NULL,
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE (post_id, usuario_id),
+
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- ===========================
+-- Tabela de preferencias
+-- ===========================
+CREATE TABLE preferencias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    
+    usuario_id INT NOT NULL,
+    estado VARCHAR(100) NOT NULL,
+    municipio VARCHAR(150) NOT NULL,
+    setor VARCHAR(150) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_preferencia_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
 );
