@@ -1,6 +1,6 @@
 var usersModel = require("../models/usersModel");
 
-function cadastrar(req, res) {
+function register(req, res) {
     var name = req.body.name;
     var surname = req.body.surname
     var email = req.body.email;
@@ -33,7 +33,7 @@ function cadastrar(req, res) {
         return res.status(400).send("Senha muito longa!");
     }
 
-    usersModel.cadastrar(name, surname, email, password)
+    usersModel.register(name, surname, email, password)
         .then(
             function (resultado) {
                 res.json(resultado);
@@ -98,6 +98,6 @@ function auth(req, res) {
 }
 
 module.exports = {
-    cadastrar,
+    register,
     auth
 }

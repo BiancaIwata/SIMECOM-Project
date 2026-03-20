@@ -3,8 +3,8 @@ var router = express.Router();
 
 var usersController = require("../controllers/usersController");
 
-router.post("/cadastrar", function (req, res) {
-    usersController.cadastrar(req, res);
+router.post("/register", function (req, res) {
+    usersController.register(req, res);
 });
 
 router.post("/auth", function (req, res) {
