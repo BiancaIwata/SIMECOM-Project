@@ -15,6 +15,7 @@ CREATE TABLE usuarios (
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     status ENUM('ativo','inativo') DEFAULT 'ativo',
+    nivel ENUM('adm', 'user') DEFAULT 'user' NOT NULL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -32,12 +33,11 @@ CREATE TABLE empresas (
     telefone VARCHAR(20),
     uf CHAR(2),
     status ENUM('ativo','inativo') DEFAULT 'ativo',
-    
-    FOREIGN KEY (usuario_id)
-        REFERENCES usuarios(id),
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
 -- ===========================
@@ -54,10 +54,7 @@ CREATE TABLE preferencias (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_preferencia_usuario
-        FOREIGN KEY (usuario_id)
-        REFERENCES usuarios(id)
-        ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
 -- ===========================
@@ -68,6 +65,7 @@ CREATE TABLE posts (
     usuario_id INT NOT NULL,
     titulo VARCHAR(200),
     conteudo TEXT NOT NULL,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -83,6 +81,7 @@ CREATE TABLE comentarios (
     post_id INT NOT NULL,
     usuario_id INT NOT NULL,
     conteudo TEXT NOT NULL,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
