@@ -41,79 +41,6 @@ CREATE TABLE empresas (
 );
 
 -- ===========================
--- TABELA: importacoes (independente)
--- ===========================
-CREATE TABLE importacoes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    ano YEAR,
-    mes TINYINT CHECK (mes BETWEEN 1 AND 12),
-    pais VARCHAR(100),
-    uf CHAR(2),
-    municipio VARCHAR(150)
-);
-
--- ===========================
--- TABELA: dados_importacao (produtos e valores)
--- ===========================
-CREATE TABLE dados_importacao (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    importacao_id INT NOT NULL,
-    produto VARCHAR(150),
-    peso_kg DECIMAL(10,2),
-    valor_usd DECIMAL(15,2),
-    preco DECIMAL(15,2),
-    desconto DECIMAL(10,2),
-    frete DECIMAL(10,2),
-
-    FOREIGN KEY (importacao_id)
-        REFERENCES importacoes(id)
-);
--- ===========================
--- Tabela de publicações (posts)
--- ===========================
-CREATE TABLE posts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    titulo VARCHAR(200),
-    conteudo TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-);
--- ===========================
--- Tabela de comentários
--- ===========================
-CREATE TABLE comentarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    post_id INT NOT NULL,
-    usuario_id INT NOT NULL,
-    conteudo TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-);
--- ===========================
--- Tabela de reações (like / dislike)
--- ===========================
-CREATE TABLE reacoes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    post_id INT NOT NULL,
-    usuario_id INT NOT NULL,
-    tipo ENUM('like', 'dislike') NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    UNIQUE (post_id, usuario_id),
-
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-);
-
--- ===========================
 -- Tabela de preferencias
 -- ===========================
 CREATE TABLE preferencias (
@@ -131,4 +58,126 @@ CREATE TABLE preferencias (
         FOREIGN KEY (usuario_id)
         REFERENCES usuarios(id)
         ON DELETE CASCADE
+);
+
+-- ===========================
+-- Tabela de publicações (posts)
+-- ===========================
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    titulo VARCHAR(200),
+    conteudo TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- ===========================
+-- Tabela de comentários
+-- ===========================
+CREATE TABLE comentarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    conteudo TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- ===========================
+-- Tabela de reações (like / dislike)
+-- ===========================
+CREATE TABLE reacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    tipo ENUM('like', 'dislike') NOT NULL,
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE (post_id, usuario_id),
+
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- =========================
+-- TABELA: codigo_municipio
+-- =========================
+CREATE TABLE codigo_municipio (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    CO_MUN_GEO VARCHAR(10),
+    NO_MUN VARCHAR(35)
+);
+
+-- =========================
+-- TABELA: codigo_sh4
+-- =========================
+CREATE TABLE codigo_sh4 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    CO_SH4 VARCHAR(4),
+    NO_SH4_POR VARCHAR(80)
+);
+
+-- =========================
+-- TABELA: codigo_pais
+-- =========================
+CREATE TABLE codigo_pais (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    CO_PAIS VARCHAR(4),
+    NO_PAIS VARCHAR(45)
+);
+
+-- =========================
+-- TABELA: base_importacao
+-- =========================
+CREATE TABLE base_importacao (
+    id AUTO_INCREMENT PRIMARY KEY,
+    CO_ANO SMALLINT UNSIGNED NOT NULL,
+    CO_MES TINYINT UNSIGNED NOT NULL,
+    SH4 CHAR(4) NOT NULL,
+    CO_PAIS CHAR(4) NOT NULL,
+    CO_MUN CHAR(10) NOT NULL,
+    SG_UF_MUN CHAR(2) NOT NULL,
+    KG_LIQUIDO DECIMAL(15,3) NOT NULL DEFAULT 0.000,
+    VL_FOB DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+
+    CONSTRAINT fk_base_importacao_sh4
+        FOREIGN KEY (SH4) REFERENCES codigo_sh4(CO_SH4),
+
+    CONSTRAINT fk_base_importacao_pais
+        FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais(CO_PAIS),
+
+    CONSTRAINT fk_base_importacao_municipio
+        FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio(CO_MUN_GEO)
+);
+
+-- =========================
+-- TABELA: base_exportacao
+-- =========================
+CREATE TABLE base_exportacao (
+    id AUTO_INCREMENT PRIMARY KEY,
+    CO_ANO SMALLINT UNSIGNED NOT NULL,
+    CO_MES TINYINT UNSIGNED NOT NULL,
+    SH4 CHAR(4) NOT NULL,
+    CO_PAIS CHAR(4) NOT NULL,
+    CO_MUN CHAR(10) NOT NULL,
+    SG_UF_MUN CHAR(2) NOT NULL,
+    KG_LIQUIDO DECIMAL(15,3) NOT NULL DEFAULT 0.000,
+    VL_FOB DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+
+    CONSTRAINT fk_base_exportacao_sh4
+        FOREIGN KEY (SH4) REFERENCES codigo_sh4(CO_SH4),
+
+    CONSTRAINT fk_base_exportacao_pais
+        FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais(CO_PAIS),
+
+    CONSTRAINT fk_base_exportacao_municipio
+        FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio(CO_MUN_GEO)
 );
