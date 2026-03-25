@@ -112,8 +112,9 @@ CREATE TABLE reacoes (
 -- =========================
 CREATE TABLE codigo_municipio (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    CO_MUN_GEO VARCHAR(10),
-    NO_MUN VARCHAR(35)
+    CO_MUN_GEO CHAR(10) NOT NULL,
+    NO_MUN VARCHAR(35) NOT NULL,
+    UNIQUE (CO_MUN_GEO)
 );
 
 -- =========================
@@ -121,8 +122,9 @@ CREATE TABLE codigo_municipio (
 -- =========================
 CREATE TABLE codigo_sh4 (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    CO_SH4 VARCHAR(4),
-    NO_SH4_POR VARCHAR(80)
+    CO_SH4 CHAR(4) NOT NULL,
+    NO_SH4_POR VARCHAR(80) NOT NULL,
+    UNIQUE (CO_SH4)
 );
 
 -- =========================
@@ -130,15 +132,16 @@ CREATE TABLE codigo_sh4 (
 -- =========================
 CREATE TABLE codigo_pais (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    CO_PAIS VARCHAR(4),
-    NO_PAIS VARCHAR(45)
+    CO_PAIS CHAR(4) NOT NULL,
+    NO_PAIS VARCHAR(45) NOT NULL,
+    UNIQUE (CO_PAIS)
 );
 
 -- =========================
 -- TABELA: base_importacao
 -- =========================
 CREATE TABLE base_importacao (
-    id AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     CO_ANO SMALLINT UNSIGNED NOT NULL,
     CO_MES TINYINT UNSIGNED NOT NULL,
     SH4 CHAR(4) NOT NULL,
@@ -148,21 +151,16 @@ CREATE TABLE base_importacao (
     KG_LIQUIDO DECIMAL(15,3) NOT NULL DEFAULT 0.000,
     VL_FOB DECIMAL(15,2) NOT NULL DEFAULT 0.00,
 
-    CONSTRAINT fk_base_importacao_sh4
-        FOREIGN KEY (SH4) REFERENCES codigo_sh4(CO_SH4),
-
-    CONSTRAINT fk_base_importacao_pais
-        FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais(CO_PAIS),
-
-    CONSTRAINT fk_base_importacao_municipio
-        FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio(CO_MUN_GEO)
+    FOREIGN KEY (SH4) REFERENCES codigo_sh4(CO_SH4),
+    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais(CO_PAIS),
+    FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio(CO_MUN_GEO)
 );
 
 -- =========================
 -- TABELA: base_exportacao
 -- =========================
 CREATE TABLE base_exportacao (
-    id AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     CO_ANO SMALLINT UNSIGNED NOT NULL,
     CO_MES TINYINT UNSIGNED NOT NULL,
     SH4 CHAR(4) NOT NULL,
@@ -171,13 +169,8 @@ CREATE TABLE base_exportacao (
     SG_UF_MUN CHAR(2) NOT NULL,
     KG_LIQUIDO DECIMAL(15,3) NOT NULL DEFAULT 0.000,
     VL_FOB DECIMAL(15,2) NOT NULL DEFAULT 0.00,
-
-    CONSTRAINT fk_base_exportacao_sh4
-        FOREIGN KEY (SH4) REFERENCES codigo_sh4(CO_SH4),
-
-    CONSTRAINT fk_base_exportacao_pais
-        FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais(CO_PAIS),
-
-    CONSTRAINT fk_base_exportacao_municipio
-        FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio(CO_MUN_GEO)
+    
+    FOREIGN KEY (SH4) REFERENCES codigo_sh4(CO_SH4),
+    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais(CO_PAIS),
+    FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio(CO_MUN_GEO)
 );
