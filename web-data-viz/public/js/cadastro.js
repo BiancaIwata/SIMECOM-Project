@@ -1,6 +1,6 @@
 function cadastrar() {
 
-    aguardar(); 
+    aguardar();
     var nome = nome_input.value;
     var sobrenome = sobrenome_input.value;
     var email = email_input.value;
@@ -31,33 +31,33 @@ function cadastrar() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            nameServer: nome,
-            surnameServer: sobrenome,
-            emailServer: email,
-            passwordServer: senha
+            name: nome,
+            surname: sobrenome,
+            email: email,
+            password: senha
         })
     })
-    .then(function(resposta) {
+        .then(function (resposta) {
 
-        if (resposta.ok) {
+            if (resposta.ok) {
 
-            mostrarErro("Cadastro realizado com sucesso! Redirecionando...");
+                mostrarErro("Cadastro realizado com sucesso! Redirecionando...");
 
-            setTimeout(() => {
-                window.location = "login.html";
-            }, 2000);
+                setTimeout(() => {
+                    window.location = "login.html";
+                }, 2000);
 
-        } else {
-            throw "Erro ao cadastrar";
-        }
+            } else {
+                throw "Erro ao cadastrar";
+            }
 
-        finalizarAguardar();
-    })
-    .catch(function(erro) {
-        console.log(erro);
-        finalizarAguardar();
-        mostrarErro("Erro ao cadastrar!");
-    });
+            finalizarAguardar();
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            finalizarAguardar();
+            mostrarErro("Erro ao cadastrar!");
+        });
 
     return false;
 }
