@@ -7,6 +7,7 @@
   <title>Login | SIMECOM</title>
   <link rel="stylesheet" href="css/stylelogin.css">
   <link rel="icon" href="assets/logo_simples.png">
+  <script src="js/login.js"></script>
   <title>Login | SIMECOM</title>
 </head>
 
@@ -29,13 +30,28 @@
         <div class="login-box">
           <h2>Login</h2>
           <p class="legenda">Entre com as suas credenciais</p>
+          <div class="alerta_erro">
+            <div class="card_erro" id="cardErro" style="display:none;">
+              <div class="conteudo_erro">
+                <img src="assets/imagem_erro.png" class="img_erro">
+                <span id="mensagem_erro"></span>
+              </div>
+            </div>
+          </div>
 
-          <form>
+          <div id="div_aguardar" style="display:none;">
+            <div class="conteudo_loading">
+              <img src="assets/aguarde-pink3.gif" class="img_loading">
+              <span>Carregando...</span>
+            </div>
+          </div>
+
+          <form onsubmit="return entrar()">
             <label>Email</label>
-            <input type="email" placeholder="exemplo@email.com">
+            <input id="email_input" type="email" placeholder="exemplo@email.com">
 
             <label>Senha</label>
-            <input type="password" placeholder="*********">
+            <input id="senha_input" type="password" placeholder="*********">
 
             <button type="submit">Entrar</button>
           </form>
