@@ -146,6 +146,64 @@ button:hover {
   display: none;
 }
 
+.alerta_erro {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card_erro {
+  width: 100%;
+  background-color: #d64545;
+  color: #1f7ae0;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+
+#div_aguardar {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.conteudo_erro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.img_erro {
+  width: 18px;
+  height: 18px;
+}
+.conteudo_loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.img_loading {
+  width: 20px;
+  height: 20px;
+}
+
+#div_aguardar {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #555;
+  font-size: 13px;
+}
+
+
 
 /* --------------------------------------------------------------------------------------------- */
 @media only screen and (max-width: 992px) {

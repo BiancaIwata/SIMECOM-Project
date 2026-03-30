@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/stylecadastro.css">
   <link rel="icon" href="assets/logo_simples.png">
   <title>Cadastro | SIMECOM</title>
+  <script src="./js/cadastro.js"></script>
 </head>
 
 <body>
@@ -16,9 +17,9 @@
 
 
       <div class="sessao-esquerda">
-       <img src="assets/cadastro.png" alt="" class="bg-img">
+        <img src="assets/cadastro.png" alt="" class="bg-img">
         <div class="overlay">
-          <a href="index.html"><img src="assets/logo_simples.png" alt="Logo" class="logo"></a> 
+          <a href="index.html"><img src="assets/logo_simples.png" alt="Logo" class="logo"></a>
           <p class="slogan">Onde dados viram oportunidades</p>
         </div>
       </div>
@@ -29,21 +30,37 @@
           <h2>Cadastro</h2>
           <p class="legenda">Crie sua conta e aproveite os benefícios</p>
 
-          <form>
+          <div class="alerta_erro">
+            <div class="card_erro" id="cardErro" style="display:none;">
+              <div class="conteudo_erro">
+                <img src="./assets/imagem_erro.png" alt="Erro" class="img_erro">
+                <span id="mensagem_erro"></span>
+              </div>
+            </div>
+          </div>
+
+          <div id="div_aguardar" style="display:none;">
+            <div class="conteudo_loading">
+              <img src="./assets/aguarde-pink3.gif" class="img_loading">
+              <span>Carregando...</span>
+            </div>
+          </div>
+
+          <form onsubmit="return cadastrar()">
             <label>Nome</label>
-            <input type="text" placeholder="Clara">
+            <input id="nome_input" type="text" placeholder="Clara">
 
             <label>Sobrenome</label>
-            <input type="text" placeholder="Salomão">
+            <input id="sobrenome_input" type="text" placeholder="Salomão">
 
             <label>Email</label>
-            <input type="email" placeholder="exemplo@email.com">
+            <input id="email_input" type="email" placeholder="exemplo@email.com">
 
             <label>Senha</label>
-            <input type="password" placeholder="*********">
+            <input id="senha_input" type="password" placeholder="*********">
 
             <label>Confirmação de Senha</label>
-            <input type="password" placeholder="*********">
+            <input id="confirmacao_input" type="password" placeholder="*********">
 
             <button type="submit">Entrar</button>
           </form>
