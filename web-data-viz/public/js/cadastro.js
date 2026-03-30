@@ -1,6 +1,4 @@
 function cadastrar() {
-
-    aguardar();
     var nome = nome_input.value;
     var sobrenome = sobrenome_input.value;
     var email = email_input.value;
@@ -14,18 +12,16 @@ function cadastrar() {
         senha == "" ||
         confirmacao == ""
     ) {
-        finalizarAguardar();
-        mostrarErro("Preencha todos os campos!");
-        return false;
+         alert("Campos precisam estar preenchidos");
+         return false;
     }
 
     if (senha != confirmacao) {
-        finalizarAguardar();
-        mostrarErro("As senhas não coincidem!");
-        return false;
+         alert("As senhas não estão iguais!");
+         return false;
     }
 
-    fetch("/usuarios/cadastrar", {
+    fetch("/users/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -38,26 +34,19 @@ function cadastrar() {
         })
     })
         .then(function (resposta) {
+          console.log("resposta: ", resposta);
 
             if (resposta.ok) {
 
-                mostrarErro("Cadastro realizado com sucesso! Redirecionando...");
+                alert("Cadastro realizado com sucesso! Redirecionando...");
 
-                setTimeout(() => {
-                    window.location = "login.html";
-                }, 2000);
+                    window.location = "login.html";                
 
             } else {
-                throw "Erro ao cadastrar";
+                alert("Erro ao cadastrar");
             }
 
-            finalizarAguardar();
         })
-        .catch(function (erro) {
-            console.log(erro);
-            finalizarAguardar();
-            mostrarErro("Erro ao cadastrar!");
-        });
 
     return false;
 }
