@@ -150,6 +150,53 @@ button:hover {
   display: none;
 }
 
+* ERRO */.alerta_erro {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card_erro {
+  width: 100%;
+  background-color: #ef4444;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.conteudo_erro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.img_erro {
+  width: 18px;
+  height: 18px;
+}
+
+#div_aguardar {
+  width: 100%;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.conteudo_loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.img_loading {
+  width: 20px;
+  height: 20px;
+}
+
 
 /* --------------------------------------------------------------------------------------------- */
 @media only screen and (max-width: 992px) {
