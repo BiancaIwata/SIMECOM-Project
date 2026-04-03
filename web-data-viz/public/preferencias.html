@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="">
+    <link rel="icon" href="./assets/logo_simples.png" type="image/png">
+    <title>Preferências | SIMECOM</title>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="./assets/logo.png" alt="Simecom">
+            </div>
+
+            <div class="user">
+                <div class="avatar"></div>
+                <p>Olá, User!</p>
+            </div>
+
+            <nav class="menu">
+                <ul>
+                    <li><a href="index.html">
+                            <img src="./assets/home_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Home
+                        </a>
+                    </li>
+                    <li class="ativo">
+                        <a href="preferencias.html">
+                            <img src="./assets/check_box_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Preferências
+                        </a>
+                    </li>
+                    <li><a href="">
+                            <img src="./assets/chat_bubble_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Fórum
+                        </a>
+                    </li>
+                    <li><a href="#">
+                            <img src="./assets/space_dashboard_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Dashboards
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+
+            <header class="header">
+                <h1>Configure suas preferências</h1>
+                <p>Selecione até 5 preferências para receber alertas e visualizar dashboards personalizados.</p>
+            </header>
+
+            <section class="card">
+
+                <h2>Preferência 1</h2>
+
+                <div class="select">
+                    <label for="estado">Estado</label>
+                    <select id="estado">
+                        <option>Selecione...</option>
+                    </select>
+                </div>
+
+                <div class="select">
+                    <label for="municipio">Município</label>
+                    <select id="municipio">
+                        <option>Selecione...</option>
+                    </select>
+                </div>
+
+                <div class="select">
+                    <label for="setor">Setor</label>
+                    <select id="setor">
+                        <option>Selecione...</option>
+                    </select>
+                </div>
+
+                <div class="add-preferencia">
+                    <button type="button" class="btn-add" id="btn-add">Adicionar preferência</button>
+                </div>
+
+                <div class="acoes">
+                    <button class="btn-salvar">Salvar</button>
+                    <a href="#" class="btn-cancelar">Cancelar</a>
+                    <a href="#" class="btn-viz">Visualizar preferências</a>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+</body>
+
+</html>
