@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
+ 
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
+ 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+ 
+body {
+    width: 100%;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #EEEEEE;
+    color: #0B3C5D;
+}
+ 
+a {
+    text-decoration: none;
+}
+ 
+img {
+    max-width: 100%;
+    height: auto;
+}
+ 
+/* ----------------------------------------------------------------------------------------------- */
+ 
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+ 
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background-color: #F4F6F8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 0 32px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    box-shadow: 0 2px 16px rgba(2, 16, 37, 0.07);
+}
+ 
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    width: 200px;
+    gap: 8px;
+    padding: 0 24px;
+    margin-bottom: 32px;
+}
+ 
+.user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0 24px;
+    margin-bottom: 36px;
+}
+ 
+.user p {
+    font-size: 14px;
+    color: #6b7a99;
+    font-weight: 500;
+}
+ 
+.avatar {
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+ 
+.menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 12px;
+}
+ 
+.menu ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+ 
+.menu li {
+    display: flex;
+    align-items: center;
+    border-radius: 9px;
+    transition: 0.18s;
+}
+ 
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    width: 100%;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #0B3C5D;
+    transition: 0.18s;
+}
+ 
+.menu li:hover a {
+    background: #f0f4ff;
+}
+ 
+.menu li.ativo a {
+    background: #e8f0fe;
+    color: #1F7AE0;
+}
+ 
+.menu img {
+    width: 22px;
+    height: 22px;
+}
+
+/* ----------------------------------------------------------------------------------------------- */
+ 
+.content {
+    margin-left: 240px;
+    flex: 1;
+    padding: 48px 52px;
+    min-height: 100vh;
+}
+ 
+.titulo {
+    margin-bottom: 30px;
+}
+ 
+.titulo h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: #0B3C5D;
+}
+ 
+/* ----------------------------------------------------------------------------------------------- */
+ 
+.tabela-container {
+    background: #F4F6F8;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(13, 47, 94, .07);
+    overflow: hidden;
+    max-width: 900px;
+}
+
+.tabela {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabela thead th {
+    padding: 20px 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0B3C5D;
+}
+
+.linha-clara {
+    background-color: #F4F6F8;
+}
+
+.linha-escura {
+    background-color: #e9eef4;
+}
+
+.tabela td {
+    padding: 20px 24px;
+    font-size: 14px;
+}
+
+
+.id {
+    font-weight: 600;
+    width: 60px;
+}
+
+.municipio {
+    color: #1F7AE0;
+}
+
+.acoes {
+    text-align: right;
+}
+ 
+.btn-editar,
+.btn-excluir {
+    width: 30px;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 6px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+ 
+.btn-editar:hover {
+    background: #e8f0fe;
+}
+
+.btn-excluir:hover {
+    background: #fdecea;
+}
+ 
