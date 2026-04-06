@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMECOM - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo-area">
+            <i class="fa-solid fa-satellite-dish" style="color: #1a73e8; font-size: 1.5em; margin-right: 10px;"></i>
+            <h2 class="logo-text">SIMECOM</h2>
+        </div>
+        
+        <div class="user-profile">
+            <i class="fa-regular fa-circle-user"></i>
+            <p>Olá, User!</p>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+            <a href="cadastro.html" class="nav-item">
+                <i class="fa-regular fa-square-check"></i> Preferências
+            </a>
+            <a href="sobre.html" class="nav-item">
+                <i class="fa-regular fa-comment"></i> Fórum
+            </a>
+            
+            <div class="nav-item active">
+                <i class="fa-solid fa-table-columns"></i> Dashboards
+                <i class="fa-solid fa-chevron-up" style="margin-left: auto;"></i>
+            </div>
+            
+            <div class="submenu">
+                <a href="#" class="submenu-item active-text">Macro</a>
+                <a href="#" class="submenu-item">Importações</a>
+                <a href="#" class="submenu-item">Exportações</a>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <h1 class="page-title">Macro - Exportação x Importação</h1>
+
+        <div class="kpi-container">
+            <div class="card kpi-card">
+                <span class="kpi-title">Proporção</span>
+                <span class="kpi-value">$ 29.530.000,00</span>
+            </div>
+            <div class="card kpi-card">
+                <span class="kpi-title">Total</span>
+                <span class="kpi-value">2.156</span>
+            </div>
+            <div class="card kpi-card">
+                <span class="kpi-title">Município em destaque</span>
+                <span class="kpi-value">Guarulhos</span>
+            </div>
+            <div class="card kpi-card">
+                <span class="kpi-title">Crescimento em relação ao último ano</span>
+                <span class="kpi-value">69,3%</span>
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="card chart-card">
+                <h3 class="card-title">Top Setores do Comércio Exterior</h3>
+                <div class="canvas-wrapper">
+                    <canvas id="graficoSetores"></canvas>
+                </div>
+            </div>
+            <div class="card table-card">
+                <h3 class="card-title">Top Produtos Comercializados</h3>
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Município</th>
+                            <th>Produto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>São Paulo</td><td>Soja</td></tr>
+                        <tr><td>2</td><td>São Paulo</td><td>Soja</td></tr>
+                        <tr><td>3</td><td>São Paulo</td><td>Soja</td></tr>
+                        <tr><td>4</td><td>São Paulo</td><td>Soja</td></tr>
+                        <tr><td>5</td><td>São Paulo</td><td>Soja</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="card chart-card flex-2">
+                <h3 class="card-title">Comparação de Crescimento em Porcentagem</h3>
+                <div class="canvas-wrapper" style="height: 300px;">
+                    <canvas id="graficoBarras"></canvas>
+                </div>
+            </div>
+            <div class="card table-card flex-1">
+                <h3 class="card-title">Top Produtos</h3>
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Município</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>São Paulo</td></tr>
+                        <tr><td>2</td><td>São Paulo</td></tr>
+                        <tr><td>3</td><td>São Paulo</td></tr>
+                        <tr><td>4</td><td>São Paulo</td></tr>
+                        <tr><td>5</td><td>São Paulo</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
