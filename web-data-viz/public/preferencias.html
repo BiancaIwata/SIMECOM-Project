@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/preferencias.css">
+    <link rel="icon" href="./assets/logo_simples.png" type="image/png">
+    <title>Preferências | SIMECOM</title>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="./assets/logo.png" alt="Simecom">
+                </a>
+            </div>
+ 
+            <div class="user">
+                <div class="avatar">
+                    <a href="">
+                        <img src="./assets/Group 43.png">
+                    </a>
+                </div>
+                <p>Olá, User!</p>
+            </div>
+ 
+            <nav class="menu">
+                <ul>
+                    <li><a href="index.html">
+                            <img src="./assets/home_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Home
+                        </a>
+                    </li>
+                    <li class="ativo">
+                        <a href="preferencias.html">
+                            <img src="./assets/check_box_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Preferências
+                        </a>
+                    </li>
+                    <li><a href="">
+                            <img src="./assets/chat_bubble_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Fórum
+                        </a>
+                    </li>
+                    <li><a href="#">
+                            <img src="./assets/space_dashboard_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Dashboards
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+ 
+        <main class="content">
+ 
+            <div class="titulo">
+                <h1>Configure suas preferências</h1>
+                <p>Selecione até 5 preferências para receber alertas e visualizar dashboards personalizados.</p>
+            </div>
+ 
+            <section class="card">
+ 
+                <div id="prefs-container">
+                    <div class="preferencia-bloco" data-index="1">
+                        <h2>Preferência 1</h2>
+ 
+                        <div class="campos">
+                            <div class="select">
+                                <label for="estado-1">Estado</label>
+                                <select id="estado-1" class="select-estado">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+ 
+                            <div class="select">
+                                <label for="municipio-1">Município</label>
+                                <select id="municipio-1" class="select-municipio">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+ 
+                            <div class="select">
+                                <label for="setor-1">Setor</label>
+                                <select id="setor-1" class="select-setor">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="add-preferencia" id="add-preferencia">
+                    <img src="./assets/Vector.png" alt="Adicionar">
+                    <button type="button" class="btn-add" id="btn-add">Adicionar preferência</button>
+                </div>
+ 
+                <div class="acoes">
+                    <button class="btn-salvar" id="btn-salvar">Salvar</button>
+                    <a href="#" class="btn-cancelar" id="btn-cancelar">Cancelar</a>
+                    <a href="#" class="btn-viz">Visualizar preferências</a>
+                </div>
+ 
+            </section>
+ 
+        </main>
+    </div>
+</body>
+
+</html>
