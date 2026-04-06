@@ -156,7 +156,7 @@ img {
     border-radius: 18px;
     box-shadow: 0 2px 16px rgba(13, 47, 94, .07);
     overflow: hidden;
-    max-width: 900px;
+    max-width: 2000px;
 }
 
 .tabela {
@@ -181,7 +181,7 @@ img {
 }
 
 .tabela td {
-    padding: 20px 24px;
+    padding: 20px 80px;
     font-size: 14px;
 }
 
@@ -189,10 +189,6 @@ img {
 .id {
     font-weight: 600;
     width: 60px;
-}
-
-.municipio {
-    color: #1F7AE0;
 }
 
 .acoes {
