@@ -17,7 +17,7 @@
         
         <div class="user-profile">
             <i class="fa-regular fa-circle-user"></i>
-            <p>Olá, User!</p>
+           <h3>Olá, <p id="nome_usuario">usuário</p>!</h3>
         </div>
 
         <nav class="nav-menu">
@@ -126,3 +126,6 @@
     <script src="js/dashboard.js"></script>
 </body>
 </html>
+<script>
+    nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
+</script>

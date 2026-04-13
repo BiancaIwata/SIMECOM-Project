@@ -26,7 +26,7 @@ function entrar() {
     .then(json => {
 
         sessionStorage.ID_USUARIO = json.id;
-        sessionStorage.NOME_USUARIO = json.name;
+        sessionStorage.NOME_USUARIO = json.nome;
 
         window.location.href = "dashboard.html";
 
