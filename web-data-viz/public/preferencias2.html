@@ -24,7 +24,7 @@
                         <img src="./assets/Group 43.png">
                     </a>
                 </div>
-                <p>Olá, User!</p>
+                <h3>Olá, <p id="nome_usuario">usuário</p>!</h3>
             </div>
 
             <nav class="menu">
@@ -103,3 +103,7 @@
 </body>
 
 </html>
+
+<script>
+    nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
+</script>

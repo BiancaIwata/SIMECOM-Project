@@ -78,8 +78,7 @@ function auth(req, res) {
                         res.json({
                             id: resultAuth[0].id,
                             email: resultAuth[0].email,
-                            name: resultAuth[0].name,
-                            password: resultAuth[0].password
+                            nome: resultAuth[0].nome
                         });
                     } else {
                         res.status(204).json(resultAuth);
