@@ -26,13 +26,15 @@ function entrar() {
     .then(json => {
 
         sessionStorage.ID_USUARIO = json.id;
+        sessionStorage.NOME_USUARIO = json.name;
 
-        window.location.href = "./dashboard/dashboard.html";
+        window.location.href = "dashboard.html";
 
     })
     .catch(err => {
         console.log(err);
         alert("Erro no login");
     });
+    return false;
 
 }
