@@ -1,53 +1,55 @@
 var usersModel = require("../models/usersModel");
 
 function register(req, res) {
-    var name = req.body.name;
-    var surname = req.body.surname
-    var email = req.body.email;
-    var password = req.body.password;
+  var name = req.body.name;
+  var surname = req.body.surname;
+  var email = req.body.email;
+  var password = req.body.password;
 
-    if (!name || !email || !password || !surname) {
-        return res.status(400).send("Campos obrigatórios não enviados!");
-    }
+  if (!name || !email || !password || !surname) {
+    return res.status(400).send("Campos obrigatórios não enviados!");
+  }
 
-    if (typeof name !== "string" ||
-        typeof email !== "string" ||
-        typeof password !== "string" ||
-        typeof surname !== "string" ) {
-        return res.status(400).send("Tipos inválidos!");
-    }
+  if (
+    typeof name !== "string" ||
+    typeof email !== "string" ||
+    typeof password !== "string" ||
+    typeof surname !== "string"
+  ) {
+    return res.status(400).send("Tipos inválidos!");
+  }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-        return res.status(400).send("Email inválido!");
-    }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    return res.status(400).send("Email inválido!");
+  }
 
-    if (name.length > 254 || surname.length > 254 || email.length > 254 || password.length > 254){
-        return res.status(400).send("O texto excede o limite de caracteres.");
-    }
+  if (
+    name.length > 254 ||
+    surname.length > 254 ||
+    email.length > 254 ||
+    password.length > 254
+  ) {
+    return res.status(400).send("O texto excede o limite de caracteres.");
+  }
 
-    if (password.length < 6) {
-        return res.status(400).send("Senha muito curta!");
-    }
+  if (password.length < 6) {
+    return res.status(400).send("Senha muito curta!");
+  }
 
-    if (password.length > 20) {
-        return res.status(400).send("Senha muito longa!");
-    }
+  if (password.length > 20) {
+    return res.status(400).send("Senha muito longa!");
+  }
 
-    usersModel.register(name, surname, email, password)
-        .then(
-            function (resultado) {
-                res.json(resultado);
-            }
-        ).catch(
-            function (erro) {
-                console.log(erro);
-                console.log(
-                    "\nHouve um erro ao realizar o cadastro!"
-                );
-                res.status(500).json(erro.sqlMessage);
-            }
-        );
-
+  usersModel
+    .register(name, surname, email, password)
+    .then(function (resultado) {
+      res.json(resultado);
+    })
+    .catch(function (erro) {
+      console.log(erro);
+      console.log("\nHouve um erro ao realizar o cadastro!");
+      res.status(500).json(erro.sqlMessage);
+    });
 }
 
 function auth(req, res) {
@@ -97,6 +99,9 @@ function auth(req, res) {
 }
 
 module.exports = {
-    register,
-    auth
-}
+  register,
+  auth,
+  getter,
+  setter,
+  deleter,
+};
