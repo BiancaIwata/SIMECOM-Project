@@ -2,7 +2,9 @@
 -- DATABASE: CREATE DATABASE
 -- ===========================
 DROP DATABASE simecom;
+
 CREATE DATABASE simecom;
+
 USE simecom;
 
 -- ===========================
@@ -14,9 +16,8 @@ CREATE TABLE usuarios (
     sobrenome VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
-    status ENUM('ativo','inativo') DEFAULT 'ativo',
+    status ENUM('ativo', 'inativo') DEFAULT 'ativo',
     type ENUM('adm', 'user') DEFAULT 'user' NOT NULL,
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -32,12 +33,10 @@ CREATE TABLE empresas (
     email VARCHAR(150),
     telefone VARCHAR(20),
     uf CHAR(2),
-    status ENUM('ativo','inativo') DEFAULT 'ativo',
-
+    status ENUM('ativo', 'inativo') DEFAULT 'ativo',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
 );
 
 -- ===========================
@@ -45,16 +44,13 @@ CREATE TABLE empresas (
 -- ===========================
 CREATE TABLE preferencias (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    
     usuario_id INT NOT NULL,
     estado VARCHAR(100) NOT NULL,
     municipio VARCHAR(150) NOT NULL,
     setor VARCHAR(150) NOT NULL,
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
 );
 
 -- ===========================
@@ -65,12 +61,9 @@ CREATE TABLE posts (
     usuario_id INT NOT NULL,
     titulo VARCHAR(200),
     conteudo TEXT NOT NULL,
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
 );
 
 -- ===========================
@@ -81,13 +74,10 @@ CREATE TABLE comentarios (
     post_id INT NOT NULL,
     usuario_id INT NOT NULL,
     conteudo TEXT NOT NULL,
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
 );
 
 -- ===========================
@@ -99,11 +89,9 @@ CREATE TABLE reacoes (
     usuario_id INT NOT NULL,
     tipo ENUM('like', 'dislike') NOT NULL,
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-
     UNIQUE (post_id, usuario_id),
-
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
 );
 
 -- =========================
@@ -147,12 +135,12 @@ CREATE TABLE base_importacao (
     CO_PAIS CHAR(4) NOT NULL,
     CO_MUN CHAR(10) NOT NULL,
     SG_UF_MUN CHAR(2) NOT NULL,
-    KG_LIQUIDO DECIMAL(15,3) NOT NULL DEFAULT 0.000,
-    VL_FOB DECIMAL(15,2) NOT NULL DEFAULT 0.00,
-
-    FOREIGN KEY (SH4) REFERENCES codigo_sh4(CO_SH4),
-    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais(CO_PAIS),
-    FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio(CO_MUN_GEO)
+    KG_LIQUIDO DECIMAL(15, 3) NOT NULL DEFAULT 0.000,
+    VL_FOB DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    FOREIGN KEY (SH4) REFERENCES codigo_sh4 (CO_SH4),
+    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais (CO_PAIS),
+    FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio (CO_MUN_GEO),
+    FOREIGN KEY (SETORES_ID) REFERENCES setores (id)
 );
 
 -- =========================
@@ -166,10 +154,18 @@ CREATE TABLE base_exportacao (
     CO_PAIS CHAR(4) NOT NULL,
     CO_MUN CHAR(10) NOT NULL,
     SG_UF_MUN CHAR(2) NOT NULL,
-    KG_LIQUIDO DECIMAL(15,3) NOT NULL DEFAULT 0.000,
-    VL_FOB DECIMAL(15,2) NOT NULL DEFAULT 0.00,
-    
-    FOREIGN KEY (SH4) REFERENCES codigo_sh4(CO_SH4),
-    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais(CO_PAIS),
-    FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio(CO_MUN_GEO)
+    KG_LIQUIDO DECIMAL(15, 3) NOT NULL DEFAULT 0.000,
+    VL_FOB DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    SETORES_ID INT FOREIGN KEY (SH4) REFERENCES codigo_sh4 (CO_SH4),
+    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais (CO_PAIS),
+    FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio (CO_MUN_GEO),
+    FOREIGN KEY (SETORES_ID) REFERENCES setores (id)
+);
+
+-- =========================
+-- TABELA: setores
+-- =========================
+CREATE TABLE setores (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(150)
 );

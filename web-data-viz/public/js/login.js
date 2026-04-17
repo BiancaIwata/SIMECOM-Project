@@ -27,11 +27,15 @@ function entrar() {
         alert("Conta está desativada...");
       } else {
         sessionStorage.ID_USUARIO = json.id;
-        window.location.href = "./dashboard.html";
-      }
+        sessionStorage.NOME_USUARIO = json.nome;
+
+        window.location.href = "dashboard.html";
+
     })
     .catch((err) => {
       console.log(err);
       alert("Erro no login");
     });
+    return false;
+
 }
