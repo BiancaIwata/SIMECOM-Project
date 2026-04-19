@@ -1,127 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
- 
-@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
- 
+@import url("https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap");
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
- 
+
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  background-color: #eaeaea;
+  display: none;
+}
+
 body {
-    width: 100%;
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background-color: #EEEEEE;
-    color: #0B3C5D;
+  width: 100%;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background-color: #eeeeee;
+  color: #0b3c5d;
 }
- 
+
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
- 
+
 img {
-    max-width: 100%;
-    height: auto;
-}
- 
-/* ----------------------------------------------------------------------------------------------- */
- 
-.container {
-    display: flex;
-    min-height: 100vh;
-}
- 
-.sidebar {
-    width: 240px;
-    min-height: 100vh;
-    background-color: #F4F6F8;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 28px 0 32px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    box-shadow: 0 2px 16px rgba(2, 16, 37, 0.07);
-}
- 
-.sidebar-logo {
-    display: flex;
-    align-items: center;
-    width: 200px;
-    gap: 8px;
-    padding: 0 24px;
-    margin-bottom: 32px;
-}
- 
-.user {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 0 24px;
-    margin-bottom: 36px;
-}
- 
-.user p {
-    font-size: 14px;
-    color: #6b7a99;
-    font-weight: 500;
-}
- 
-.avatar {
-    width: 90px;
-    height: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-}
- 
-.menu {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 0 12px;
-}
- 
-.menu ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
- 
-.menu li {
-    display: flex;
-    align-items: center;
-    border-radius: 9px;
-    transition: 0.18s;
-}
- 
-.menu li a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 11px 14px;
-    width: 100%;
-    border-radius: 9px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #0B3C5D;
-    transition: 0.18s;
-}
- 
-.menu li:hover a {
-    background: #f0f4ff;
-}
- 
-.menu img {
-    width: 22px;
-    height: 22px;
+  max-width: 100%;
+  height: auto;
 }
 
 .menu .ativo img {
@@ -131,74 +41,186 @@ img {
 
 
 /* ----------------------------------------------------------------------------------------------- */
- 
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 0 32px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  box-shadow: 0 2px 16px rgba(2, 16, 37, 0.07);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  width: 200px;
+  gap: 8px;
+  padding: 0 24px;
+  margin-bottom: 32px;
+}
+
+.user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 24px;
+  margin-bottom: 36px;
+}
+
+.user p {
+  font-size: 14px;
+  color: #6b7a99;
+  font-weight: 500;
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.menu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 12px;
+}
+
+.menu ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  border-radius: 9px;
+  transition: 0.18s;
+}
+
+.menu li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  width: 100%;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #0b3c5d;
+  transition: 0.18s;
+}
+
+.menu li:hover a {
+  background: #f0f4ff;
+}
+
+.menu img {
+  width: 22px;
+  height: 22px;
+}
+
+/* ----------------------------------------------------------------------------------------------- */
+
 .content {
-    margin-left: 240px;
-    flex: 1;
-    padding: 48px 52px;
-    min-height: 100vh;
+  margin-left: 240px;
+  flex: 1;
+  padding: 48px 52px;
+  min-height: 100vh;
 }
- 
+
 .titulo {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
- 
+
 .titulo h1 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 30px;
-    font-weight: 700;
-    color: #0B3C5D;
+  font-family: "Poppins", sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #0b3c5d;
 }
- 
+
 /* ----------------------------------------------------------------------------------------------- */
 
 .card {
-    background: #F4F6F8;
-    border-radius: 18px;
-    padding: 36px 40px 32px;
-    box-shadow: 0 2px 16px rgba(13, 47, 94, .07);
-    max-width: 1000px;
+  background: #f4f6f8;
+  border-radius: 18px;
+  padding: 36px 40px 32px;
+  box-shadow: 0 2px 16px rgba(13, 47, 94, 0.07);
+  max-width: 1000px;
 }
 
 .card h2 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 25px;
-    font-weight: 700;
-    margin-bottom: 30px;
+  font-family: "Poppins", sans-serif;
+  font-size: 25px;
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
 /* ----------------------------------------------------------------------------------------------- */
 
 .informacoes h4 {
-    font-size: 16px;
-    margin-bottom: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 .informacoes p {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 /* ----------------------------------------------------------------------------------------------- */
 
 .btn-editar,
 .btn-deletar {
-    background-color: #1F7AE0;
-    color: #fff;
-    border: none;
-    padding: 11px 28px;
-    border-radius: 9px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    cursor: pointer;
-    transition: transform 0.12s ease-in-out;
+  background-color: #1f7ae0;
+  color: #fff;
+  border: none;
+  padding: 11px 28px;
+  border-radius: 9px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.12s ease-in-out;
 }
- 
+btn-editar,
+.btn-confirmar {
+  background-color: #1fe059;
+  color: #fff;
+  border: none;
+  padding: 11px 28px;
+  border-radius: 9px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.12s ease-in-out;
+  display: none;
+}
+
 .btn-editar:hover,
 .btn-deletar:hover {
-    background-color: #1a65c0;
-    transform: scale(1.05);
+  background-color: #1a65c0;
+  transform: scale(1.05);
 }
 
 .btn-deletar {
-    margin: 40px;
+  margin: 40px;
 }
