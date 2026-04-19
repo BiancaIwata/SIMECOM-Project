@@ -21,7 +21,6 @@ window.onload = function () {
       email_configurar.textContent = json.email;
       nome_configurar.textContent = json.nome;
       usuario_nome.textContent = "Olá, " + json.nome + "!";
-      sessionStorage.NOME_USUARIO = json.nome;
     })
     .catch((err) => {
       console.log(err);
@@ -82,6 +81,7 @@ function confirminfo() {
       senha_configurar.textContent = password;
       email_configurar.textContent = email;
       nome_configurar.textContent = name;
+      sessionStorage.ID_USUARIO = name;
     } else {
       alert("Erro ao cadastrar");
     }

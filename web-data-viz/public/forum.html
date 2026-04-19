@@ -6,21 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/forum.css">
     <link rel="icon" href="./assets/logo_simples.png" type="image/png">
+    <script src="./js/forum.js"></script>
+
     <title>Fórum | SIMECOM</title>
 
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <aside class="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-logo">
                 <a href="index.html">
                     <img src="./assets/logo.png" alt="Simecom">
                 </a>
             </div>
- 
+
             <div class="user">
                 <div class="avatar">
                     <a href="configuracoes.html">
@@ -29,7 +31,7 @@
                 </div>
                 <h3>Olá, <p id="nome_usuario">usuário</p>!</h3>
             </div>
- 
+
             <nav class="menu">
                 <ul>
                     <li><a href="index.html">
@@ -37,7 +39,7 @@
                             Home
                         </a>
                     </li>
-                    <li >
+                    <li>
                         <a href="preferencias.html">
                             <img src="./assets/check_box_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Preferências
@@ -57,91 +59,53 @@
             </nav>
         </aside>
 
-    <main class="main">
+        <main class="main">
 
-        <h1>Fórum</h1>
-        <p class="subtitulo">
-            Veja o que outros usuários estão falando sobre o mercado e compartilhe seus insights no fórum!
-        </p>
+            <h1>Fórum</h1>
+            <p class="subtitulo">
+                Veja o que outros usuários estão falando sobre o mercado e compartilhe seus insights no fórum!
+            </p>
 
-        <div class="input-box">
-            <span>👤</span>
-            <input type="text" placeholder="Deixe seu comentário...">
-            <button>Postar</button>
-        </div>
+            <div class="input-box">
+                <span>👤</span>
+                <input type="text" id="theme" placeholder="Escreva um tema...">
+                <input type="text" id="comment_content" placeholder="Deixe seu comentário...">
+                <button onclick="postar_comentario()">Postar</button>
+            </div>
 
-        <div class="layout">
+            <div class="layout">
 
-            
-            <div class="comentarios">
-                <h2>Últimos comentários</h2>
 
-                
-                <div class="card">
-                    <span class="icon">👤</span>
-                    <div>
-                        <p></p>
-                        <div class="acoes">
-                            <span></span>
-                            <span></span>
+                <div id="allPosts" class="comentarios">
+                    <h2>Últimos comentários</h2>
+
+
+                    <div class="card">
+                        <span class="icon">👤</span>
+                        <div>
+                            <p id="content-text">Not Found</p>
                         </div>
                     </div>
+
+
+
                 </div>
 
-                <div class="card">
-                    <span class="icon">👤</span>
-                    <div>
-                        <p></p>
-                        <div class="acoes">
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="card">
-                    <span class="icon">👤</span>
-                    <div>
-                        <p></p>
-                        <div class="acoes">
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <span class="icon">👤</span>
-                    <div>
-                        <p></p>
-                        <div class="acoes">
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
+                <div class="topicos">
+                    <h3>Tópicos mais curtidos</h3>
+                    <ol id="topiccontent">
+                    </ol>
                 </div>
 
             </div>
 
-            
-            <div class="topicos">
-                <h3>Tópicos mais curtidos</h3>
-                <ol>
-                <div class="topicos"><li></li></div>
-                <div class="topicos"><li></li></div>
-                <div class="topicos"><li></li></div>
-                <div class="topicos"><li></li></div>
-                <div class="topicos"><li></li></div>
-                </ol>
-            </div>
+        </main>
 
-        </div>
-
-    </main>
-
-</div>
+    </div>
 
 </body>
+
 </html>
 
 <script>

@@ -16,6 +16,7 @@ var app = express();
 var indexRouter = require("./src/routes/index");
 var usersRouter = require("./src/routes/users");
 var preferencesRouter = require("./src/routes/preferences");
+var forumRouter = require("./src/routes/forum");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/preference", preferencesRouter);
+app.use("/forum", forumRouter);
 
 app.listen(PORTA_APP, function () {
   console.log(`Servidor Rodando Em: http://${HOST_APP}:${PORTA_APP} :`);
