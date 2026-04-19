@@ -19,7 +19,6 @@ function entrar() {
   })
     .then((res) => {
       if (!res.ok) throw new Error("Erro login");
-
       return res.json();
     })
     .then((json) => {
@@ -28,14 +27,13 @@ function entrar() {
       } else {
         sessionStorage.ID_USUARIO = json.id;
         sessionStorage.NOME_USUARIO = json.nome;
-
         window.location.href = "dashboard.html";
-
+      }
     })
     .catch((err) => {
       console.log(err);
       alert("Erro no login");
     });
-    return false;
 
+  return false;
 }
