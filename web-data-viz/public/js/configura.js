@@ -21,6 +21,7 @@ window.onload = function () {
       email_configurar.textContent = json.email;
       nome_configurar.textContent = json.nome;
       usuario_nome.textContent = "Olá, " + json.nome + "!";
+      sessionStorage.NOME_USUARIO = json.nome;
     })
     .catch((err) => {
       console.log(err);
