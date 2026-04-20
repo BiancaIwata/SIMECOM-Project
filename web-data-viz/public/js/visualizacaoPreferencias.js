@@ -130,13 +130,28 @@ function confirmarExclusao(id) {
         }
     }
 
-    preferencias = novaLista; 
-    fecharModal();           
-    gerarTabela();  
+    preferencias = novaLista;
+    fecharModal();
+    gerarTabela();
 }
 
 function fecharModal() {
     document.getElementById("overlay").style.display = "none";
+}
+
+function mostrar() {
+    fetch(`/visualizacaoPreferencias/mostrar/${idUsuario}`).then(function (response) {
+        console.log("resposta: ", response);
+
+        if (response.ok) {
+            console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+        } else {
+            console.error('Nenhum dado encontrado ou erro na API');
+        }
+    })
+        .catch(function (error) {
+            console.error(`Erro na obtenção dos dados de preferência: ${error.message}`);
+        });
 }
 
 gerarTabela();

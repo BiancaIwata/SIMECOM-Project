@@ -15,7 +15,7 @@ var app = express();
 
 var indexRouter = require("./src/routes/index");
 var usersRouter = require("./src/routes/users");
-var vizPrefsRouter = require("./src/routes/vizPrefs")
+var preferenciasRouter = require("./src/routes/preferencias")
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/vizPrefs", vizPrefsRouter);
+app.use("/preferencias", preferenciasRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`Servidor Rodando Em: http://${HOST_APP}:${PORTA_APP} :`);
