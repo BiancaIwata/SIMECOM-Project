@@ -1,7 +1,7 @@
 -- ===========================
 -- DATABASE: CREATE DATABASE
 -- ===========================
-DROP DATABASE simecom;
+DROP DATABASE IF EXISTS simecom;
 
 CREATE DATABASE simecom;
 
@@ -125,47 +125,76 @@ CREATE TABLE codigo_pais (
 );
 
 -- =========================
--- TABELA: base_importacao
--- =========================
-CREATE TABLE base_importacao (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    CO_ANO SMALLINT UNSIGNED NOT NULL,
-    CO_MES TINYINT UNSIGNED NOT NULL,
-    SH4 CHAR(4) NOT NULL,
-    CO_PAIS CHAR(4) NOT NULL,
-    CO_MUN CHAR(10) NOT NULL,
-    SG_UF_MUN CHAR(2) NOT NULL,
-    KG_LIQUIDO DECIMAL(15, 3) NOT NULL DEFAULT 0.000,
-    VL_FOB DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
-    FOREIGN KEY (SH4) REFERENCES codigo_sh4 (CO_SH4),
-    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais (CO_PAIS),
-    FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio (CO_MUN_GEO),
-    FOREIGN KEY (SETORES_ID) REFERENCES setores (id)
-);
-
--- =========================
--- TABELA: base_exportacao
--- =========================
-CREATE TABLE base_exportacao (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    CO_ANO SMALLINT UNSIGNED NOT NULL,
-    CO_MES TINYINT UNSIGNED NOT NULL,
-    SH4 CHAR(4) NOT NULL,
-    CO_PAIS CHAR(4) NOT NULL,
-    CO_MUN CHAR(10) NOT NULL,
-    SG_UF_MUN CHAR(2) NOT NULL,
-    KG_LIQUIDO DECIMAL(15, 3) NOT NULL DEFAULT 0.000,
-    VL_FOB DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
-    SETORES_ID INT FOREIGN KEY (SH4) REFERENCES codigo_sh4 (CO_SH4),
-    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais (CO_PAIS),
-    FOREIGN KEY (CO_MUN) REFERENCES codigo_municipio (CO_MUN_GEO),
-    FOREIGN KEY (SETORES_ID) REFERENCES setores (id)
-);
-
--- =========================
 -- TABELA: setores
 -- =========================
 CREATE TABLE setores (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(150)
+);
+
+-- =========================
+-- TABELA: base_importacao
+-- Suporta ambos os layouts MDIC:
+--   Layout NCM: CO_ANO;CO_MES;CO_NCM;CO_UNID;CO_PAIS;SG_UF_NCM;CO_VIA;CO_URF;QT_ESTAT;KG_LIQUIDO;VL_FOB
+--   Layout MUN: CO_ANO;CO_MES;SH4;CO_PAIS;SG_UF_MUN;CO_MUN;KG_LIQUIDO;VL_FOB
+-- =========================
+CREATE TABLE base_importacao (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    CO_ANO SMALLINT UNSIGNED NOT NULL,
+    CO_MES TINYINT UNSIGNED NOT NULL,
+    CO_NCM CHAR(8) NULL,
+    SH4 CHAR(4) NOT NULL,
+    CO_PAIS CHAR(4) NOT NULL,
+    SG_UF_MUN CHAR(2) NOT NULL,
+    CO_MUN CHAR(10) NULL,
+    CO_VIA CHAR(2) NULL,
+    CO_URF CHAR(7) NULL,
+    QT_ESTAT DECIMAL(15, 3) NULL,
+    KG_LIQUIDO DECIMAL(15, 3) NOT NULL DEFAULT 0.000,
+    VL_FOB DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    SETORES_ID INT,
+    FOREIGN KEY (SH4) REFERENCES codigo_sh4 (CO_SH4),
+    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais (CO_PAIS),
+    FOREIGN KEY (SETORES_ID) REFERENCES setores (id)
+);
+
+-- =========================
+-- TABELA: base_exportacao
+-- Suporta ambos os layouts MDIC:
+--   Layout NCM: CO_ANO;CO_MES;CO_NCM;CO_UNID;CO_PAIS;SG_UF_NCM;CO_VIA;CO_URF;QT_ESTAT;KG_LIQUIDO;VL_FOB
+--   Layout MUN: CO_ANO;CO_MES;SH4;CO_PAIS;SG_UF_MUN;CO_MUN;KG_LIQUIDO;VL_FOB
+-- =========================
+CREATE TABLE base_exportacao (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    CO_ANO SMALLINT UNSIGNED NOT NULL,
+    CO_MES TINYINT UNSIGNED NOT NULL,
+    CO_NCM CHAR(8) NULL,
+    SH4 CHAR(4) NOT NULL,
+    CO_PAIS CHAR(4) NOT NULL,
+    SG_UF_MUN CHAR(2) NOT NULL,
+    CO_MUN CHAR(10) NULL,
+    CO_VIA CHAR(2) NULL,
+    CO_URF CHAR(7) NULL,
+    QT_ESTAT DECIMAL(15, 3) NULL,
+    KG_LIQUIDO DECIMAL(15, 3) NOT NULL DEFAULT 0.000,
+    VL_FOB DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    SETORES_ID INT,
+    FOREIGN KEY (SH4) REFERENCES codigo_sh4 (CO_SH4),
+    FOREIGN KEY (CO_PAIS) REFERENCES codigo_pais (CO_PAIS),
+    FOREIGN KEY (SETORES_ID) REFERENCES setores (id)
+);
+
+-- =========================
+-- TABELA: log_java
+-- Guarda o resumo de cada carga de arquivo feita pelo Java (logJava).
+-- Mesmas informações do imprimirResumo(), salvas no banco com data e hora.
+-- =========================
+CREATE TABLE log_java (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome_arquivo VARCHAR(255) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    linhas_inseridas INT NOT NULL DEFAULT 0,
+    linhas_ignoradas INT NOT NULL DEFAULT 0,
+    total_erros INT NOT NULL DEFAULT 0,
+    data_hora DATETIME NOT NULL
 );
