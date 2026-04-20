@@ -1,3 +1,7 @@
+var idUsuario = JSON.parse(sessionStorage.getItem("usuario_id"));
+
+var preferencias = [];
+
 function mostrar() {
     fetch(`/preferencias/${idUsuario}`)
         .then(res => res.json())
@@ -16,7 +20,7 @@ function gerarTabela() {
     tbody.innerHTML = "";
 
     if (preferencias.length == 0) {
-        tabelaBody.innerHTML = `<tr><td class="vazio">Nenhuma preferência cadastrada.</td></tr>`;
+        tbody.innerHTML = `<tr><td class="vazio">Nenhuma preferência cadastrada.</td></tr>`;
         return;
     }
 
@@ -87,16 +91,30 @@ function abrirModalEditar(id) {
 }
 
 function salvarEdicao(id) {
-    for (let i = 0; i < preferencias.length; i++) {
-        if (preferencias[i].id === id) {
-            preferencias[i].estado = document.getElementById("edit-estado").value;
-            preferencias[i].municipio = document.getElementById("edit-municipio").value;
-            preferencias[i].setor = document.getElementById("edit-setor").value;
-        }
-    }
+    var estado = document.getElementById("edit-estado").value;
+    var municipio = document.getElementById("edit-municipio").value;
+    var setor = document.getElementById("edit-setor").value;
 
-    fecharModal();
-    gerarTabela();
+    fetch("/preferencias/" + id, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            usuario_id: idUsuario,
+            estado: estado,
+            municipio: municipio,
+            setor: setor
+        })
+    })
+        .then(function (res) {
+            return res.json();
+        })
+        .then(function () {
+            fecharModal();
+            mostrar();
+        })
+        .catch(function (erro) {
+            console.error("Erro ao editar preferência:", erro);
+        });
 }
 
 
@@ -135,15 +153,18 @@ function abrirModalExcluir(id) {
 }
 
 function confirmarExclusao(id) {
-    const novaLista = [];
-
-    for (let i = 0; i < preferencias.length; i++) {
-        if (preferencias[i].id !== id) {
-            novaLista.push(preferencias[i]);
-        }
-    }
-
-    preferencias = novaLista;
+    fetch("/preferencias/" + id, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuario_id: idUsuario })
+    }).then(function (res) {
+        return res.json();
+    }).then(function () {
+        fecharModal();
+        mostrar();
+    }).catch(function (erro) {
+        console.error("Erro ao excluir preferência:", erro);
+    });
     fecharModal();
     gerarTabela();
 }
@@ -152,3 +173,4 @@ function fecharModal() {
     document.getElementById("overlay").style.display = "none";
 }
 
+mostrar();
