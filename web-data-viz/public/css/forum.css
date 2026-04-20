@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
- 
+
 @import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
- 
+
 * {
     margin: 0;
     padding: 0;
@@ -26,7 +26,7 @@ img {
 }
  
 /* ----------------------------------------------------------------------------------------------- */
- 
+  
 .container {
     display: flex;
     min-height: 100vh;
@@ -129,87 +129,93 @@ img {
     height: 22px;
 }
 
-/* ----------------------------------------------------------------------------------------------- */
- 
-.content {
+.main {
     margin-left: 240px;
-    flex: 1;
-    padding: 48px 52px;
-    min-height: 100vh;
-}
- 
-.titulo {
-    margin-bottom: 30px;
-}
- 
-.titulo h1 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 30px;
-    font-weight: 700;
-    color: #0B3C5D;
-}
- 
-/* ----------------------------------------------------------------------------------------------- */
- 
-.tabela-container {
-    background: #F4F6F8;
-    border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(13, 47, 94, .07);
-    overflow: hidden;
-    max-width: 2000px;
-}
-
-.tabela {
+    padding: 40px;
     width: 100%;
-    border-collapse: collapse;
 }
 
-.tabela thead th {
-    padding: 20px 24px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
+h1 {
     color: #0B3C5D;
+    margin-bottom: 5px;
 }
 
-.linha-clara {
-    background-color: #F4F6F8;
+.subtitulo {
+    color: #6c757d;
+    margin-bottom: 20px;
 }
 
-.linha-escura {
-    background-color: #e9eef4;
+/* INPUT */
+.input-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f1f3f5;
+    padding: 15px;
+    border-radius: 12px;
+    width: 60%;
 }
 
-.tabela td {
-    padding: 20px 80px;
-    font-size: 14px;
+.input-box input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
 }
 
+.input-box button {
+    background: #2f6fed;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-.id {
-    font-weight: 600;
-    width: 60px;
+/* LAYOUT INTERNO */
+.layout {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* COMENTÁRIOS */
+.comentarios {
+    flex: 2;
+}
+
+.card {
+    display: flex;
+    gap: 15px;
+    background: #f1f3f5;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.icon {
+    font-size: 18px;
 }
 
 .acoes {
-    text-align: right;
-}
- 
-.btn-editar,
-.btn-excluir {
-    width: 30px;
-    cursor: pointer;
-    margin-left: 8px;
-    padding: 6px;
-    border-radius: 6px;
-    transition: 0.2s;
-}
- 
-.btn-editar:hover {
-    background: #e8f0fe;
+    margin-top: 8px;
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
 }
 
-.btn-excluir:hover {
-    background: #fdecea;
+/* TÓPICOS */
+.topicos {
+    flex: 1;
+    background: #f1f3f5;
+    padding: 20px;
+    border-radius: 12px;
 }
- 
+
+.topicos h3 {
+    margin-top: 0;
+}
+
+.topicos li {
+    margin-bottom: 10px;
+}

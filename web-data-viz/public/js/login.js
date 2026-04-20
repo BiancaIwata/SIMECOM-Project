@@ -19,16 +19,21 @@ function entrar() {
   })
     .then((res) => {
       if (!res.ok) throw new Error("Erro login");
-
       return res.json();
     })
     .then((json) => {
-      sessionStorage.ID_USUARIO = json.id;
-
-      window.location.href = "./dashboard.html";
+      if (json.status == "inativo") {
+        alert("Conta está desativada...");
+      } else {
+        sessionStorage.ID_USUARIO = json.id;
+        sessionStorage.NOME_USUARIO = json.nome;
+        window.location.href = "dashboard.html";
+      }
     })
     .catch((err) => {
       console.log(err);
       alert("Erro no login");
     });
+
+  return false;
 }

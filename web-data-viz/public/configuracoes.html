@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/preferencias2.css">
+    <link rel="stylesheet" href="./css/configuracoes.css">
     <link rel="icon" href="./assets/logo_simples.png" type="image/png">
-    <title>Preferências | SIMECOM</title>
+    <title>Configurações de Perfil | SIMECOM</title>
+    <script src="./js/configura.js"></script>
 </head>
 
 <body>
@@ -28,7 +29,7 @@
             </div>
 
             <nav class="menu">
-<ul>
+                <ul>
                     <li><a href="index.html">
                             <img src="./assets/home_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Home
@@ -51,7 +52,7 @@
                         </a>
                     </li>
                     <li><a href="./configuracoes.html">
-                            <img src="./assets/icon_configuracoes.png">
+                            <img src="./assets/icon_configuracoes.png" >
                             Configurações
                         </a>
                     </li>
@@ -60,55 +61,49 @@
         </aside>
 
         <main class="content">
+
             <div class="titulo">
-                <h1>Preferências</h1>
+                <h1>Configurações de Perfil</h1>
             </div>
 
-            <div class="tabela-container">
-                <table class="tabela">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Estado</th>
-                            <th>Município</th>
-                            <th>Setor</th>
-                        </tr>
-                    </thead>
-                    <tbody class="tabela-body">
-                        <tr class="linha-clara">
-                            <td class="id">1</td>
-                            <td>São Paulo</td>
-                            <td class="municipio">São Paulo</td>
-                            <td>Tecnologia</td>
-                            <td class="acoes">
-                                <img class="btn-editar"
-                                    src="./assets/edit_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                                <img class="btn-excluir"
-                                    src="./assets/delete_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                            </td>
-                        </tr>
+            <div class="card">
+                <h2>Dados Pessoais</h2>
 
-                        <tr class="linha-escura">
-                            <td class="id">2</td>
-                            <td>São Paulo</td>
-                            <td class="municipio">São Paulo</td>
-                            <td>Tecnologia</td>
-                            <td class="acoes">
-                                <img class="btn-editar"
-                                    src="./assets/edit_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                                <img class="btn-excluir"
-                                    src="./assets/delete_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="informacoes">
+                    <div class="nome">
+                        <h4>Nome</h4>
+                        <p id="nome_configurar">Nome Exemplo</p>
+                        <input id="nome_input" type="text" placeholder="Nome Antigo">
+
+                    </div>
+
+                    <div class="email">
+                        <h4>Email</h4>
+                        <p id="email_configurar">email@exemplo.com</p>
+                        <input id="email_input" type="text" placeholder="Email Antigo">
+
+                    </div>
+
+                    <div class="senha">
+                        <h4>Senha</h4>
+                        <p id="senha_configurar">********</p>
+                        <input id="senha_input" type="text" placeholder="Senha Antiga">
+                    </div>
+
+                    <div class="acoes">
+                        <button class="btn-editar" onclick="editar()" id="btn_editar">Editar informações</button>
+                        <button class="btn-confirmar" onclick="confirminfo()" id="btn_confirmar_info">Confirmar</button>
+
+                    </div>
+
+                </div>
             </div>
+            <button class="btn-deletar" onclick="check_del()" id="btn-deletar">Deletar conta</button>
+            <button class="btn-confirmar" onclick="confirm_del()" id="btn_confirmar_del">Confirmar</button>
         </main>
-    </div>
 </body>
 
 </html>
-
 <script>
     nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
 </script>

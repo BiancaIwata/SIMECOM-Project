@@ -1,3 +1,11 @@
+<<<<<<< Feat/back-preferencias01
+=======
+var ambiente_processo = "producao";
+// var ambiente_processo = 'desenvolvimento';
+
+var caminho_env = ambiente_processo === "producao" ? ".env" : ".env.dev";
+
+>>>>>>> main
 require("dotenv").config({ path: ".env" });
 
 var express = require("express");

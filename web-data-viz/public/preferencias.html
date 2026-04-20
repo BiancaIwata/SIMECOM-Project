@@ -25,7 +25,8 @@
                         <img src="./assets/Group 43.png">
                     </a>
                 </div>
-                <p>Olá, User!</p>
+                <p>Olá,
+                <p id="nome_usuario">usuário</p>!</p>
             </div>
 
             <nav class="menu">
@@ -50,6 +51,11 @@
                             <img src="./assets/space_dashboard_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Dashboards
                         </a>
+                    <li><a href="./configuracoes.html">
+                            <img src="./assets/icon_configuracoes.png">
+                            Configurações
+                        </a>
+                    </li>
                     </li>
                 </ul>
             </nav>
@@ -161,3 +167,7 @@
 </body>
 
 </html>
+
+<script>
+    nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
+</script>
