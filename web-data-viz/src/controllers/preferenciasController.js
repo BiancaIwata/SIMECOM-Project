@@ -3,7 +3,7 @@ var preferenciasModel = require("../models/preferenciasModel");
 function mostrar(req, res) {
     var idUsuario = req.params.idUsuario;
 
-    preferenciasModel.buscarPreferencias(idUsuario).then((result) => {
+    preferenciasModel.buscarPreferencias(idUsuario).then((resultado) => {
         if (resultado.length > 0) {
             res.status(200).json(resultado);
         } else {

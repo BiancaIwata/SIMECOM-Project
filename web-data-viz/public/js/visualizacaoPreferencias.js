@@ -1,12 +1,24 @@
-let preferencias = [
-    { id: 1, estado: "São Paulo", municipio: "São Paulo", setor: "Tecnologia" },
-    { id: 2, estado: "Rio de Janeiro", municipio: "Niterói", setor: "Saúde" },
-];
+function mostrar() {
+    fetch(`/preferencias/${idUsuario}`)
+        .then(res => res.json())
+        .then(function (resultado) {
+            preferencias = resultado;
+            gerarTabela();
+        })
+        .catch(function (erro) {
+            console.error("Erro ao buscar preferências:", erro);
+        });
+}
 
 function gerarTabela() {
     const tbody = document.getElementById("tabela-body");
 
     tbody.innerHTML = "";
+
+    if (preferencias.length == 0) {
+        tabelaBody.innerHTML = `<tr><td class="vazio">Nenhuma preferência cadastrada.</td></tr>`;
+        return;
+    }
 
     for (let i = 0; i < preferencias.length; i++) {
         const item = preferencias[i];
@@ -30,6 +42,7 @@ function gerarTabela() {
         tbody.appendChild(tr);
     }
 }
+
 
 function abrirModalEditar(id) {
     let item = null;
@@ -139,19 +152,3 @@ function fecharModal() {
     document.getElementById("overlay").style.display = "none";
 }
 
-function mostrar() {
-    fetch(`/visualizacaoPreferencias/mostrar/${idUsuario}`).then(function (response) {
-        console.log("resposta: ", response);
-
-        if (response.ok) {
-            console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
-        } else {
-            console.error('Nenhum dado encontrado ou erro na API');
-        }
-    })
-        .catch(function (error) {
-            console.error(`Erro na obtenção dos dados de preferência: ${error.message}`);
-        });
-}
-
-gerarTabela();

@@ -3,7 +3,7 @@ var router = express.Router();
 
 var preferenciasController = require("../controllers/preferenciasController");
 
-router.get("/:id", function (req, res) {
+router.get("/:idUsuario", function (req, res) {
     preferenciasController.mostrar(req, res);
 });
 
