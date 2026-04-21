@@ -1,13 +1,23 @@
-var idUsuario = JSON.parse(sessionStorage.getItem("usuario_id"));
+var idUsuario = JSON.parse(sessionStorage.getItem("ID_USUARIO"));
 
 var preferencias = [];
 
 function mostrar() {
     fetch(`/preferencias/${idUsuario}`)
-        .then(res => res.json())
-        .then(function (resultado) {
-            preferencias = resultado;
-            gerarTabela();
+        .then(res => {
+            console.log(res)
+
+            if (res.status == 200) {
+                res.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+
+                    preferencias = json;
+                    gerarTabela();
+                });
+            } else if (res.status == 204) {
+                gerarTabela();
+            }
         })
         .catch(function (erro) {
             console.error("Erro ao buscar preferências:", erro);
@@ -19,17 +29,20 @@ function gerarTabela() {
 
     tbody.innerHTML = "";
 
+    console.log(preferencias)
+
     if (preferencias.length == 0) {
-        tbody.innerHTML = `<tr><td class="vazio">Nenhuma preferência cadastrada.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="vazio">Nenhuma preferência cadastrada.</td></tr>`;
         return;
     }
 
-    for (let i = 0; i < preferencias.length; i++) {
+
+    for (let i = 0; i < preferencias.length && i <= 3; i++) {
         const item = preferencias[i];
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-      <td>${item.id}</td>
+      <td>${i + 1}</td>
       <td>${item.estado}</td>
       <td>${item.municipio}</td>
       <td>${item.setor}</td>
@@ -47,8 +60,37 @@ function gerarTabela() {
     }
 }
 
+let municipios = [];
+
+function carregarMunicipios(estado) {
+    fetch(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado}/municipios`,
+    )
+    .then(res => {
+        res.json().then(data => {
+            municipios = data;
+            let select = document.getElementById("edit-municipio");
+            select.innerHTML = "";
+
+            let optionDefault = document.createElement("option");
+            optionDefault.innerHTML = "Selecione...";
+            select.appendChild(optionDefault);
+
+            for (let i = 0; i < municipios.length; i++) {
+                let option = document.createElement("option");
+
+                option.setAttribute("value", municipios[i].nome);
+                option.innerHTML = municipios[i].nome;
+                select.appendChild(option);
+            }
+            console.log(select)
+        })
+    });
+
+}
 
 function abrirModalEditar(id) {
+    console.log()
     let item = null;
 
     for (let i = 0; i < preferencias.length; i++) {
@@ -64,13 +106,75 @@ function abrirModalEditar(id) {
     titulo.textContent = "Editar preferência";
 
     const campoEstado = document.createElement("label");
-    campoEstado.innerHTML = `Estado<br><select id="edit-estado"><option value="">Selecione...</option></select>`;
+    campoEstado.innerHTML = `Estado<br><select onchange="carregarMunicipios(this.value)" id="edit-estado">
+    <option value="">Selecione...</option>
+     <optgroup label="Norte">
+        <option value="AC">Acre</option>
+        <option value="AP">Amapá</option>
+        <option value="AM">Amazonas</option>
+        <option value="PA">Pará</option>
+        <option value="RO">Rondônia</option>
+        <option value="RR">Roraima</option>
+        <option value="TO">Tocantins</option>
+    </optgroup>
+
+    <optgroup label="Nordeste">
+        <option value="AL">Alagoas</option>
+        <option value="BA">Bahia</option>
+        <option value="CE">Ceará</option>
+        <option value="MA">Maranhão</option>
+        <option value="PB">Paraíba</option>
+        <option value="PE">Pernambuco</option>
+        <option value="PI">Piauí</option>
+        <option value="RN">Rio Grande do Norte</option>
+        <option value="SE">Sergipe</option>
+    </optgroup>
+
+    <optgroup label="Centro-Oeste">
+        <option value="DF">Distrito Federal</option>
+        <option value="GO">Goiás</option>
+        <option value="MT">Mato Grosso</option>
+        <option value="MS">Mato Grosso do Sul</option>
+    </optgroup>
+
+    <optgroup label="Sudeste">
+        <option value="ES">Espírito Santo</option>
+        <option value="MG">Minas Gerais</option>
+        <option value="RJ">Rio de Janeiro</option>
+        <option value="SP">São Paulo</option>
+    </optgroup>
+
+    <optgroup label="Sul">
+        <option value="PR">Paraná</option>
+        <option value="RS">Rio Grande do Sul</option>
+        <option value="SC">Santa Catarina</option>
+    </optgroup>
+</select>`;
 
     const campoMunicipio = document.createElement("label");
-    campoMunicipio.innerHTML = `Município<br><select id="edit-municipio"><option value="">Selecione...</option></select>`;
+
+    campoMunicipio.innerHTML = `   
+        Município<br>
+        <select id="edit-municipio">
+            <option value="">Selecione...</option>
+        </select>`;
 
     const campoSetor = document.createElement("label");
-    campoSetor.innerHTML = `Setor<br><select id="edit-setor"><option value="">Selecione...</option></select>`;
+    campoSetor.innerHTML = `Setor<br>
+        <select id="edit-setor">
+            <option value="">Selecione...</option>
+            <option value="Agropecuário">Agropecuário</option>
+            <option value="Alimentos e Bebidas">Alimentos e Bebidas</option>
+            <option value="Automotivo">Automotivo</option>
+            <option value="Químico">Químico</option>
+            <option value="Farmacêutico">Farmacêutico</option>
+            <option value="Eletrônicos">Eletrônicos</option>
+            <option value="Máquinas e Equipamentos">Máquinas e Equipamentos</option>
+            <option value="Têxtil e Vestuário">Têxtil e Vestuário</option>
+            <option value="Metalúrgico">Metalúrgico</option>
+            <option value="Energia (óleo, gás, combustíveis)">Energia (óleo, gás, combustíveis)</option>
+            <option value="Plásticos e Borracha">Plásticos e Borracha</option>
+        </select>`;
 
     const btnCancelar = document.createElement("button");
     btnCancelar.textContent = "Cancelar";
@@ -95,7 +199,12 @@ function salvarEdicao(id) {
     var municipio = document.getElementById("edit-municipio").value;
     var setor = document.getElementById("edit-setor").value;
 
-    fetch("/preferencias/" + id, {
+    if (estado == '' || municipio == '' || setor == '') {
+        alert('Preencha todos os campos para editar!');
+        return
+    }
+    
+    fetch(`/preferencias/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -106,6 +215,7 @@ function salvarEdicao(id) {
         })
     })
         .then(function (res) {
+            console.log(res) 
             return res.json();
         })
         .then(function () {
@@ -117,6 +227,7 @@ function salvarEdicao(id) {
         });
 }
 
+let index = 0;
 
 function abrirModalExcluir(id) {
     let item = null;
@@ -124,6 +235,7 @@ function abrirModalExcluir(id) {
     for (let i = 0; i < preferencias.length; i++) {
         if (preferencias[i].id == id) {
             item = preferencias[i];
+            index = i + 1;
         }
     }
 
@@ -134,7 +246,7 @@ function abrirModalExcluir(id) {
     titulo.textContent = "Excluir preferência";
 
     const texto = document.createElement("p");
-    texto.textContent = `Tem certeza que deseja excluir Preferência ${id}?`;
+    texto.textContent = `Tem certeza que deseja excluir Preferência ${index}?`;
 
     const btnCancelar = document.createElement("button");
     btnCancelar.textContent = "Cancelar";
@@ -153,7 +265,7 @@ function abrirModalExcluir(id) {
 }
 
 function confirmarExclusao(id) {
-    fetch("/preferencias/" + id, {
+    fetch(`/preferencias/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuario_id: idUsuario })

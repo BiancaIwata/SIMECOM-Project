@@ -5,9 +5,10 @@ function mostrar(req, res) {
 
     preferenciasModel.buscarPreferencias(idUsuario).then((resultado) => {
         if (resultado.length > 0) {
-            res.status(200).json(resultado);
+            console.log(resultado)
+            res.json(resultado);
         } else {
-            res.status(204).json([]);
+            res.status(204).json(resultado);
         }
     }).catch(function (erro) {
         console.log(erro);
@@ -18,21 +19,28 @@ function mostrar(req, res) {
 
 function atualizar(req, res) {
     var id = req.params.id;
-    var usuarioId = req.body.usuario_id;
-    var estado = req.body.estado;
-    var municipio = req.body.municipio;
-    var setor = req.body.setor;
- 
-    if (!usuarioId || !estado || !municipio || !setor) {
-        return res.status(400).send("Campos obrigatórios não enviados.");
-    }
- 
-    preferenciasModel.atualizarPreferencia(id, usuarioId, estado, municipio, setor)
+
+    var preferencia = {
+        usuarioId: req.body.usuario_id,
+        estado: req.body.estado,
+        municipio: req.body.municipio,
+        setor: req.body.setor
+    };
+
+    preferenciasModel.criarPreferencia(preferencia)
         .then(function (resultado) {
-            if (resultado.affectedRows == 0) {
-                return res.status(404).send("Preferência não encontrada.");
-            }
-            res.status(200).json({ mensagem: "Preferência atualizada com sucesso." });
+            console.log(resultado)
+            preferenciasModel.atualizarStatus(id)
+                .then(result => {
+                    if (result && result.affectedRows > 0) {
+                        res.status(200).json({ mensagem: "Preferência atualizada com sucesso." });
+                    }
+                })
+                .catch(function (erro) {
+                    console.log(erro);
+                    console.log("Houve um erro ao atualizar a preferência: ", erro.sqlMessage);
+                    res.status(500).json(erro.sqlMessage);
+                });
         })
         .catch(function (erro) {
             console.log(erro);
@@ -42,23 +50,17 @@ function atualizar(req, res) {
 }
 
 function deletar(req, res) {
-    var id = req.params.id; 
-    var usuarioId = req.body.usuario_id;
- 
-    if (!usuarioId) {
-        return res.status(400).send("usuario_id é obrigatório");
-    }
- 
-    preferenciasModel.deletarPreferencia(id, usuarioId)
-        .then(function (resultado) {
-            if (resultado.affectedRows == 0) {
-                return res.status(404).send("Preferência não encontrada.");
+    var id = req.params.id;
+
+    preferenciasModel.atualizarStatus(id)
+        .then(result => {
+            if (result && result.affectedRows > 0) {
+                res.status(200).json({ mensagem: "Preferência atualizada com sucesso." });
             }
-            res.status(200).json({ mensagem: "Preferência deletada com sucesso." });
         })
         .catch(function (erro) {
             console.log(erro);
-            console.log("Houve um erro ao deletar a preferência: ", erro.sqlMessage);
+            console.log("Houve um erro ao atualizar a preferência: ", erro.sqlMessage);
             res.status(500).json(erro.sqlMessage);
         });
 }

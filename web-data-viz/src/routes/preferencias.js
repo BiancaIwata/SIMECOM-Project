@@ -7,15 +7,11 @@ router.get("/:idUsuario", function (req, res) {
     preferenciasController.mostrar(req, res);
 });
 
-router.post("/", function (req, res) {
+router.put("/:id", function (req, res) {
     preferenciasController.atualizar(req, res);
 });
 
-router.post("/", function (req, res) {
-    preferenciasController.criar(req, res);
-});
-
-router.delete("/", function (req, res) {
+router.delete("/:id", function (req, res) {
     preferenciasController.deletar(req, res);
 });
 
