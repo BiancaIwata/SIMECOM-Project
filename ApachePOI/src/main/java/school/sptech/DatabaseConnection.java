@@ -15,7 +15,7 @@ public class DatabaseConnection {
     private static final String PORT = "3306";
     private static final String DATABASE = "simecom";
     private static final String USER = "root";
-    private static final String PASSWORD = ""; // Coloque sua senha aqui
+    private static final String PASSWORD = "123@Simecom123"; 
 
     // Caminho da conexão JDBC por lotes e configurações recomendadas para performance
     private static final String URL = String.format(
