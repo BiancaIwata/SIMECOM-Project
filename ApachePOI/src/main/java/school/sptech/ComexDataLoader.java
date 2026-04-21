@@ -119,7 +119,6 @@ public class ComexDataLoader {
 
                 // ► Flush do batch restante
                 handler.flushBatch();
-                conn.commit();
 
                 long elapsed = System.currentTimeMillis() - startTime;
 
