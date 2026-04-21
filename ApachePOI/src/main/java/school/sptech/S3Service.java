@@ -116,6 +116,9 @@ public class S3Service implements AutoCloseable {
         // Criar diretório de destino se necessário
         Files.createDirectories(destino.getParent());
 
+        // Apagar arquivo anterior se existir (evita FileAlreadyExistsException)
+        Files.deleteIfExists(destino);
+
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
