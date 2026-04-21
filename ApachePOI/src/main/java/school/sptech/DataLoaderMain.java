@@ -26,7 +26,7 @@ import java.util.List;
  *    - IMP_*.xlsx              → Dados de importação por ano
  *
  *  Configuração (variáveis de ambiente):
- *    - S3_BUCKET_NAME        → nome do bucket (padrão: simecom-dados)
+ *    - S3_BUCKET_NAME        → nome do bucket (padrão: simecom-s3)
  *    - S3_PREFIX             → prefixo/pasta no bucket (padrão: vazio = raiz)
  *    - AWS_REGION            → região AWS (padrão: us-east-1)
  *    - AWS_ACCESS_KEY_ID     → chave de acesso
@@ -41,7 +41,7 @@ import java.util.List;
 public class DataLoaderMain {
 
     /** Prefixo (pasta) no bucket S3 — configurável via variável de ambiente */
-    private static final String S3_PREFIX = System.getenv().getOrDefault("S3_PREFIX", "");
+    private static final String S3_PREFIX = System.getenv().getOrDefault("S3_PREFIX", "01-raw/");
 
     /** Diretório local temporário para arquivos baixados do S3 */
     private static final Path TEMP_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "simecom-s3");
@@ -195,7 +195,7 @@ public class DataLoaderMain {
 
         //  RESUMO FINAL
         long elapsed = System.currentTimeMillis() - startTime;
-        String bucketName = System.getenv().getOrDefault("S3_BUCKET_NAME", "simecom-dados");
+        String bucketName = System.getenv().getOrDefault("S3_BUCKET_NAME", "simecom-s3");
 
         System.out.println();
         System.out.println("####################################################");

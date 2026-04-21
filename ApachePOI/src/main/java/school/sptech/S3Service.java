@@ -17,7 +17,7 @@ import java.util.List;
  * para processamento local via Apache POI + JDBC.
  *
  * Configuração via variáveis de ambiente:
- *   - S3_BUCKET_NAME           → nome do bucket (padrão: simecom-dados)
+ *   - S3_BUCKET_NAME           → nome do bucket (padrão: simecom-s3)
  *   - AWS_REGION               → região AWS (padrão: us-east-1)
  *   - AWS_ACCESS_KEY_ID        → chave de acesso AWS
  *   - AWS_SECRET_ACCESS_KEY    → chave secreta AWS
@@ -29,7 +29,7 @@ public class S3Service implements AutoCloseable {
     private final String bucketName;
 
     //  CONFIGURAÇÃO PADRÃO 
-    private static final String DEFAULT_BUCKET = "simecom-dados";
+    private static final String DEFAULT_BUCKET = "simecom-s3";
     private static final Region DEFAULT_REGION = Region.US_EAST_1;
 
     //  CONSTRUTORES
