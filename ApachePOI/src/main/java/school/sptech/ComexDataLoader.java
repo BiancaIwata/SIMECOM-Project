@@ -260,6 +260,7 @@ public class ComexDataLoader {
 
         /** Inicializa o header, detecta formato, prepara PreparedStatement */
         private void parseHeader() {
+            System.out.println("[DEBUG] Parseando header... currentRow contém " + currentRow.size() + " células");
             for (Map.Entry<Integer, String> e : currentRow.entrySet()) {
                 headerMap.put(e.getKey(), e.getValue().trim().toUpperCase());
             }
@@ -267,8 +268,9 @@ public class ComexDataLoader {
             // Detectar formato
             formato = headerMap.containsValue("CO_NCM") ? Formato.NCM : Formato.MUN;
 
-            System.out.println("[INFO] Formato detectado: " + formato);
+            System.out.println("[INFO] Colunas encontradas: " + headerMap.size());
             System.out.println("[INFO] Headers (SAX): " + headerMap.values());
+            System.out.println("[INFO] Formato detectado: " + formato);
 
             // Montar SQL e PreparedStatement
             String sql = montarSql(tabela, formato);
