@@ -7,40 +7,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * =====================================================================
  *  SIMECOM - Data Loader S3 (Comércio Exterior - MDIC)
+ * =====================================================================
  *
- *  Pipeline automático de carga de dados do MDIC a partir de um bucket
- *  AWS S3, inserindo diretamente no banco de dados MySQL 'simecom'.
+ *  Pipeline de carga de dados do MDIC a partir de um bucket AWS S3,
+ *  inserindo diretamente no banco de dados MySQL 'simecom'.
  *
- *  Fluxo:
- *    1) Conecta ao bucket S3 configurado
- *    2) Lista todos os arquivos XLSX disponíveis
- *    3) Classifica automaticamente por tipo (auxiliar, exportação, importação)
- *    4) Baixa cada arquivo e processa via Apache POI
- *    5) Insere os dados no banco MySQL com batch insert
- *    6) Salva o log de cada arquivo na tabela log_java
+ *  Modos de execução:
  *
- *  Arquivos XLSX esperados no bucket:
- *    - TABELAS_AUXILIARES.xlsx → Tabelas de referência (SH4, países, municípios)
- *    - EXP_*.xlsx              → Dados de exportação por ano
- *    - IMP_*.xlsx              → Dados de importação por ano
+ *    ► SEM ARGUMENTOS — lista os arquivos disponíveis no bucket (não processa)
+ *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain"
  *
- *  Configuração (variáveis de ambiente):
- *    - S3_BUCKET_NAME        → nome do bucket (padrão: simecom-s3)
- *    - S3_PREFIX             → prefixo/pasta no bucket (padrão: vazio = raiz)
- *    - AWS_REGION            → região AWS (padrão: us-east-1)
- *    - AWS_ACCESS_KEY_ID     → chave de acesso
- *    - AWS_SECRET_ACCESS_KEY → chave secreta
+ *    ► COM ARGUMENTO — processa UM arquivo específico por vez
+ *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="EXP_2017.xlsx"
+ *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="TABELAS_AUXILIARES.xlsx"
  *
- *  Pré-requisitos:
- *    - Bucket S3 com os arquivos XLSX de dados do MDIC
- *    - MySQL rodando com o banco 'simecom' criado (execute script.sql antes)
- *    - Credenciais AWS configuradas
- *    - mvn clean compile exec:java
+ *    ► ARGUMENTO "todos" — processa TODOS os arquivos (modo antigo)
+ *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="todos"
+ *
+ *  Isso permite rodar arquivo por arquivo em EC2 com pouca memória,
+ *  liberando o heap entre cada execução.
+ * =====================================================================
  */
 public class DataLoaderMain {
 
-    /** Prefixo (pasta) no bucket S3 — configurável via variável de ambiente */
+    /** Prefixo (pasta) no bucket S3 */
     private static final String S3_PREFIX = System.getenv().getOrDefault("S3_PREFIX", "01-raw/");
 
     /** Diretório local temporário para arquivos baixados do S3 */
@@ -49,80 +41,205 @@ public class DataLoaderMain {
     public static void main(String[] args) {
         System.out.println("###################################################");
         System.out.println("#   SIMECOM - Data Loader S3 (Comércio Exterior)  #");
-        System.out.println("#   Fonte: AWS S3 ← MDIC / ComexStat              #");
+        System.out.println("#   Fonte: AWS S3 <- MDIC / ComexStat            #");
         System.out.println("###################################################");
         System.out.println();
 
-        long startTime = System.currentTimeMillis();
+        // ► Determinar modo de execução
+        String arquivoAlvo = (args.length > 0) ? args[0].trim() : "";
 
+        if (arquivoAlvo.isEmpty()) {
+            // SEM ARGUMENTOS: apenas listar arquivos
+            modoListar();
+        } else if (arquivoAlvo.equalsIgnoreCase("todos")) {
+            // "todos": processar tudo de uma vez
+            modoTodos();
+        } else {
+            // ARQUIVO ESPECÍFICO: processar um só
+            modoUnico(arquivoAlvo);
+        }
+    }
+
+    // ============================================================
+    //  MODO 1: LISTAR — Mostra os arquivos disponíveis no bucket
+    // ============================================================
+
+    private static void modoListar() {
+        System.out.println("[MODO] Listando arquivos disponíveis no bucket.\n");
+        System.out.println("  Para processar UM arquivo:");
+        System.out.println("    mvn exec:java -Dexec.mainClass=\"school.sptech.DataLoaderMain\" -Dexec.args=\"NOME_DO_ARQUIVO.xlsx\"\n");
+        System.out.println("  Para processar TODOS:");
+        System.out.println("    mvn exec:java -Dexec.mainClass=\"school.sptech.DataLoaderMain\" -Dexec.args=\"todos\"\n");
+
+        S3Service s3 = null;
+        try {
+            s3 = new S3Service();
+            List<String> arquivos = s3.listarArquivos(S3_PREFIX);
+
+            if (arquivos.isEmpty()) {
+                System.out.println("[AVISO] Nenhum arquivo encontrado no bucket.");
+                return;
+            }
+
+            System.out.println("\n[S3] Arquivos encontrados:");
+            for (String key : arquivos) {
+                String nome = extrairNomeArquivo(key).toUpperCase();
+                String tipo;
+                if (nome.contains("TABELAS_AUXILIARES")) tipo = "AUXILIAR";
+                else if (nome.startsWith("EXP_")) tipo = "EXPORTACAO";
+                else if (nome.startsWith("IMP_")) tipo = "IMPORTACAO";
+                else tipo = "DESCONHECIDO";
+
+                System.out.printf("  %-40s [%s]%n", extrairNomeArquivo(key), tipo);
+            }
+            System.out.printf("\n  Total: %d arquivos%n", arquivos.size());
+
+        } catch (Exception e) {
+            System.err.println("[ERRO] " + e.getMessage());
+        } finally {
+            if (s3 != null) s3.close();
+        }
+    }
+
+    // ============================================================
+    //  MODO 2: ÚNICO — Processa um arquivo específico
+    // ============================================================
+
+    private static void modoUnico(String nomeArquivo) {
+        System.out.printf("[MODO] Processando arquivo único: %s%n%n", nomeArquivo);
+
+        long startTime = System.currentTimeMillis();
+        S3Service s3 = null;
+        Connection conn = null;
+
+        try {
+            // ► Conectar ao S3
+            s3 = new S3Service();
+
+            // ► Encontrar o arquivo no bucket (busca case-insensitive)
+            List<String> todosArquivos = s3.listarArquivos(S3_PREFIX);
+            String keyEncontrada = null;
+
+            for (String key : todosArquivos) {
+                if (extrairNomeArquivo(key).equalsIgnoreCase(nomeArquivo)) {
+                    keyEncontrada = key;
+                    break;
+                }
+            }
+
+            if (keyEncontrada == null) {
+                System.err.printf("[ERRO] Arquivo '%s' não encontrado no bucket!%n", nomeArquivo);
+                System.out.println("[INFO] Use o modo sem argumentos para ver os arquivos disponíveis.");
+                return;
+            }
+
+            // ► Conectar ao banco
+            System.out.println("[DB] Conectando ao banco simecom...");
+            conn = DatabaseConnection.getConnection();
+            System.out.println("[DB] Conexão estabelecida!\n");
+
+            // ► Classificar e processar
+            String fileName = extrairNomeArquivo(keyEncontrada).toUpperCase();
+            logJava log = new logJava(extrairNomeArquivo(keyEncontrada));
+
+            if (fileName.contains("TABELAS_AUXILIARES")) {
+                // AUXILIAR: setores + tabelas de referência (OPCIONAL — precisa de bastante RAM)
+                System.out.println("=== Processando: TABELAS AUXILIARES ===\n");
+                System.out.println("[INFO] NOTA: Este arquivo é grande e consome muita memória.");
+                System.out.println("[INFO] Se der OutOfMemoryError, pule este passo.");
+                System.out.println("[INFO] Os códigos SH4/País serão criados automaticamente pelos EXP/IMP.\n");
+                inserirSetoresPadrao(conn);
+                Path local = downloadS3(s3, keyEncontrada);
+                TabelasAuxiliaresLoader.carregarTudo(local, conn);
+                log.sucesso(1, 0);
+
+            } else if (fileName.startsWith("EXP_")) {
+                // EXPORTAÇÃO
+                System.out.println("=== Processando: EXPORTAÇÃO ===\n");
+                inserirSetoresPadrao(conn);
+                Path local = downloadS3(s3, keyEncontrada);
+                ComexDataLoader.carregarExportacao(local, conn);
+                log.sucesso(log.getLinhasInseridas(), log.getLinhasIgnoradas());
+
+            } else if (fileName.startsWith("IMP_")) {
+                // IMPORTAÇÃO
+                System.out.println("=== Processando: IMPORTAÇÃO ===\n");
+                inserirSetoresPadrao(conn);
+                Path local = downloadS3(s3, keyEncontrada);
+                ComexDataLoader.carregarImportacao(local, conn);
+                log.sucesso(log.getLinhasInseridas(), log.getLinhasIgnoradas());
+
+            } else {
+                System.err.printf("[AVISO] Arquivo '%s' não é reconhecido (não é AUXILIAR, EXP_ ou IMP_).%n", nomeArquivo);
+                return;
+            }
+
+            log.salvarNoBanco(conn);
+            log.imprimirResumo();
+
+        } catch (Exception e) {
+            System.err.println("\n[ERRO FATAL] " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            DatabaseConnection.close(conn);
+            if (s3 != null) s3.close();
+        }
+
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.printf("\n[FIM] Arquivo processado em %.1f segundos.%n", elapsed / 1000.0);
+    }
+
+    // ============================================================
+    //  MODO 3: TODOS — Processa todos os arquivos (modo original)
+    // ============================================================
+
+    private static void modoTodos() {
+        System.out.println("[MODO] Processando TODOS os arquivos do bucket.\n");
+
+        long startTime = System.currentTimeMillis();
         int arquivosProcessados = 0;
         int arquivosComErro = 0;
-        int totalArquivosEncontrados = 0;
 
         S3Service s3 = null;
         Connection conn = null;
 
         try {
-            //  ETAPA 1: Conectar ao S3 e listar arquivos
-            System.out.println("=== ETAPA 1/5: Conectando ao S3 e listando arquivos ===\n");
-
+            // ► Conectar ao S3 e listar
             s3 = new S3Service();
             List<String> todosArquivos = s3.listarArquivos(S3_PREFIX);
-            totalArquivosEncontrados = todosArquivos.size();
 
             if (todosArquivos.isEmpty()) {
                 System.out.println("[AVISO] Nenhum arquivo encontrado no bucket.");
                 return;
             }
 
-            // ► Classificar arquivos XLSX automaticamente pelo nome
+            // ► Classificar
             List<String> auxiliaresXlsx = new ArrayList<>();
             List<String> exportacoes    = new ArrayList<>();
             List<String> importacoes    = new ArrayList<>();
-            List<String> desconhecidos  = new ArrayList<>();
 
             for (String key : todosArquivos) {
                 String fileName = extrairNomeArquivo(key).toUpperCase();
-
                 if (fileName.endsWith(".XLSX")) {
-                    if (fileName.contains("TABELAS_AUXILIARES")) {
-                        auxiliaresXlsx.add(key);
-                    } else if (fileName.startsWith("EXP_")) {
-                        exportacoes.add(key);
-                    } else if (fileName.startsWith("IMP_")) {
-                        importacoes.add(key);
-                    } else {
-                        desconhecidos.add(key);
-                    }
-                } else {
-                    desconhecidos.add(key);
+                    if (fileName.contains("TABELAS_AUXILIARES")) auxiliaresXlsx.add(key);
+                    else if (fileName.startsWith("EXP_")) exportacoes.add(key);
+                    else if (fileName.startsWith("IMP_")) importacoes.add(key);
                 }
             }
 
-            System.out.printf("[S3] Classificação dos arquivos no bucket '%s':%n", s3.getBucketName());
-            System.out.printf("  Auxiliares XLSX      : %d%n", auxiliaresXlsx.size());
-            System.out.printf("  Exportação (XLSX)    : %d%n", exportacoes.size());
-            System.out.printf("  Importação (XLSX)    : %d%n", importacoes.size());
-            if (!desconhecidos.isEmpty()) {
-                System.out.printf("  Outros (ignorados)   : %d  →  %s%n", desconhecidos.size(), desconhecidos);
-            }
-            System.out.println();
+            System.out.printf("[S3] Auxiliares: %d | Exportações: %d | Importações: %d%n%n",
+                    auxiliaresXlsx.size(), exportacoes.size(), importacoes.size());
 
-            //  ETAPA 2: Conectar ao banco de dados
-            System.out.println("=== ETAPA 2/5: Conectando ao banco de dados ===\n");
-
-            System.out.println("[DB] Testando conexão com o banco simecom...");
+            // ► Conectar ao banco
             conn = DatabaseConnection.getConnection();
-            System.out.println("[DB] Conexão estabelecida com sucesso!\n");
+            System.out.println("[DB] Conexão estabelecida!\n");
 
-            //  ETAPA 3: Tabelas auxiliares (setores + SH4/país/mun)
-            System.out.println("=== ETAPA 3/5: Carregando tabelas auxiliares ===\n");
-
+            // ► Setores
             inserirSetoresPadrao(conn);
 
+            // ► Auxiliares
             if (!auxiliaresXlsx.isEmpty()) {
                 String key = auxiliaresXlsx.get(0);
-                System.out.printf("[AUX] Processando XLSX: %s%n", key);
                 logJava logAux = new logJava(extrairNomeArquivo(key));
                 try {
                     Path local = downloadS3(s3, key);
@@ -130,23 +247,15 @@ public class DataLoaderMain {
                     logAux.sucesso(1, 0);
                     arquivosProcessados++;
                 } catch (Exception e) {
-                    System.err.printf("[ERRO] Falha ao processar %s: %s%n", key, e.getMessage());
+                    System.err.printf("[ERRO] %s: %s%n", key, e.getMessage());
                     logAux.erro(0, e.getMessage());
                     arquivosComErro++;
                 }
                 logAux.salvarNoBanco(conn);
                 logAux.imprimirResumo();
-            } else {
-                System.out.println("[AVISO] TABELAS_AUXILIARES.xlsx não encontrado no bucket!");
-                System.out.println("        As tabelas de referência não serão carregadas.");
             }
 
-            //  ETAPA 4: Dados de Exportação (XLSX)
-            System.out.println("\n=== ETAPA 4/5: Carregando exportações ===\n");
-
-            if (exportacoes.isEmpty()) {
-                System.out.println("[INFO] Nenhum arquivo de exportação encontrado no bucket.");
-            }
+            // ► Exportações
             for (String key : exportacoes) {
                 logJava log = new logJava(extrairNomeArquivo(key));
                 try {
@@ -163,12 +272,7 @@ public class DataLoaderMain {
                 log.imprimirResumo();
             }
 
-            //  ETAPA 5: Dados de Importação (XLSX)
-            System.out.println("\n=== ETAPA 5/5: Carregando importações ===\n");
-
-            if (importacoes.isEmpty()) {
-                System.out.println("[INFO] Nenhum arquivo de importação encontrado no bucket.");
-            }
+            // ► Importações
             for (String key : importacoes) {
                 logJava log = new logJava(extrairNomeArquivo(key));
                 try {
@@ -193,34 +297,34 @@ public class DataLoaderMain {
             if (s3 != null) s3.close();
         }
 
-        //  RESUMO FINAL
         long elapsed = System.currentTimeMillis() - startTime;
-        String bucketName = System.getenv().getOrDefault("S3_BUCKET_NAME", "simecom-s3");
-
         System.out.println();
         System.out.println("####################################################");
         System.out.println("#            RESUMO DO PIPELINE S3                 #");
         System.out.println("####################################################");
-        System.out.printf("#  Bucket                : %-23s #\n", bucketName);
-        System.out.printf("#  Arquivos encontrados  : %-23d #\n", totalArquivosEncontrados);
         System.out.printf("#  Arquivos processados  : %-23d #\n", arquivosProcessados);
         System.out.printf("#  Arquivos com erro     : %-23d #\n", arquivosComErro);
         System.out.printf("#  Tempo total           : %-19.1f seg #\n", elapsed / 1000.0);
         System.out.println("####################################################");
-
         System.out.println("\n[FIM] Pipeline S3 encerrado.");
     }
 
-    //  DOWNLOAD S3 → DIRETÓRIO TEMPORÁRIO LOCAL
+    // ============================================================
+    //  DOWNLOAD S3
+    // ============================================================
+
     private static Path downloadS3(S3Service s3, String key) throws Exception {
         String fileName = extrairNomeArquivo(key);
         Path localPath = TEMP_DIR.resolve(fileName);
         return s3.download(key, localPath);
     }
 
-    //  INSERÇÃO DE SETORES PADRÃO
+    // ============================================================
+    //  SETORES PADRÃO
+    // ============================================================
+
     private static void inserirSetoresPadrao(Connection conn) throws Exception {
-        System.out.println("[SETORES] Inserindo setores padrão de comércio exterior...");
+        System.out.println("[SETORES] Inserindo setores padrão...");
 
         String[] setores = {
                 "Animais vivos e produtos do reino animal",
@@ -254,10 +358,13 @@ public class DataLoaderMain {
             }
             ps.executeBatch();
         }
-        System.out.println("[SETORES] 21 setores padrão inseridos.\n");
+        System.out.println("[SETORES] Pronto.\n");
     }
 
+    // ============================================================
     //  UTILITÁRIOS
+    // ============================================================
+
     private static String extrairNomeArquivo(String key) {
         int lastSlash = key.lastIndexOf('/');
         return lastSlash >= 0 ? key.substring(lastSlash + 1) : key;

@@ -199,12 +199,13 @@ public class ComexDataLoader {
             System.out.println("[INFO] Formato detectado: " + formato);
             System.out.println("[INFO] Headers (POI): " + headerToString(headerRow));
 
-            // ► Pré-carregar FKs para validação
-            Set<String> sh4Validos = carregarCodigosExistentes(conn, "codigo_sh4", "CO_SH4");
-            Set<String> paisValidos = carregarCodigosExistentes(conn, "codigo_pais", "CO_PAIS");
+            // ► Pré-carregar FKs existentes (para não duplicar INSERTs)
+            Set<String> sh4Conhecidos = carregarCodigosExistentes(conn, "codigo_sh4", "CO_SH4");
+            Set<String> paisConhecidos = carregarCodigosExistentes(conn, "codigo_pais", "CO_PAIS");
 
-            System.out.printf("[INFO] FKs carregadas: %d SH4, %d países%n",
-                    sh4Validos.size(), paisValidos.size());
+            System.out.printf("[INFO] FKs já existentes no banco: %d SH4, %d países%n",
+                    sh4Conhecidos.size(), paisConhecidos.size());
+            System.out.println("[INFO] Novos códigos serão inseridos automaticamente.");
 
             // ► Montar SQL adequado ao formato
             String sql = montarSql(tabela, formato);
@@ -235,16 +236,14 @@ public class ComexDataLoader {
                             continue;
                         }
 
-                        // Validar FKs
-                        if (!sh4Validos.contains(dados.sh4)) {
-                            ignorados++;
-                            log.erro(totalLinhas, "FK inválida: SH4 '" + dados.sh4 + "' não encontrado em codigo_sh4.");
-                            continue;
+                        // Auto-inserir códigos SH4 e País que ainda não existem no banco
+                        if (!sh4Conhecidos.contains(dados.sh4)) {
+                            inserirCodigoSh4(conn, dados.sh4);
+                            sh4Conhecidos.add(dados.sh4);
                         }
-                        if (!paisValidos.contains(dados.pais)) {
-                            ignorados++;
-                            log.erro(totalLinhas, "FK inválida: País '" + dados.pais + "' não encontrado em codigo_pais.");
-                            continue;
+                        if (!paisConhecidos.contains(dados.pais)) {
+                            inserirCodigoPais(conn, dados.pais);
+                            paisConhecidos.add(dados.pais);
                         }
 
                         // Setar parâmetros JDBC conforme formato
@@ -542,6 +541,34 @@ public class ComexDataLoader {
             }
         }
         return codigos;
+    }
+
+    /**
+     * Insere um código SH4 automaticamente quando encontrado nos dados EXP/IMP,
+     * sem precisar do TABELAS_AUXILIARES.xlsx. Descrição fica vazia.
+     */
+    private static void inserirCodigoSh4(Connection conn, String sh4) {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "INSERT IGNORE INTO codigo_sh4 (CO_SH4, NO_SH4_POR) VALUES (?, '')")) {
+            ps.setString(1, sh4);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.err.println("[AVISO] Erro ao auto-inserir SH4 " + sh4 + ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * Insere um código de país automaticamente quando encontrado nos dados EXP/IMP,
+     * sem precisar do TABELAS_AUXILIARES.xlsx. Nome fica vazio.
+     */
+    private static void inserirCodigoPais(Connection conn, String pais) {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "INSERT IGNORE INTO codigo_pais (CO_PAIS, NO_PAIS) VALUES (?, '')")) {
+            ps.setString(1, pais);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.err.println("[AVISO] Erro ao auto-inserir país " + pais + ": " + e.getMessage());
+        }
     }
 
     private static String padLeft(String s, int length, char padChar) {
