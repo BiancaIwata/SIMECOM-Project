@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./css/configuracoes.css">
     <link rel="icon" href="./assets/logo_simples.png" type="image/png">
     <title>Configurações de Perfil | SIMECOM</title>
+    <script src="./js/configura.js"></script>
 </head>
 
 <body>
@@ -35,19 +36,24 @@
                         </a>
                     </li>
                     <li>
-                        <a href="preferencias.html">
+                        <a href="preferencias2.html">
                             <img src="./assets/check_box_padrao.png">
                             Preferências
                         </a>
                     </li>
-                    <li><a href="">
+                    <li><a href="./forum.html">
                             <img src="./assets/chat_bubble_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Fórum
                         </a>
                     </li>
-                    <li><a href="#">
+                    <li><a href="./dashboard.html">
                             <img src="./assets/space_dashboard_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Dashboards
+                        </a>
+                    </li>
+                    <li><a href="./configuracoes.html">
+                            <img src="./assets/icon_configuracoes.png" >
+                            Configurações
                         </a>
                     </li>
                 </ul>
@@ -66,26 +72,34 @@
                 <div class="informacoes">
                     <div class="nome">
                         <h4>Nome</h4>
-                        <p id="nome">Nome Exemplo</p>
+                        <p id="nome_configurar">Nome Exemplo</p>
+                        <input id="nome_input" type="text" placeholder="Nome Antigo">
+
                     </div>
 
                     <div class="email">
                         <h4>Email</h4>
-                        <p id="email">email@exemplo.com</p>
+                        <p id="email_configurar">email@exemplo.com</p>
+                        <input id="email_input" type="text" placeholder="Email Antigo">
+
                     </div>
 
                     <div class="senha">
                         <h4>Senha</h4>
-                        <p id="senha">********</p>
+                        <p id="senha_configurar">********</p>
+                        <input id="senha_input" type="text" placeholder="Senha Antiga">
                     </div>
 
                     <div class="acoes">
-                        <button class="btn-editar" id="btn-editar">Editar informações</button>
+                        <button class="btn-editar" onclick="editar()" id="btn_editar">Editar informações</button>
+                        <button class="btn-confirmar" onclick="confirminfo()" id="btn_confirmar_info">Confirmar</button>
+
                     </div>
 
                 </div>
             </div>
-            <button class="btn-deletar" id="btn-deletar">Deletar conta</button>
+            <button class="btn-deletar" onclick="check_del()" id="btn-deletar">Deletar conta</button>
+            <button class="btn-confirmar" onclick="confirm_del()" id="btn_confirmar_del">Confirmar</button>
         </main>
 </body>
 
