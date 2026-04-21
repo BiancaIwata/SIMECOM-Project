@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.util.IOUtils;
-
 /**
  * =====================================================================
  *  SIMECOM - Data Loader S3 (Comércio Exterior - MDIC)
@@ -46,9 +44,6 @@ public class DataLoaderMain {
         System.out.println("#   Fonte: AWS S3 <- MDIC / ComexStat            #");
         System.out.println("###################################################");
         System.out.println();
-
-        // Aumentar limite de leitura do Apache POI para arquivos XLSX grandes
-        IOUtils.setByteArrayMaxOverride(300_000_000); // 300 MB
 
         // ► Determinar modo de execução
         String arquivoAlvo = (args.length > 0) ? args[0].trim() : "";
