@@ -24,23 +24,23 @@
                         <img src="./assets/Group 43.png">
                     </a>
                 </div>
-                <p>Olá, User!</p>
+                <h3>Olá, <p id="nome_usuario">usuário</p>!</h3>
             </div>
 
             <nav class="menu">
-                <ul>
+<ul>
                     <li><a href="index.html">
                             <img src="./assets/home_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Home
                         </a>
                     </li>
-                    <li class="ativo">
-                        <a href="preferencias.html">
-                            <img src="./assets/check_box_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                    <li>
+                        <a href="preferencias2.html">
+                            <img src="./assets/check_box_padrao.png">
                             Preferências
                         </a>
                     </li>
-                    <li><a href="">
+                    <li><a href="./forum.html">
                             <img src="./assets/chat_bubble_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Fórum
                         </a>
@@ -48,6 +48,11 @@
                     <li><a href="dashboard.html">
                             <img src="./assets/space_dashboard_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Dashboards
+                        </a>
+                    </li>
+                    <li><a href="./configuracoes.html">
+                            <img src="./assets/icon_configuracoes.png">
+                            Configurações
                         </a>
                     </li>
                 </ul>
@@ -84,3 +89,7 @@
 </body>
 
 </html>
+
+<script>
+    nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
+</script>

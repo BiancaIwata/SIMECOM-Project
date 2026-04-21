@@ -1,9 +1,9 @@
-var ambiente_processo = 'producao'
+var ambiente_processo = "producao";
 // var ambiente_processo = 'desenvolvimento';
 
-var caminho_env = ambiente_processo === 'producao' ? '.env' : '.env.dev';
+var caminho_env = ambiente_processo === "producao" ? ".env" : ".env.dev";
 
-require("dotenv").config({ path: '.env' });
+require("dotenv").config({ path: ".env" });
 
 var express = require("express");
 var cors = require("cors");
@@ -16,6 +16,7 @@ var app = express();
 var indexRouter = require("./src/routes/index");
 var usersRouter = require("./src/routes/users");
 var preferenciasRouter = require("./src/routes/preferencias")
+var preferencesRouter = require("./src/routes/preferences");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -24,7 +25,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/preferencias", preferenciasRouter);
+app.use("/preference", preferencesRouter);
 
 app.listen(PORTA_APP, function () {
-    console.log(`Servidor Rodando Em: http://${HOST_APP}:${PORTA_APP} :`);
+  console.log(`Servidor Rodando Em: http://${HOST_APP}:${PORTA_APP} :`);
 });
