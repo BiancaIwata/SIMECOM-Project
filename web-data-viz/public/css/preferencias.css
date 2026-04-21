@@ -8,23 +8,6 @@
   box-sizing: border-box;
 }
 
-<<<<<<< Feat/back-preferencias01
-input {
-  padding: 10px;
-  border-radius: 9px;
-  border: 1px solid #ddd;
-  background-color: #eaeaea;
-  width: 280px;
-  border: 1.5px solid #1f7ae0;
-  font-family: "Inter", sans-serif;
-  font-size: 14px;
-  color: #6b7a99;
-  background-color: #fff;
-  height: 43px;
-}
-
-=======
->>>>>>> main
 body {
   width: 100%;
   margin: 0;
@@ -40,8 +23,6 @@ a {
 img {
   max-width: 100%;
   height: auto;
-<<<<<<< Feat/back-preferencias01
-=======
 }
 
 input {
@@ -56,7 +37,6 @@ input {
   color: #6b7a99;
   background-color: #fff;
   height: 43px;
->>>>>>> main
 }
 
 /* ----------------------------------------------------------------------------------------------- */
@@ -196,11 +176,7 @@ input {
   border-radius: 18px;
   padding: 36px 40px 32px;
   box-shadow: 0 2px 16px rgba(13, 47, 94, 0.07);
-<<<<<<< Feat/back-preferencias01
-  max-width: 860px;
-=======
   max-width: 1000px;
->>>>>>> main
 }
 
 /* ----------------------------------------------------------------------------------------------- */
@@ -334,11 +310,7 @@ input {
   font-size: 14px;
   font-weight: 600;
   text-decoration: underline;
-<<<<<<< Feat/back-preferencias01
-  transition: color 0.18s;
-=======
   transition: 0.18s;
->>>>>>> main
 }
 
 .btn-cancelar:hover {
@@ -351,11 +323,7 @@ input {
   font-size: 14px;
   font-weight: 500;
   text-decoration: underline;
-<<<<<<< Feat/back-preferencias01
-  transition: color 0.18s;
-=======
   transition: 0.18s;
->>>>>>> main
 }
 
 .btn-viz:hover {

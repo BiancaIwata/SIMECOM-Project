@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/preferencias2.css">
+    <link rel="stylesheet" href="./css/visualizacaoPreferencias.css">
     <link rel="icon" href="./assets/logo_simples.png" type="image/png">
-    <title>Preferências | SIMECOM</title>
+    <title>Visualizar Preferências | SIMECOM</title>
 </head>
 
 <body>
@@ -45,7 +45,7 @@
                             Fórum
                         </a>
                     </li>
-                    <li><a href="./dashboard.html">
+                    <li><a href="dashboard.html">
                             <img src="./assets/space_dashboard_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Dashboards
                         </a>
@@ -74,37 +74,18 @@
                             <th>Setor</th>
                         </tr>
                     </thead>
-                    <tbody class="tabela-body">
-                        <tr class="linha-clara">
-                            <td class="id">1</td>
-                            <td>São Paulo</td>
-                            <td class="municipio">São Paulo</td>
-                            <td>Tecnologia</td>
-                            <td class="acoes">
-                                <img class="btn-editar"
-                                    src="./assets/edit_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                                <img class="btn-excluir"
-                                    src="./assets/delete_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                            </td>
-                        </tr>
-
-                        <tr class="linha-escura">
-                            <td class="id">2</td>
-                            <td>São Paulo</td>
-                            <td class="municipio">São Paulo</td>
-                            <td>Tecnologia</td>
-                            <td class="acoes">
-                                <img class="btn-editar"
-                                    src="./assets/edit_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                                <img class="btn-excluir"
-                                    src="./assets/delete_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody class="tabela-body" id="tabela-body"></tbody>
                 </table>
             </div>
         </main>
     </div>
+
+    <div class="overlay" id="overlay">
+        <div class="modal" id="modal"></div>
+    </div>
+
+    <script src="./js/visualizacaoPreferencias.js"></script>
+
 </body>
 
 </html>
