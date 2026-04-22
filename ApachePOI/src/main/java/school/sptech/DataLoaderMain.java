@@ -143,14 +143,11 @@ public class DataLoaderMain {
             logJava log = new logJava(extrairNomeArquivo(keyEncontrada));
 
             if (fileName.contains("TABELAS_AUXILIARES")) {
-                // AUXILIAR: setores + tabelas de referência (OPCIONAL — precisa de bastante RAM)
+                // AUXILIAR: setores + tabelas de referência (OPCIONAL — foi removido)
                 System.out.println("=== Processando: TABELAS AUXILIARES ===\n");
-                System.out.println("[INFO] NOTA: Este arquivo é grande e consome muita memória.");
-                System.out.println("[INFO] Se der OutOfMemoryError, pule este passo.");
+                System.out.println("[AVISO] TabelasAuxiliaresLoader foi removido do projeto.");
                 System.out.println("[INFO] Os códigos SH4/País serão criados automaticamente pelos EXP/IMP.\n");
                 inserirSetoresPadrao(conn);
-                Path local = downloadS3(s3, keyEncontrada);
-                TabelasAuxiliaresLoader.carregarTudo(local, conn);
                 log.sucesso(1, 0);
 
             } else if (fileName.startsWith("EXP_")) {
@@ -242,8 +239,7 @@ public class DataLoaderMain {
                 String key = auxiliaresXlsx.get(0);
                 logJava logAux = new logJava(extrairNomeArquivo(key));
                 try {
-                    Path local = downloadS3(s3, key);
-                    TabelasAuxiliaresLoader.carregarTudo(local, conn);
+                    System.out.println("[AVISO] TabelasAuxiliaresLoader removido. Pulando arquivos auxiliares.");
                     logAux.sucesso(1, 0);
                     arquivosProcessados++;
                 } catch (Exception e) {
