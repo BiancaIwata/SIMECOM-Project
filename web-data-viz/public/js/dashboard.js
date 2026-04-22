@@ -3,9 +3,9 @@ const ctxSetores = document.getElementById('graficoSetores').getContext('2d');
 new Chart(ctxSetores, {
     type: 'doughnut',
     data: {
-        labels: ['Automobilístico', 'Tecnologia', 'Agrícola', 'Medicina'],
+        labels: ['Agropecuário', 'Automotivo', 'Químico', 'Farmacêutico'],
         datasets: [{
-            data: [25, 25, 20, 30],
+            data: [25, 25, 10, 40],
             // Cores baseadas na sua segunda imagem
             backgroundColor: ['#8b5cf6', '#ff8a8a', '#22d3ee', '#fbbf24'], 
             borderWidth: 0
