@@ -22,10 +22,25 @@ import java.util.*;
 
 /**
  * Lê os arquivos XLSX de importação/exportação do MDIC usando Apache POI
- * no modo SAX streaming (XSSF Event API).
+ * no modo **SAX streaming** (XSSF Event API).
  *
- * Também trata planilhas em que cada linha veio inteira em uma única célula,
- * com campos separados por ';' (caso observado no arquivo EXP_2017.xlsx).
+ * Diferente do XSSFWorkbook (que carrega tudo na RAM), este modo lê uma
+ * linha por vez, consumindo ~10-30 MB de heap em vez de 500+ MB.
+ *
+ * Detecta automaticamente o formato do XLSX:
+ *
+ *   ► FORMATO NCM (detalhado por NCM):
+ *     CO_ANO | CO_MES | CO_NCM | CO_UNID | CO_PAIS | SG_UF_NCM | CO_VIA | CO_URF | QT_ESTAT | KG_LIQUIDO | VL_FOB
+ *     → SH4 é derivado dos 4 primeiros dígitos do CO_NCM
+ *     → CO_MUN fica NULL (não existe neste layout)
+ *
+ *   ► FORMATO MUN (por município e SH4):
+ *     CO_ANO | CO_MES | SH4 | CO_PAIS | SG_UF_MUN | CO_MUN | KG_LIQUIDO | VL_FOB
+ *     → SH4 vem direto do XLSX
+ *     → CO_MUN vem direto do XLSX
+ *
+ * Pipeline de dados:
+ *   XLSX (disco) → OPCPackage → SAX stream → SheetContentsHandler → JDBC batch insert
  */
 public class ComexDataLoader {
 
@@ -34,67 +49,66 @@ public class ComexDataLoader {
     /** Formato detectado do XLSX */
     private enum Formato { NCM, MUN }
 
-    /** Resultado consolidado da carga para uso pelo chamador */
-    public record CargaResultado(
-            String arquivo,
-            String tipo,
-            String formato,
-            int totalLinhas,
-            int inseridos,
-            int ignorados,
-            int erros
-    ) {}
+    // ============================================================
+    // API PÚBLICA
+    // ============================================================
 
-    public static CargaResultado carregarExportacao(Path xlsxPath, Connection conn, logJava log) throws Exception {
-        return carregarDados(xlsxPath, conn, "base_exportacao", "EXPORTAÇÃO", log);
+    public static void carregarExportacao(Path xlsxPath, Connection conn) throws Exception {
+        carregarDados(xlsxPath, conn, "base_exportacao", "EXPORTAÇÃO");
     }
 
-    public static CargaResultado carregarImportacao(Path xlsxPath, Connection conn, logJava log) throws Exception {
-        return carregarDados(xlsxPath, conn, "base_importacao", "IMPORTAÇÃO", log);
+    public static void carregarImportacao(Path xlsxPath, Connection conn) throws Exception {
+        carregarDados(xlsxPath, conn, "base_importacao", "IMPORTAÇÃO");
     }
 
-    // Compatibilidade com chamadas antigas
-    public static CargaResultado carregarExportacao(Path xlsxPath, Connection conn) throws Exception {
-        return carregarExportacao(xlsxPath, conn, new logJava(xlsxPath.getFileName().toString()));
-    }
+    // ============================================================
+    // CARREGAMENTO COM BANCO — SAX STREAMING (baixo consumo de RAM)
+    // ============================================================
 
-    public static CargaResultado carregarImportacao(Path xlsxPath, Connection conn) throws Exception {
-        return carregarImportacao(xlsxPath, conn, new logJava(xlsxPath.getFileName().toString()));
-    }
-
-    private static CargaResultado carregarDados(Path xlsxPath, Connection conn, String tabela, String tipo, logJava log) throws Exception {
+    private static void carregarDados(Path xlsxPath, Connection conn, String tabela, String tipo) throws Exception {
         System.out.println("\n========================================");
         System.out.printf("  CARREGANDO %s (SAX Streaming XLSX)%n", tipo);
         System.out.println("  Arquivo: " + xlsxPath.getFileName());
         System.out.println("========================================\n");
 
         if (!Files.exists(xlsxPath)) {
-            throw new IllegalArgumentException("Arquivo não encontrado: " + xlsxPath);
+            System.err.println("[ERRO] Arquivo não encontrado: " + xlsxPath);
+            return;
         }
 
+        // ► Logger de inserção/erros por arquivo
+        logJava log = new logJava(xlsxPath.getFileName().toString());
+
+        // ► Pré-carregar FKs existentes
         Set<String> sh4Conhecidos = carregarCodigosExistentes(conn, "codigo_sh4", "CO_SH4");
         Set<String> paisConhecidos = carregarCodigosExistentes(conn, "codigo_pais", "CO_PAIS");
         System.out.printf("[INFO] FKs já existentes no banco: %d SH4, %d países%n",
                 sh4Conhecidos.size(), paisConhecidos.size());
         System.out.println("[INFO] Novos códigos serão inseridos automaticamente.");
 
+        // ► Abrir XLSX via OPCPackage (NÃO carrega tudo na RAM)
         try (OPCPackage pkg = OPCPackage.open(xlsxPath.toFile())) {
+
             ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(pkg);
             XSSFReader xssfReader = new XSSFReader(pkg);
             StylesTable styles = xssfReader.getStylesTable();
 
+            // ► Ler a primeira planilha (sheet1)
             Iterator<InputStream> sheetsData = xssfReader.getSheetsData();
             if (!sheetsData.hasNext()) {
-                throw new IllegalStateException("XLSX sem planilhas.");
+                System.err.println("[ERRO] XLSX sem planilhas!");
+                return;
             }
 
             try (InputStream sheetStream = sheetsData.next()) {
+
+                // ► Criar handler SAX que processa linha a linha
                 RowInsertHandler handler = new RowInsertHandler(
                         conn, tabela, tipo, log, sh4Conhecidos, paisConhecidos);
 
+                // ► Configurar parser SAX (namespace-aware é CRÍTICO para XLSX)
                 SAXParserFactory spf = SAXParserFactory.newInstance();
-                spf.setNamespaceAware(true);
-
+                spf.setNamespaceAware(true);  // ← FIX: permite processar namespaces XML do XLSX
                 XMLReader xmlReader = spf.newSAXParser().getXMLReader();
                 xmlReader.setContentHandler(
                         new XSSFSheetXMLHandler(styles, strings, handler, false));
@@ -102,17 +116,25 @@ public class ComexDataLoader {
                 System.out.println("[INFO] Iniciando leitura SAX streaming...");
                 long startTime = System.currentTimeMillis();
 
-                xmlReader.parse(new InputSource(sheetStream));
-                System.out.println("[INFO] Parsing SAX concluído com sucesso.");
+                // ► PROCESSAR — isso itera todo o XLSX sem carregar na RAM
+                try {
+                    xmlReader.parse(new InputSource(sheetStream));
+                    System.out.println("[INFO] Parsing SAX concluído com sucesso.");
+                } catch (Exception e) {
+                    System.err.printf("[ERRO] Falha durante parsing SAX: %s%n", e.getMessage());
+                    e.printStackTrace();
+                    return;
+                }
 
+                // ► Flush do batch restante
                 handler.flushBatch();
 
                 long elapsed = System.currentTimeMillis() - startTime;
-                String formatoDesc = handler.getFormato() != null ? handler.getFormato().name() : "DESCONHECIDO";
 
+                // ► Resultados
                 System.out.println();
                 System.out.println("\n========================================");
-                System.out.printf("  RESULTADO %s (SAX Streaming — %s)%n", tipo, formatoDesc);
+                System.out.printf("  RESULTADO %s (SAX Streaming — %s)%n", tipo, handler.getFormato());
                 System.out.println("========================================");
                 System.out.printf("  Total de linhas lidas  : %,d%n", handler.getTotalLinhas());
                 System.out.printf("  Linhas inseridas       : %,d%n", handler.getInseridos());
@@ -125,20 +147,19 @@ public class ComexDataLoader {
 
                 log.sucesso(handler.getInseridos(), handler.getIgnorados());
                 log.imprimirResumo();
-
-                return new CargaResultado(
-                        xlsxPath.getFileName().toString(),
-                        tipo,
-                        formatoDesc,
-                        handler.getTotalLinhas(),
-                        handler.getInseridos(),
-                        handler.getIgnorados(),
-                        handler.getErros()
-                );
             }
         }
     }
 
+    // ============================================================
+    // SAX HANDLER — processa uma linha por vez (memória constante)
+    // ============================================================
+
+    /**
+     * Implementação de SheetContentsHandler que recebe os eventos SAX do POI.
+     * Acumula as células de cada linha em um Map, e ao final da linha
+     * faz o INSERT via JDBC batch.
+     */
     private static class RowInsertHandler implements XSSFSheetXMLHandler.SheetContentsHandler {
 
         private final Connection conn;
@@ -148,7 +169,9 @@ public class ComexDataLoader {
         private final Set<String> sh4Conhecidos;
         private final Set<String> paisConhecidos;
 
+        // Mapeamento: índice da coluna → nome do header
         private final Map<Integer, String> headerMap = new LinkedHashMap<>();
+        // Células da linha atual: índice da coluna → valor string
         private final Map<Integer, String> currentRow = new HashMap<>();
 
         private Formato formato;
@@ -159,6 +182,7 @@ public class ComexDataLoader {
         private int inseridos = 0;
         private int ignorados = 0;
         private int erros = 0;
+        private boolean headerParsed = false;
 
         RowInsertHandler(Connection conn, String tabela, String tipo, logJava log,
                          Set<String> sh4Conhecidos, Set<String> paisConhecidos) {
@@ -170,6 +194,7 @@ public class ComexDataLoader {
             this.paisConhecidos = paisConhecidos;
         }
 
+        // --- Getters para resultados ---
         int getTotalLinhas() { return totalLinhas; }
         int getInseridos()   { return inseridos; }
         int getIgnorados()   { return ignorados; }
@@ -184,25 +209,28 @@ public class ComexDataLoader {
         @Override
         public void endRow(int rowNum) {
             if (rowNum == 0) {
+                // ► Primeira linha = header
                 parseHeader();
                 return;
             }
 
+            // Se formato não foi detectado, pular processamento
             if (formato == null) {
                 ignorados++;
                 return;
             }
 
+            // ► Linha de dados
             totalLinhas++;
             try {
-                Map<Integer, String> rowNormalizada = normalizarLinhaSeNecessario(currentRow);
-                DadosLinha dados = extrairDadosStreaming(rowNormalizada, headerMap, formato);
+                DadosLinha dados = extrairDadosStreaming(currentRow, headerMap, formato);
                 if (dados == null) {
                     ignorados++;
                     log.erro(totalLinhas, "Dados inválidos ou campos obrigatórios vazios.");
                     return;
                 }
 
+                // Auto-inserir códigos SH4 e País desconhecidos
                 if (!sh4Conhecidos.contains(dados.sh4)) {
                     inserirCodigoSh4(conn, dados.sh4);
                     sh4Conhecidos.add(dados.sh4);
@@ -225,11 +253,9 @@ public class ComexDataLoader {
 
             } catch (NumberFormatException e) {
                 erros++;
-                ignorados++;
                 log.erro(totalLinhas, "Erro de formatação numérica: " + e.getMessage());
             } catch (Exception e) {
                 erros++;
-                ignorados++;
                 log.erro(totalLinhas, e.getMessage());
             }
         }
@@ -244,20 +270,21 @@ public class ComexDataLoader {
 
         @Override
         public void headerFooter(String text, boolean isHeader, String tagName) {
-            // Ignorar headers/footers
+            // Ignorar headers/footers do XLSX
         }
 
+        /** Inicializa o header, detecta formato, prepara PreparedStatement */
         private void parseHeader() {
             if (currentRow.isEmpty()) {
                 System.err.println("[ERRO] Header vazio! A primeira linha do XLSX não tem dados.");
                 return;
             }
 
-            Map<Integer, String> linhaHeader = normalizarLinhaSeNecessario(currentRow);
-            for (Map.Entry<Integer, String> e : linhaHeader.entrySet()) {
-                headerMap.put(e.getKey(), limparCampo(e.getValue()).toUpperCase());
+            for (Map.Entry<Integer, String> e : currentRow.entrySet()) {
+                headerMap.put(e.getKey(), e.getValue().trim().toUpperCase());
             }
 
+            // Detectar formato
             boolean temNCM = headerMap.containsValue("CO_NCM");
             boolean temSH4 = headerMap.containsValue("SH4");
 
@@ -275,6 +302,7 @@ public class ComexDataLoader {
             System.out.println("[INFO] Headers: " + headerMap.values());
             System.out.println("[INFO] Formato detectado: " + formato);
 
+            // Montar SQL e PreparedStatement
             String sql = montarSql(tabela, formato);
             System.out.println("[INFO] SQL: " + sql);
 
@@ -285,70 +313,46 @@ public class ComexDataLoader {
             } catch (Exception ex) {
                 throw new RuntimeException("Falha ao preparar SQL: " + ex.getMessage(), ex);
             }
+
+            headerParsed = true;
         }
 
+        /** Flush do batch restante + fechar PreparedStatement */
         void flushBatch() {
             if (ps == null) return;
             try {
                 ps.executeBatch();
                 conn.commit();
+                conn.setAutoCommit(autoCommitOriginal);
+                ps.close();
             } catch (Exception e) {
                 System.err.println("[ERRO] Falha no flush final: " + e.getMessage());
-            } finally {
-                try {
-                    conn.setAutoCommit(autoCommitOriginal);
-                } catch (Exception ignored) {
-                }
-                try {
-                    ps.close();
-                } catch (Exception ignored) {
-                }
             }
-        }
-
-        /**
-         * Se a linha veio toda em uma única célula com separador ';',
-         * expande para múltiplas colunas.
-         */
-        private Map<Integer, String> normalizarLinhaSeNecessario(Map<Integer, String> row) {
-            if (row.size() != 1) {
-                return new LinkedHashMap<>(row);
-            }
-
-            String unicoValor = row.values().iterator().next();
-            if (unicoValor == null) {
-                return new LinkedHashMap<>(row);
-            }
-
-            String texto = unicoValor.trim();
-            if (!texto.contains(";")) {
-                return new LinkedHashMap<>(row);
-            }
-
-            String[] partes = texto.split(";", -1);
-            Map<Integer, String> expandida = new LinkedHashMap<>();
-            for (int i = 0; i < partes.length; i++) {
-                expandida.put(i, limparCampo(partes[i]));
-            }
-
-            return expandida;
         }
     }
 
+    // ============================================================
+    // EXTRAÇÃO DE DADOS (a partir de Map<colIndex, value>)
+    // ============================================================
+
+    /** Estrutura intermediária para dados de uma linha */
     private static class DadosLinha {
         int ano, mes;
-        String ncm;
-        String sh4;
+        String ncm;       // Apenas formato NCM (8 dígitos)
+        String sh4;       // Derivado do NCM ou direto do XLSX
         String pais;
         String uf;
-        String mun;
-        String via;
-        String urf;
-        double qtEstat;
+        String mun;       // Apenas formato MUN
+        String via;       // Apenas formato NCM
+        String urf;       // Apenas formato NCM
+        double qtEstat;   // Apenas formato NCM
         double kgLiquido;
         double vlFob;
     }
 
+    /**
+     * Extrai dados de uma linha SAX — recebe Map de valores indexados por coluna.
+     */
     private static DadosLinha extrairDadosStreaming(
             Map<Integer, String> row, Map<Integer, String> headerMap, Formato formato) {
 
@@ -359,35 +363,37 @@ public class ComexDataLoader {
 
         if (anoStr.isEmpty() || mesStr.isEmpty()) return null;
 
-        d.ano = parseInteiroSeguro(anoStr);
-        d.mes = parseInteiroSeguro(mesStr);
+        d.ano = (int) Double.parseDouble(anoStr);
+        d.mes = (int) Double.parseDouble(mesStr);
 
         if (formato == Formato.NCM) {
-            String ncm = limparCodigoNumerico(getVal(row, headerMap, "CO_NCM"));
+            String ncm = getVal(row, headerMap, "CO_NCM");
             if (ncm.isEmpty() || ncm.length() < 4) return null;
 
             d.ncm = ncm;
             d.sh4 = ncm.substring(0, 4);
 
-            d.pais = limparCodigoNumerico(getVal(row, headerMap, "CO_PAIS"));
+            d.pais = getVal(row, headerMap, "CO_PAIS");
             d.uf   = getVal(row, headerMap, "SG_UF_NCM");
 
-            d.via     = limparCodigoNumerico(getVal(row, headerMap, "CO_VIA"));
-            d.urf     = limparCodigoNumerico(getVal(row, headerMap, "CO_URF"));
+            d.via     = getVal(row, headerMap, "CO_VIA");
+            d.urf     = getVal(row, headerMap, "CO_URF");
             d.qtEstat = parseDouble(getVal(row, headerMap, "QT_ESTAT"));
             d.mun     = null;
         } else {
-            d.sh4  = limparCodigoNumerico(getVal(row, headerMap, "SH4"));
+            d.sh4  = getVal(row, headerMap, "SH4");
             if (d.sh4.isEmpty()) return null;
 
-            d.pais = limparCodigoNumerico(getVal(row, headerMap, "CO_PAIS"));
+            d.pais = getVal(row, headerMap, "CO_PAIS");
             d.uf   = getVal(row, headerMap, "SG_UF_MUN");
-            d.mun  = limparCodigoNumerico(getVal(row, headerMap, "CO_MUN"));
+            d.mun  = getVal(row, headerMap, "CO_MUN");
             d.ncm  = null;
         }
 
+        // Padronizar SH4 para 4 dígitos
         d.sh4 = padLeft(d.sh4, 4, '0');
 
+        // Padronizar CO_PAIS e UF
         if (d.pais.length() > 4) d.pais = d.pais.substring(0, 4);
         if (d.uf.length() > 2) d.uf = d.uf.substring(0, 2);
 
@@ -399,54 +405,29 @@ public class ComexDataLoader {
         return d;
     }
 
+    /** Busca o valor de uma coluna pelo nome do header */
     private static String getVal(Map<Integer, String> row, Map<Integer, String> headerMap, String headerName) {
         for (Map.Entry<Integer, String> e : headerMap.entrySet()) {
             if (e.getValue().equals(headerName)) {
                 String v = row.get(e.getKey());
-                return limparCampo(v != null ? v : "");
+                return v != null ? v.trim() : "";
             }
         }
         return "";
     }
 
-    private static int parseInteiroSeguro(String s) {
-        return (int) Math.round(Double.parseDouble(normalizarNumero(s)));
-    }
-
     private static double parseDouble(String s) {
-        if (s == null || s.isBlank()) return 0.0;
-        return Double.parseDouble(normalizarNumero(s));
-    }
-
-    private static String normalizarNumero(String s) {
-        String v = limparCampo(s);
-        if (v.isEmpty()) return "0";
-
-        if (v.contains(",") && v.contains(".")) {
-            v = v.replace(".", "").replace(",", ".");
-        } else if (v.contains(",")) {
-            v = v.replace(",", ".");
+        if (s == null || s.isEmpty()) return 0.0;
+        try {
+            return Double.parseDouble(s.replace(",", "."));
+        } catch (NumberFormatException e) {
+            return 0.0;
         }
-
-        return v;
     }
 
-    private static String limparCampo(String s) {
-        if (s == null) return "";
-        String v = s.trim();
-        if (v.startsWith("\"") && v.endsWith("\"") && v.length() >= 2) {
-            v = v.substring(1, v.length() - 1);
-        }
-        return v.trim();
-    }
-
-    private static String limparCodigoNumerico(String s) {
-        String v = limparCampo(s);
-        if (v.endsWith(".0")) {
-            v = v.substring(0, v.length() - 2);
-        }
-        return v;
-    }
+    // ============================================================
+    // SQL DINÂMICO POR FORMATO
+    // ============================================================
 
     private static String montarSql(String tabela, Formato formato) {
         if (formato == Formato.NCM) {
@@ -485,6 +466,10 @@ public class ComexDataLoader {
         }
     }
 
+    // ============================================================
+    // FK AUTO-INSERT
+    // ============================================================
+
     private static Set<String> carregarCodigosExistentes(Connection conn, String tabela, String coluna) throws Exception {
         Set<String> codigos = new HashSet<>();
         String sql = "SELECT " + coluna + " FROM " + tabela;
@@ -518,8 +503,7 @@ public class ComexDataLoader {
     }
 
     private static String padLeft(String s, int length, char padChar) {
-        String valor = s == null ? "" : s;
-        while (valor.length() < length) valor = padChar + valor;
-        return valor;
+        while (s.length() < length) s = padChar + s;
+        return s;
     }
 }
