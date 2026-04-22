@@ -1,4 +1,4 @@
-// gráfico 1:(pizza)
+
 const ctxSetores = document.getElementById('graficoSetores').getContext('2d');
 new Chart(ctxSetores, {
     type: 'doughnut',
@@ -6,7 +6,6 @@ new Chart(ctxSetores, {
         labels: ['Agropecuário', 'Automotivo', 'Químico', 'Farmacêutico'],
         datasets: [{
             data: [25, 25, 10, 40],
-            // Cores baseadas na sua segunda imagem
             backgroundColor: ['#8b5cf6', '#ff8a8a', '#22d3ee', '#fbbf24'], 
             borderWidth: 0
         }]
@@ -14,12 +13,12 @@ new Chart(ctxSetores, {
     options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '60%', // tamanho do circulo central
+        cutout: '60%', 
         plugins: {
             legend: {
-                position: 'top', // legenda no topo
+                position: 'top',
                 labels: {
-                    usePointStyle: true, // bolinhas na legenda em vez de quadrados
+                    usePointStyle: true, 
                     boxWidth: 8,
                     color: '#64748b',
                     font: { size: 11 }
@@ -29,7 +28,7 @@ new Chart(ctxSetores, {
     }
 });
 
-// gráfico 2(barras)
+
 const ctxBarras = document.getElementById('graficoBarras').getContext('2d');
 new Chart(ctxBarras, {
     type: 'bar',
