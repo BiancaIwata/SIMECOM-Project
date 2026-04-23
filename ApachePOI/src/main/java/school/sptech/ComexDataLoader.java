@@ -281,7 +281,7 @@ public class ComexDataLoader {
             }
 
             for (Map.Entry<Integer, String> e : currentRow.entrySet()) {
-                headerMap.put(e.getKey(), e.getValue().trim().toUpperCase());
+                headerMap.put(e.getKey(), normalizeHeader(e.getValue()));
             }
 
             // Detectar formato
@@ -506,4 +506,12 @@ public class ComexDataLoader {
         while (s.length() < length) s = padChar + s;
         return s;
     }
+
+    private static String normalizeHeader(String s) {
+    if (s == null) return "";
+    return s
+        .replace('\u00A0', ' ') // remove non-breaking space (Excel LOVES this)
+        .trim()
+        .toUpperCase();
+}
 }
