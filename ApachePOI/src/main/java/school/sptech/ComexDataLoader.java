@@ -208,24 +208,23 @@ public class ComexDataLoader {
 
         @Override
         public void endRow(int rowNum) {
-            if (rowNum == 0) {
-                // ► Primeira linha = header
-//                parseHeader();
-//                return;
-                // Se veio tudo em uma célula só, quebrar manualmente
-                if (currentRow.size() == 1) {
-                    String unicaCelula = currentRow.values().iterator().next();
+            if (currentRow.size() == 1) {
+                String unicaCelula = currentRow.values().iterator().next();
 
-                    if (unicaCelula.contains(";")) {
-                        currentRow.clear();
+                if (unicaCelula.contains(";")) {
+                    currentRow.clear();
 
-                        String[] cols = unicaCelula.replace("\"", "").split(";");
+                    String[] cols = unicaCelula.replace("\"", "").split(";");
 
-                        for (int i = 0; i < cols.length; i++) {
-                            currentRow.put(i, cols[i]);
-                        }
+                    for (int i = 0; i < cols.length; i++) {
+                        currentRow.put(i, cols[i]);
                     }
                 }
+            }
+            if (rowNum == 0) {
+                // ► Primeira linha = header
+                parseHeader();
+                return;
             }
 
             // Se formato não foi detectado, pular processamento
@@ -290,26 +289,29 @@ public class ComexDataLoader {
         /** Inicializa o header, detecta formato, prepara PreparedStatement */
         private void parseHeader() {
             if (currentRow.isEmpty()) {
-                // Detectar CSV dentro da célula
-                if (headerMap.size() == 1) {
-                    String unicoHeader = headerMap.values().iterator().next();
-
-                    if (unicoHeader.contains(";")) {
-                        System.out.println("[INFO] Detectado CSV dentro do XLSX — ajustando headers...");
-
-                        headerMap.clear();
-
-                        String[] cols = unicoHeader.replace("\"", "").split(";");
-
-                        for (int i = 0; i < cols.length; i++) {
-                            headerMap.put(i, normalizeHeader(cols[i]));
-                        }
-                    }
-                }
+                System.err.println("[ERRO] Header vazio! A primeira linha do XLSX não tem dados.");
+                return;
             }
 
             for (Map.Entry<Integer, String> e : currentRow.entrySet()) {
                 headerMap.put(e.getKey(), normalizeHeader(e.getValue()));
+            }
+
+            // 🔥 CORREÇÃO: tratar CSV dentro de uma célula
+            if (headerMap.size() == 1) {
+                String unicoHeader = headerMap.values().iterator().next();
+
+                if (unicoHeader.contains(";")) {
+                    System.out.println("[INFO] Detectado CSV dentro do XLSX — corrigindo header...");
+
+                    headerMap.clear();
+
+                    String[] cols = unicoHeader.replace("\"", "").split(";");
+
+                    for (int i = 0; i < cols.length; i++) {
+                        headerMap.put(i, normalizeHeader(cols[i]));
+                    }
+                }
             }
 
             // Detectar formato
