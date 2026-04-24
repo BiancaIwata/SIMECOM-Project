@@ -36,7 +36,7 @@ public class DataLoaderMain {
     private static final String S3_PREFIX = System.getenv().getOrDefault("S3_PREFIX", "01-raw/");
 
     /** Diretório local temporário para arquivos baixados do S3 */
-    private static final Path TEMP_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "simecom-s3");
+    private static final Path TEMP_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "simecom-bucket-s3");
 
     public static void main(String[] args) {
         System.out.println("###################################################");

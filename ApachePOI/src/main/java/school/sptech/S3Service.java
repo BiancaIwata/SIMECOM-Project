@@ -17,7 +17,7 @@ import java.util.List;
  * para processamento local via Apache POI + JDBC.
  *
  * Configuração via variáveis de ambiente:
- *   - S3_BUCKET_NAME           → nome do bucket (padrão: simecom-s3)
+ *   - S3_BUCKET_NAME           → nome do bucket (padrão: simecom-bucket-s3)
  *   - AWS_REGION               → região AWS (padrão: us-east-1)
  *   - AWS_ACCESS_KEY_ID        → chave de acesso AWS
  *   - AWS_SECRET_ACCESS_KEY    → chave secreta AWS
