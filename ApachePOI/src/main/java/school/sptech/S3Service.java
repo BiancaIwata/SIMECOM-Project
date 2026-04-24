@@ -29,7 +29,7 @@ public class S3Service implements AutoCloseable {
     private final String bucketName;
 
     //  CONFIGURAÇÃO PADRÃO 
-    private static final String DEFAULT_BUCKET = "simecom-s3";
+    private static final String DEFAULT_BUCKET = "simecom-bucket-s3";
     private static final Region DEFAULT_REGION = Region.US_EAST_1;
 
     //  CONSTRUTORES
