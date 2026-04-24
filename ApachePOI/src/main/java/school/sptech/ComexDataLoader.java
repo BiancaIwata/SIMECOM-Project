@@ -205,7 +205,6 @@ public class ComexDataLoader {
         public void startRow(int rowNum) {
             currentRow.clear();
         }
-
         @Override
         public void endRow(int rowNum) {
             if (currentRow.size() == 1) {
@@ -290,30 +289,11 @@ public class ComexDataLoader {
         private void parseHeader() {
             if (currentRow.isEmpty()) {
                 System.err.println("[ERRO] Header vazio! A primeira linha do XLSX não tem dados.");
-                System.out.println("DEBUG HEADER SIZE: " + headerMap.size());
-                System.out.println("DEBUG HEADER RAW: " + headerMap.values());
                 return;
             }
 
             for (Map.Entry<Integer, String> e : currentRow.entrySet()) {
                 headerMap.put(e.getKey(), normalizeHeader(e.getValue()));
-            }
-
-// 🔥 COLOCA AQUI (logo depois disso)
-            if (headerMap.size() == 1) {
-                String unicoHeader = headerMap.values().iterator().next();
-
-                if (unicoHeader.contains(";")) {
-                    System.out.println("[FIX] CSV dentro do XLSX detectado!");
-
-                    headerMap.clear();
-
-                    String[] cols = unicoHeader.replace("\"", "").split(";");
-
-                    for (int i = 0; i < cols.length; i++) {
-                        headerMap.put(i, normalizeHeader(cols[i]));
-                    }
-                }
             }
 
             // Detectar formato
