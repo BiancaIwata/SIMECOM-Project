@@ -20,7 +20,7 @@ import java.util.List;
  *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain"
  *
  *    ► COM ARGUMENTO — processa UM arquivo específico por vez
- *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="EXP_2017.xlsx"
+ *   -->>  EXECUTA O APACHEPOI NA EC2 mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="EXP_2017.xlsx"
  *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="TABELAS_AUXILIARES.xlsx"
  *
  *    ► ARGUMENTO "todos" — processa TODOS os arquivos (modo antigo)
@@ -31,7 +31,7 @@ import java.util.List;
  * =====================================================================
  */
 public class DataLoaderMain {
-
+    
     /** Prefixo (pasta) no bucket S3 */
     private static final String S3_PREFIX = System.getenv().getOrDefault("S3_PREFIX", "01-raw/");
 

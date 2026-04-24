@@ -210,8 +210,22 @@ public class ComexDataLoader {
         public void endRow(int rowNum) {
             if (rowNum == 0) {
                 // ► Primeira linha = header
-                parseHeader();
-                return;
+//                parseHeader();
+//                return;
+                // Se veio tudo em uma célula só, quebrar manualmente
+                if (currentRow.size() == 1) {
+                    String unicaCelula = currentRow.values().iterator().next();
+
+                    if (unicaCelula.contains(";")) {
+                        currentRow.clear();
+
+                        String[] cols = unicaCelula.replace("\"", "").split(";");
+
+                        for (int i = 0; i < cols.length; i++) {
+                            currentRow.put(i, cols[i]);
+                        }
+                    }
+                }
             }
 
             // Se formato não foi detectado, pular processamento
@@ -276,8 +290,22 @@ public class ComexDataLoader {
         /** Inicializa o header, detecta formato, prepara PreparedStatement */
         private void parseHeader() {
             if (currentRow.isEmpty()) {
-                System.err.println("[ERRO] Header vazio! A primeira linha do XLSX não tem dados.");
-                return;
+                // Detectar CSV dentro da célula
+                if (headerMap.size() == 1) {
+                    String unicoHeader = headerMap.values().iterator().next();
+
+                    if (unicoHeader.contains(";")) {
+                        System.out.println("[INFO] Detectado CSV dentro do XLSX — ajustando headers...");
+
+                        headerMap.clear();
+
+                        String[] cols = unicoHeader.replace("\"", "").split(";");
+
+                        for (int i = 0; i < cols.length; i++) {
+                            headerMap.put(i, normalizeHeader(cols[i]));
+                        }
+                    }
+                }
             }
 
             for (Map.Entry<Integer, String> e : currentRow.entrySet()) {
