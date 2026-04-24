@@ -290,6 +290,8 @@ public class ComexDataLoader {
         private void parseHeader() {
             if (currentRow.isEmpty()) {
                 System.err.println("[ERRO] Header vazio! A primeira linha do XLSX não tem dados.");
+                System.out.println("DEBUG HEADER SIZE: " + headerMap.size());
+                System.out.println("DEBUG HEADER RAW: " + headerMap.values());
                 return;
             }
 
@@ -297,12 +299,12 @@ public class ComexDataLoader {
                 headerMap.put(e.getKey(), normalizeHeader(e.getValue()));
             }
 
-            // 🔥 CORREÇÃO: tratar CSV dentro de uma célula
+// 🔥 COLOCA AQUI (logo depois disso)
             if (headerMap.size() == 1) {
                 String unicoHeader = headerMap.values().iterator().next();
 
                 if (unicoHeader.contains(";")) {
-                    System.out.println("[INFO] Detectado CSV dentro do XLSX — corrigindo header...");
+                    System.out.println("[FIX] CSV dentro do XLSX detectado!");
 
                     headerMap.clear();
 
