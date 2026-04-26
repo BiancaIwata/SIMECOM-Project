@@ -1,6 +1,8 @@
 window.onload = function () {
   //pegando as informações quando a pagina carrega
+  const dissapear = document.getElementById("dissapear");
   var id = sessionStorage.ID_USUARIO;
+  dissapear.style.display = "none";
 
   fetch("/users/getter", {
     method: "POST",
@@ -20,8 +22,10 @@ window.onload = function () {
       senha_configurar.textContent = json.senha;
       email_configurar.textContent = json.email;
       nome_configurar.textContent = json.nome;
-      usuario_nome.textContent = "Olá, " + json.nome + "!";
       sessionStorage.NOME_USUARIO = json.nome;
+      if (json.type == "adm") {
+        dissapear.style.display = "block";
+      }
     })
     .catch((err) => {
       console.log(err);

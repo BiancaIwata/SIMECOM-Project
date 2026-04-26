@@ -111,6 +111,7 @@ function getter(req, res) {
             email: resultAuth[0].email,
             nome: resultAuth[0].nome,
             senha: resultAuth[0].senha,
+            type: resultAuth[0].type,
           });
         } else {
           res.status(204).json(resultAuth);

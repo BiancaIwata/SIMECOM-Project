@@ -27,7 +27,7 @@ function entrar() {
       } else {
         sessionStorage.ID_USUARIO = json.id;
         sessionStorage.NOME_USUARIO = json.nome;
-        window.location.href = "dashboard.html";
+        window.location.href = "dashboardMacro.html";
       }
     })
     .catch((err) => {
