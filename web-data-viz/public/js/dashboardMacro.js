@@ -1,0 +1,36 @@
+
+new Chart(document.getElementById('graficoLinha'), {
+  type: 'line',
+  data: {
+    labels: ['2019','2020','2021','2022','2023','2024'],
+    datasets: [
+      {
+        label: 'Exportações',
+        data: [300,350,250,220,300,320],
+        borderColor: '#1f4e79',
+        backgroundColor: 'rgba(31,78,121,0.1)',
+        fill: true,
+        tension: 0.4
+      },
+      {
+        label: 'Importações',
+        data: [150,180,120,100,160,180],
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(60, 180, 231, 0.1)',
+        fill: true,
+        tension: 0.4
+      }
+    ]
+  }
+});
+
+new Chart(document.getElementById('graficoPizza'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Exportações','Importações'],
+    datasets: [{
+      data: [56.3,43.7],
+      backgroundColor: ['#1f4e79','#1f7ae0']
+    }]
+  }
+});

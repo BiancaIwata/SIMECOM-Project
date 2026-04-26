@@ -66,26 +66,26 @@ function carregarMunicipios(estado) {
     fetch(
         `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado}/municipios`,
     )
-    .then(res => {
-        res.json().then(data => {
-            municipios = data;
-            let select = document.getElementById("edit-municipio");
-            select.innerHTML = "";
+        .then(res => {
+            res.json().then(data => {
+                municipios = data;
+                let select = document.getElementById("edit-municipio");
+                select.innerHTML = "";
 
-            let optionDefault = document.createElement("option");
-            optionDefault.innerHTML = "Selecione...";
-            select.appendChild(optionDefault);
+                let optionDefault = document.createElement("option");
+                optionDefault.innerHTML = "Selecione...";
+                select.appendChild(optionDefault);
 
-            for (let i = 0; i < municipios.length; i++) {
-                let option = document.createElement("option");
+                for (let i = 0; i < municipios.length; i++) {
+                    let option = document.createElement("option");
 
-                option.setAttribute("value", municipios[i].nome);
-                option.innerHTML = municipios[i].nome;
-                select.appendChild(option);
-            }
-            console.log(select)
-        })
-    });
+                    option.setAttribute("value", municipios[i].nome);
+                    option.innerHTML = municipios[i].nome;
+                    select.appendChild(option);
+                }
+                console.log(select)
+            })
+        });
 
 }
 
@@ -162,18 +162,27 @@ function abrirModalEditar(id) {
     const campoSetor = document.createElement("label");
     campoSetor.innerHTML = `Setor<br>
         <select id="edit-setor">
-            <option value="">Selecione...</option>
-            <option value="Agropecuário">Agropecuário</option>
-            <option value="Alimentos e Bebidas">Alimentos e Bebidas</option>
-            <option value="Automotivo">Automotivo</option>
-            <option value="Químico">Químico</option>
-            <option value="Farmacêutico">Farmacêutico</option>
-            <option value="Eletrônicos">Eletrônicos</option>
-            <option value="Máquinas e Equipamentos">Máquinas e Equipamentos</option>
-            <option value="Têxtil e Vestuário">Têxtil e Vestuário</option>
-            <option value="Metalúrgico">Metalúrgico</option>
-            <option value="Energia (óleo, gás, combustíveis)">Energia (óleo, gás, combustíveis)</option>
-            <option value="Plásticos e Borracha">Plásticos e Borracha</option>
+            <option value="Animais vivos e produtos do reino animal">Animais Vivos e Produtos do Reino Animal</option>
+            <option value="Produtos do Reino Vegetal">Produtos do Reino Vegetal</option>
+            <option value="Gorduras e Óleos Animais ou Vegetais">Gorduras e Óleos Animais ou Vegetais</option>
+            <option value="Produtos das Indústrias Alimentares; Bebidas e Tabaco">Produtos das Indústrias Alimentares; Bebidas e Tabaco</option>
+            <option value="Produtos Minerais">Produtos Minerais</option>
+            <option value="Produtos das Indústrias Químicas">Produtos das Indústrias Químicas</option>
+            <option value="Plástico e Borracha">Plástico e Borracha</option>
+            <option value="Peles, Couro e Obras">Peles, Couro e Obras</option>
+            <option value="Madeira, Carvão Vegetal e Cortiça">Madeira, Carvão Vegetal e Cortiça</option>
+            <option value="Pasta de Madeira, Papel e Cartão">Pasta de Madeira, Papel e Cartão</option>
+            <option value="Materiais Têxteis e Suas Obras">Materiais Têxteis e Suas Obras</option>
+            <option value="Calçados, Chapéus e Semelhantes">Calçados, Chapéus e Semelhantes</option>
+            <option value="Obras de Pedra, Cerâmica e Vidro">Obras de Pedra, Cerâmica e Vidro</option>
+            <option value="Pérolas, Pedras Preciosas e Metais Preciosos">Pérolas, Pedras Preciosas e Metais Preciosos</option>
+            <option value="Metais Comuns e Suas Obras">Metais Comuns e Suas Obras</option>
+            <option value="Máquina e Aparelhos, Material Elétrico">Máquina e Aparelhos, Material Elétrico</option>
+            <option value="Material de Transporte">Material de Transporte</option>
+            <option value="Instrumento e Aparelhos de Óptica, Cinematografia e Fotografia">Instrumento e Aparelhos de Óptica, Cinematografia e Fotografia</option>
+            <option value="Armas e Munições">Armas e Munições</option>
+            <option value="Mercadorias e Produtos Diversos">Mercadorias e Produtos Diversos</option>
+            <option value="Objetos de Arte e Antiguidades">Objetos de Arte e Antiguidades</option>
         </select>`;
 
     const btnCancelar = document.createElement("button");
@@ -203,7 +212,7 @@ function salvarEdicao(id) {
         alert('Preencha todos os campos para editar!');
         return
     }
-    
+
     fetch(`/preferencias/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -215,7 +224,7 @@ function salvarEdicao(id) {
         })
     })
         .then(function (res) {
-            console.log(res) 
+            console.log(res)
             return res.json();
         })
         .then(function () {

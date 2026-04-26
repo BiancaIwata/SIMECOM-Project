@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMECOM - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/dashboardMacro.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="./assets/logo.png" alt="Simecom">
+                </a>
+            </div>
+
+            <div class="user">
+                <div class="avatar">
+                    <a href="">
+                        <img src="./assets/Group 43.png">
+                    </a>
+                </div>
+                <p>Olá, <span id="nome_usuario">usuário</span>!</p>
+            </div>
+
+            <nav class="menu">
+                <ul>
+                    <li><a href="index.html">
+                            <img src="./assets/home_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="preferencias.html">
+                            <img src="./assets/check_box_padrao.png">
+                            Preferências
+                        </a>
+                    </li>
+                    <li><a href="forum.html">
+                            <img src="./assets/chat_bubble_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Fórum
+                        </a>
+                    </li>
+                    <li class="ativo">
+                        <a href="dashboardMacro.html">
+                            <img src="./assets/space_dashboard_24dp_1F7AE0_FILL0_wght400_GRAD0_opsz24.png">
+                            Dashboards
+                        </a>
+                    </li>
+                    <li class="submenu">
+                        <a href="dashboard.html" class="submenu-item active-text">
+                            Macro
+                        </a>
+                        <a href="dashboardImportacao.html" class="submenu-item">
+                            Importação
+                        </a>
+                        <a href="dashboardExportacao.html" class="submenu-item">
+                            Exportação
+                        </a>
+                    </li>
+                    <li><a href="./configuracoes.html">
+                            <img src="./assets/icon_configuracoes.png">
+                            Configurações
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <h1 class="page-title">Macro - Exportação x Importação</h1>
+
+            <!-- <div class="kpi-container">
+                <div class="card kpi-card">
+                    <span class="kpi-title">Taxa de Dependência de Importação</span>
+                    <span class="kpi-value">10,2%</span>
+                </div>
+                <div class="card kpi-card">
+                    <span class="kpi-title">Taxa de Dependência de Exportação</span>
+                    <span class="kpi-value">47,3%</span>
+                </div>
+                <div class="card kpi-card"> 
+                    <span class="kpi-title">Crescimento da Importação no Brasil em relação ao último ano</span>
+                    <span class="kpi-value">69,3%</span>
+                </div>
+                <div class="card kpi-card">
+                    <span class="kpi-title">Crescimento da Exportação no Brasil em relação ao último ano</span>
+                    <span class="kpi-value">30,7%</span>
+                </div>
+            </div> -->
+
+            <div class="row">
+
+                <div class="card large">
+                    <h3>Evolução das Exportações vs Importações</h3>
+                    <canvas id="graficoLinha"></canvas>
+                </div>
+
+                <div class="card">
+                    <h3>Participação no Comércio Total</h3>
+                    <canvas id="graficoPizza"></canvas>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="card">
+                    <h3>Superávit por Produto</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Soja</td>
+                                <td class="positivo">+2.150.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Minério</td>
+                                <td class="positivo">+1.380.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Celulose</td>
+                                <td class="positivo">+820.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Carnes</td>
+                                <td class="positivo">+610.000.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Déficit por Produto</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Petróleo</td>
+                                <td class="negativo">-2.120.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Eletrônicos</td>
+                                <td class="negativo">-1.150.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Insumos</td>
+                                <td class="negativo">-780.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Medicamentos</td>
+                                <td class="negativo">-460.000.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Mercados com Superávit</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Setor</th>
+                                <th>Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Plástico e Borracha</td>
+                                <td class="positivo">+3.450.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Metais Comuns e Suas Obras</td>
+                                <td class="positivo">+2.180.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Produtos das Indústrias Químicas</td>
+                                <td class="positivo">+1.920.000.000</td>
+                            </tr>
+                            <tr>
+                                <td>Produtos Minerais</td>
+                                <td class="positivo">+620.000.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+    </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/dashboardMacro.js"></script>
+</body>
+
+</html>
+<script>
+    nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
+</script>
