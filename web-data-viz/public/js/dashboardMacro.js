@@ -1,4 +1,3 @@
-
 new Chart(document.getElementById('graficoLinha'), {
   type: 'line',
   data: {
@@ -7,18 +6,20 @@ new Chart(document.getElementById('graficoLinha'), {
       {
         label: 'Exportações',
         data: [300,350,250,220,300,320],
-        borderColor: '#1f4e79',
-        backgroundColor: 'rgba(31,78,121,0.1)',
+        borderColor: '#1e3a8a', 
+        backgroundColor: 'rgba(32, 30, 138, 0.2)', 
         fill: true,
-        tension: 0.4
+        tension: 0.4,
+        borderWidth: 3
       },
       {
         label: 'Importações',
         data: [150,180,120,100,160,180],
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(60, 180, 231, 0.1)',
+        borderColor: '#06b6d4', 
+        backgroundColor: 'rgba(6, 182, 212, 0.15)', 
         fill: true,
-        tension: 0.4
+        tension: 0.4,
+        borderWidth: 3
       }
     ]
   }
@@ -29,8 +30,10 @@ new Chart(document.getElementById('graficoPizza'), {
   data: {
     labels: ['Exportações','Importações'],
     datasets: [{
-      data: [56.3,43.7],
-      backgroundColor: ['#1f4e79','#1f7ae0']
+      data: [56.3, 43.7],
+      // Mantendo a lógica de Forte vs Fraco/Vivo
+      backgroundColor: ['#1e3a8a', '#06b6d4'],
+      borderWidth: 0 // Remove bordas para um look mais limpo
     }]
   }
 });
