@@ -1,63 +1,153 @@
-# SIMECOM-Project
+# 🚀 SIMECOM - Data Loader (Apache POI + S3 + MySQL)
 
-Este repositório tem por finalidade a centralização de código-fonte e artefatos relacionados ao projeto **SIMECOM**.
+Pipeline de carga de dados de comércio exterior (MDIC) para banco de dados MySQL via AWS S3.
 
-Aqui são armazenados:
-
-- Código da aplicação (backend e/ou frontend)
-- Scripts de banco de dados
-- Documentação técnica
-- Arquivos auxiliares do projeto
-- Testes automatizados
+**Tecnologias:** Java 21 | Maven | Apache POI | AWS S3 | MySQL | Docker
 
 ---
 
-# Padrão de Commits (Conventional Commits)
+## 📋 Pré-requisitos
 
-Este projeto utiliza o padrão **Conventional Commits** para manter um histórico de alterações organizado, legível e padronizado.
+### Local (Desenvolvimento)
+- Java 21+
+- Maven 3.8+
+- MySQL 8.0+
+- Git
 
----
-
-# Sobre
-
-SIMECOM é uma plataforma web que transforma dados públicos de comércio exterior brasileiro em inteligência estratégica para investidores.
-
-O projeto centraliza informações de importação e exportação municipal e as converte em análises visuais, indicadores de risco e insights que auxiliam na tomada de decisão de investimento.
-
-Dados de comércio exterior estão disponíveis publicamente, porém dispersos, técnicos e de difícil interpretação — especialmente para investidores iniciantes.
-
-A SIMECOM surge para reduzir essa barreira, organizando e analisando essas informações em uma interface simples, visual e orientada à decisão.
+### EC2 (Produção)
+- Amazon EC2 (t3.small ou superior)
+- Amazon RDS MySQL 8.0+
+- AWS S3 Bucket
+- IAM Role com permissão S3
 
 ---
 
-# Principais Funcionalidades
+## ⚡ Quick Start em EC2
 
-- Ranking de municípios por desempenho em importação e exportação
+### **1. Conectar na EC2**
 
-- Dashboards intuitivas e interativas
+```bash
+ssh -i sua_chave.pem ec2-user@seu-ip-ec2
+```
 
-- Comparação entre estados e setores econômicos
+### **2. Executar Script de Setup**
 
-- Comunidade para discussão sobre mercado exterior
+```bash
+# Clonar
+git clone https://github.com/seu-usuario/SIMECOM-Project.git
+cd SIMECOM-Project
+
+# Setup automático (instala dependências)
+chmod +x scripts/setup-ec2.sh
+./scripts/setup-ec2.sh
+
+# Ele vai:
+# ✓ Instalar Java 21
+# ✓ Instalar Maven
+# ✓ Criar diretório /home/ec2-user/simecom/
+# ✓ Pedir credenciais de RDS e S3
+# ✓ Criar arquivo .env.production com as variáveis
+```
+
+### **3. Configurar Credenciais (se não fizer no Script)**
+
+```bash
+# Editar arquivo de produção
+nano /home/ec2-user/simecom/.env.production
+
+# Conteúdo esperado:
+# DB_HOST=seu-rds-endpoint.rds.amazonaws.com
+# DB_USER=admin
+# DB_PASSWORD=sua_senha_rds
+# AWS_REGION=sa-east-1
+# S3_BUCKET_NAME=simecom-s3
+```
+
+### **4. Processar Dados**
+
+```bash
+# Carregar variáveis
+source /home/ec2-user/simecom/.env.production
+
+# Entrar no projeto
+cd ~/SIMECOM-Project/ApachePOI
+
+# Listar arquivos do S3
+mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain"
+
+# Processar TODOS os arquivos
+mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="todos"
+```
 
 ---
 
-# Tecnologias Utilizadas
+## 📊 Modos de Execução
 
-Frontend: HTML, CSS, JavaScript
+```bash
+# 1. Listar arquivos disponíveis no S3
+mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain"
 
-Backend: Java, Node.js, JavaScript
+# 2. Processar um arquivo específico
+mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="EXP_2017.xlsx"
+
+# 3. Processar todos os arquivos
+mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="todos"
+```
 
 ---
 
-# Base de Dados
+## 🏗️ Arquitetura
 
-Os dados utilizados são provenientes de bases públicas oficiais do Governo Federal:
-
--> https://dados.gov.br/dados/conjuntos-dados/estatisticos-do-comercio-exterior-brasileiro-de-bens
+```
+AWS S3 Bucket
+   (EXP_2017.xlsx)
+         ↓
+    EC2 Instance
+    (DataLoader)
+         ↓
+    RDS MySQL
+   (simecom)
+```
 
 ---
 
-# Status do Projeto
+## 🔐 Variáveis de Ambiente
 
-- Em desenvolvimento
+| Variável | Exemplo | Obrigatório |
+|----------|---------|------------|
+| DB_HOST | simecom-rds.xxxxx.rds.amazonaws.com | ✅ |
+| DB_USER | admin | ✅ |
+| DB_PASSWORD | senha123 | ✅ |
+| DB_PORT | 3306 | ❌ |
+| DB_NAME | simecom | ❌ |
+| S3_BUCKET_NAME | simecom-s3 | ❌ |
+| AWS_REGION | sa-east-1 | ❌ |
+| S3_PREFIX | 01-raw/ | ❌ |
+
+---
+
+## 🚨 Troubleshooting
+
+```bash
+# Verifique conectividade RDS
+mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD -D $DB_NAME -e "SELECT 1;"
+
+# Verifique acesso S3
+aws s3 ls s3://$S3_BUCKET_NAME/$S3_PREFIX
+
+# Verifique se variáveis estão carregadas
+echo $DB_HOST
+```
+
+---
+
+## 📚 Documentação
+
+- [ApachePOI/CONFIGURACAO.md](ApachePOI/CONFIGURACAO.md) - Detalhes de configuração
+- [scripts/setup-ec2.sh](scripts/setup-ec2.sh) - Script de setup
+
+---
+
+## 👤 Autor
+
+Ricardo Perdigão
