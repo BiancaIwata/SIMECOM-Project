@@ -1,4 +1,4 @@
-# COMEX Report App
+# SIMECOM Report App
 
 Aplicação Java para leitura de bases CSV de importação e exportação, aplicação de filtros, cálculo de métricas, geração de gráficos e criação de relatório final em PDF, com suporte opcional a geração de insights por IA.
 
