@@ -79,8 +79,20 @@ public class logJava {
             ps.setInt(4, linhasIgnoradas);
             ps.setInt(5, erros.size());
             ps.executeUpdate();
+
+            // ✅ COMMIT EXPLÍCITO — força confirmação no banco
+            if (!conn.getAutoCommit()) {
+                conn.commit();
+            }
         } catch (Exception e) {
             System.err.println("[ERRO] Falha ao salvar log: " + e.getMessage());
+            try {
+                if (!conn.getAutoCommit()) {
+                    conn.rollback();
+                }
+            } catch (Exception rollbackEx) {
+                System.err.println("[ERRO] Falha ao fazer rollback: " + rollbackEx.getMessage());
+            }
         }
     }
 

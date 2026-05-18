@@ -335,10 +335,20 @@ public class ComexDataLoader {
             try {
                 ps.executeBatch();
                 conn.commit();
-                conn.setAutoCommit(autoCommitOriginal);
-                ps.close();
             } catch (Exception e) {
                 System.err.println("[ERRO] Falha no flush final: " + e.getMessage());
+                try {
+                    conn.rollback();
+                } catch (Exception rollbackEx) {
+                    System.err.println("[ERRO] Falha ao fazer rollback: " + rollbackEx.getMessage());
+                }
+            } finally {
+                try {
+                    conn.setAutoCommit(autoCommitOriginal);
+                    ps.close();
+                } catch (Exception e) {
+                    System.err.println("[ERRO] Falha ao restaurar autoCommit/fechar PS: " + e.getMessage());
+                }
             }
         }
     }
