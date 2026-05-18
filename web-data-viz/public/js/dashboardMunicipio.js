@@ -146,107 +146,6 @@ new Chart(ctx, {
   },
 });
 
-// Gráfico de Rosca (Categorias)
-// Cores de alto contraste para facilitar a leitura rápida
-new Chart(document.getElementById("pieChart"), {
-  type: "doughnut",
-
-  data: {
-    labels: [
-      "Madeira, Carvão e Cortiça",
-      "Plástico e Borracha",
-      "Produtos Minerais",
-      "Material de Transporte",
-      "Outros",
-    ],
-
-    datasets: [
-      {
-        data: [34, 22, 18, 16, 10],
-
-        backgroundColor: [
-          "#00C853",
-          "#ff2fba",
-          "#00A8E8",
-          "#707070",
-          "#fbbf24",
-        ],
-
-        hoverBackgroundColor: [
-          "#80E4A9",
-          "#FF97DC",
-          "#7FD4F4",
-          "#B8B8B8",
-          "#FDE08D",
-        ],
-
-        borderWidth: 5,
-        borderColor: "#ffffff",
-
-        hoverOffset: 18,
-        spacing: 6,
-        cutout: "68%",
-      },
-    ],
-  },
-
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    layout: {
-      padding: 25,
-    },
-
-    animation: {
-      animateRotate: true,
-      animateScale: true,
-
-      duration: 1800,
-      easing: "easeOutQuart",
-    },
-
-    plugins: {
-      legend: {
-        position: "bottom",
-
-        labels: {
-          color: "#111827",
-
-          padding: 22,
-          usePointStyle: true,
-          pointStyle: "circle",
-
-          font: {
-            size: 13,
-            weight: "bold",
-          },
-        },
-      },
-
-      tooltip: {
-        backgroundColor: "#ffffff",
-
-        titleColor: "#111827",
-        bodyColor: "#374151",
-
-        borderColor: "#e5e7eb",
-        borderWidth: 1,
-
-        padding: 12,
-
-        callbacks: {
-          label: function (context) {
-            return (
-              " " + context.label + ": " + context.parsed + "% da participação"
-            );
-          },
-        },
-      },
-    },
-  },
-});
-
 // Gráfico de Barras (Crescimento)
 // Usando o azul escuro para contrastar com o gráfico de linhas ciano acima
 new Chart(document.getElementById("barChart"), {
@@ -257,7 +156,7 @@ new Chart(document.getElementById("barChart"), {
 
     datasets: [
       {
-        label: "Tecnologia",
+        label: "São Paulo",
         data: [185],
         backgroundColor: "#00C853",
         hoverBackgroundColor: "#80E4A9",
@@ -269,7 +168,7 @@ new Chart(document.getElementById("barChart"), {
       },
 
       {
-        label: "Soja",
+        label: "São Paulo",
         data: [260],
         backgroundColor: "#00A8E8",
         hoverBackgroundColor: "#7FD4F4",
@@ -281,7 +180,7 @@ new Chart(document.getElementById("barChart"), {
       },
 
       {
-        label: "Óleos",
+        label: "São Paulo",
         data: [140],
         backgroundColor: "#707070",
         hoverBackgroundColor: "#B8B8B8",
@@ -293,7 +192,7 @@ new Chart(document.getElementById("barChart"), {
       },
 
       {
-        label: "Carros",
+        label: "São Paulo",
         data: [260],
         backgroundColor: "#ff2fba",
         hoverBackgroundColor: "#FF97DC",
@@ -418,7 +317,7 @@ new Chart(document.getElementById("barChart2"), {
 
     datasets: [
       {
-        label: "Tecnologia",
+        label: "São Paulo",
         data: [185],
         backgroundColor: "#00C853",
         hoverBackgroundColor: "#80E4A9",
@@ -430,7 +329,7 @@ new Chart(document.getElementById("barChart2"), {
       },
 
       {
-        label: "Soja",
+        label: "São Paulo",
         data: [260],
         backgroundColor: "#00A8E8",
         hoverBackgroundColor: "#7FD4F4",
@@ -442,7 +341,7 @@ new Chart(document.getElementById("barChart2"), {
       },
 
       {
-        label: "Óleos",
+        label: "São Paulo",
         data: [140],
         backgroundColor: "#707070",
         hoverBackgroundColor: "#B8B8B8",
@@ -454,7 +353,7 @@ new Chart(document.getElementById("barChart2"), {
       },
 
       {
-        label: "Carros",
+        label: "São Paulo",
         data: [260],
         backgroundColor: "#ff2fba",
         hoverBackgroundColor: "#FF97DC",
@@ -570,3 +469,41 @@ new Chart(document.getElementById("barChart2"), {
     },
   },
 });
+
+carregarCidades();
+
+const input = document.getElementById("cidadeInput");
+const suggestions = document.getElementById("suggestions");
+
+input.addEventListener("input", () => {
+  const valor = input.value.toLowerCase();
+  suggestions.innerHTML = "";
+
+  if (!valor) return;
+
+  const filtradas = todasCidades
+    .filter((c) => c.nome.toLowerCase().includes(valor))
+    .slice(0, 10); // limita a 10 resultados
+
+  filtradas.forEach((cidade) => {
+    const div = document.createElement("div");
+    div.textContent = cidade.nome;
+    div.classList.add("suggestion-item");
+
+    div.onclick = () => {
+      input.value = cidade.nome;
+      suggestions.innerHTML = "";
+    };
+
+    suggestions.appendChild(div);
+  });
+});
+
+let todasCidades = [];
+
+async function carregarCidades() {
+  const res = await fetch(
+    "https://servicodados.ibge.gov.br/api/v1/localidades/estados/SP/municipios",
+  );
+  todasCidades = await res.json();
+}
