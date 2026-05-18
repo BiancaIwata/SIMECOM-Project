@@ -24,9 +24,6 @@ import java.util.*;
  * Lê os arquivos XLSX de importação/exportação do MDIC usando Apache POI
  * no modo **SAX streaming** (XSSF Event API).
  *
- * Diferente do XSSFWorkbook (que carrega tudo na RAM), este modo lê uma
- * linha por vez, consumindo ~10-30 MB de heap em vez de 500+ MB.
- *
  * Detecta automaticamente o formato do XLSX:
  *
  *   ► FORMATO NCM (detalhado por NCM):
@@ -50,103 +47,115 @@ public class ComexDataLoader {
     private enum Formato { NCM, MUN }
 
     // ============================================================
+    // RESULTADO DO CARREGAMENTO (classe interna)
+    // ============================================================
+
+    /**
+     * Resultado do carregamento de um arquivo XLSX.
+     * Contém os contadores finais de inserção, ignorados e erros.
+     */
+    public static class ResultadoCarregamento {
+        private final int totalLinhas;
+        private final int inseridos;
+        private final int ignorados;
+        private final int erros;
+        private final String formato;
+
+        public ResultadoCarregamento(int totalLinhas, int inseridos, int ignorados, int erros, String formato) {
+            this.totalLinhas = totalLinhas;
+            this.inseridos = inseridos;
+            this.ignorados = ignorados;
+            this.erros = erros;
+            this.formato = formato;
+        }
+
+        public int getTotalLinhas() { return totalLinhas; }
+        public int getInseridos()   { return inseridos; }
+        public int getIgnorados()   { return ignorados; }
+        public int getErros()       { return erros; }
+        public String getFormato()  { return formato; }
+
+        @Override
+        public String toString() {
+            return String.format(
+                "ResultadoCarregamento(total=%,d, inseridos=%,d, ignorados=%,d, erros=%,d, formato=%s)",
+                totalLinhas, inseridos, ignorados, erros, formato
+            );
+        }
+    }
+
+    // ============================================================
     // API PÚBLICA
     // ============================================================
 
-    public static void carregarExportacao(Path xlsxPath, Connection conn) throws Exception {
-        carregarDados(xlsxPath, conn, "base_exportacao", "EXPORTAÇÃO");
+    public static ResultadoCarregamento carregarExportacao(Path xlsxPath, Connection conn) throws Exception {
+        return carregarDados(xlsxPath, conn, "base_exportacao", "EXPORTAÇÃO");
     }
 
-    public static void carregarImportacao(Path xlsxPath, Connection conn) throws Exception {
-        carregarDados(xlsxPath, conn, "base_importacao", "IMPORTAÇÃO");
+    public static ResultadoCarregamento carregarImportacao(Path xlsxPath, Connection conn) throws Exception {
+        return carregarDados(xlsxPath, conn, "base_importacao", "IMPORTAÇÃO");
     }
 
     // ============================================================
     // CARREGAMENTO COM BANCO — SAX STREAMING (baixo consumo de RAM)
     // ============================================================
 
-    private static void carregarDados(Path xlsxPath, Connection conn, String tabela, String tipo) throws Exception {
-        System.out.println("\n========================================");
-        System.out.printf("  CARREGANDO %s (SAX Streaming XLSX)%n", tipo);
-        System.out.println("  Arquivo: " + xlsxPath.getFileName());
-        System.out.println("========================================\n");
-
+    private static ResultadoCarregamento carregarDados(Path xlsxPath, Connection conn, String tabela, String tipo) throws Exception {
         if (!Files.exists(xlsxPath)) {
             System.err.println("[ERRO] Arquivo não encontrado: " + xlsxPath);
-            return;
+            return new ResultadoCarregamento(0, 0, 0, 0, "DESCONHECIDO");
         }
 
-        // ► Logger de inserção/erros por arquivo
         logJava log = new logJava(xlsxPath.getFileName().toString());
 
-        // ► Pré-carregar FKs existentes
         Set<String> sh4Conhecidos = carregarCodigosExistentes(conn, "codigo_sh4", "CO_SH4");
         Set<String> paisConhecidos = carregarCodigosExistentes(conn, "codigo_pais", "CO_PAIS");
-        System.out.printf("[INFO] FKs já existentes no banco: %d SH4, %d países%n",
-                sh4Conhecidos.size(), paisConhecidos.size());
-        System.out.println("[INFO] Novos códigos serão inseridos automaticamente.");
 
-        // ► Abrir XLSX via OPCPackage (NÃO carrega tudo na RAM)
         try (OPCPackage pkg = OPCPackage.open(xlsxPath.toFile())) {
 
             ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(pkg);
             XSSFReader xssfReader = new XSSFReader(pkg);
             StylesTable styles = xssfReader.getStylesTable();
 
-            // ► Ler a primeira planilha (sheet1)
             Iterator<InputStream> sheetsData = xssfReader.getSheetsData();
             if (!sheetsData.hasNext()) {
                 System.err.println("[ERRO] XLSX sem planilhas!");
-                return;
+                return new ResultadoCarregamento(0, 0, 0, 0, "DESCONHECIDO");
             }
 
             try (InputStream sheetStream = sheetsData.next()) {
 
-                // ► Criar handler SAX que processa linha a linha
                 RowInsertHandler handler = new RowInsertHandler(
                         conn, tabela, tipo, log, sh4Conhecidos, paisConhecidos);
 
-                // ► Configurar parser SAX (namespace-aware é CRÍTICO para XLSX)
                 SAXParserFactory spf = SAXParserFactory.newInstance();
-                spf.setNamespaceAware(true);  // ← FIX: permite processar namespaces XML do XLSX
+                spf.setNamespaceAware(true);
                 XMLReader xmlReader = spf.newSAXParser().getXMLReader();
                 xmlReader.setContentHandler(
                         new XSSFSheetXMLHandler(styles, strings, handler, false));
 
-                System.out.println("[INFO] Iniciando leitura SAX streaming...");
                 long startTime = System.currentTimeMillis();
 
-                // ► PROCESSAR — isso itera todo o XLSX sem carregar na RAM
                 try {
                     xmlReader.parse(new InputSource(sheetStream));
-                    System.out.println("[INFO] Parsing SAX concluído com sucesso.");
                 } catch (Exception e) {
-                    System.err.printf("[ERRO] Falha durante parsing SAX: %s%n", e.getMessage());
-                    e.printStackTrace();
-                    return;
+                    System.err.printf("[ERRO] Falha ao processar XLSX: %s%n", e.getMessage());
+                    return new ResultadoCarregamento(0, 0, 0, 0, "DESCONHECIDO");
                 }
 
-                // ► Flush do batch restante
                 handler.flushBatch();
 
                 long elapsed = System.currentTimeMillis() - startTime;
-
-                // ► Resultados
-                System.out.println();
-                System.out.println("\n========================================");
-                System.out.printf("  RESULTADO %s (SAX Streaming — %s)%n", tipo, handler.getFormato());
-                System.out.println("========================================");
-                System.out.printf("  Total de linhas lidas  : %,d%n", handler.getTotalLinhas());
-                System.out.printf("  Linhas inseridas       : %,d%n", handler.getInseridos());
-                System.out.printf("  Linhas ignoradas       : %,d%n", handler.getIgnorados());
-                System.out.printf("  Erros de parsing       : %,d%n", handler.getErros());
-                System.out.printf("  Tempo total            : %.1f segundos%n", elapsed / 1000.0);
-                System.out.printf("  Velocidade             : %,d linhas/seg%n",
-                        elapsed > 0 ? (handler.getTotalLinhas() * 1000L / elapsed) : 0);
-                System.out.println("========================================");
-
                 log.sucesso(handler.getInseridos(), handler.getIgnorados());
                 log.imprimirResumo();
+
+                return new ResultadoCarregamento(
+                    handler.getTotalLinhas(),
+                    handler.getInseridos(),
+                    handler.getIgnorados(),
+                    handler.getErros(),
+                    handler.getFormato().toString()
+                );
             }
         }
     }
@@ -259,8 +268,6 @@ public class ComexDataLoader {
                 if (inseridos % BATCH_SIZE == 0) {
                     ps.executeBatch();
                     conn.commit();
-                    System.out.printf("\r[%s] Progresso: %,d inseridos | %,d ignorados | %,d total",
-                            tipo, inseridos, ignorados, totalLinhas);
                 }
 
             } catch (NumberFormatException e) {
@@ -296,7 +303,6 @@ public class ComexDataLoader {
                 headerMap.put(e.getKey(), normalizeHeader(e.getValue()));
             }
 
-            // Detectar formato
             boolean temNCM = headerMap.containsValue("CO_NCM");
             boolean temSH4 = headerMap.containsValue("SH4");
 
@@ -310,13 +316,7 @@ public class ComexDataLoader {
                 return;
             }
 
-            System.out.println("[INFO] Colunas encontradas: " + headerMap.size());
-            System.out.println("[INFO] Headers: " + headerMap.values());
-            System.out.println("[INFO] Formato detectado: " + formato);
-
-            // Montar SQL e PreparedStatement
             String sql = montarSql(tabela, formato);
-            System.out.println("[INFO] SQL: " + sql);
 
             try {
                 autoCommitOriginal = conn.getAutoCommit();

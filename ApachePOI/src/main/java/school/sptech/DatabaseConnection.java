@@ -6,26 +6,19 @@ import java.sql.SQLException;
 
 /**
  * Classe responsável por gerenciar a conexão com o banco de dados MySQL.
- * Configurações padrão apontam para o banco 'simecom' local.
+ * Lê configurações da classe Config (variáveis de ambiente).
  */
 public class DatabaseConnection {
 
-    // CONFIGURAÇÃO DO BANCO
-    private static final String HOST = "localhost";
-    private static final String PORT = "3306";
-    private static final String DATABASE = "simecom";
-    private static final String USER = "root";
-    private static final String PASSWORD = "123@Simecom123"; 
-
-    // Caminho da conexão JDBC por lotes e configurações recomendadas para performance
+    // URL da conexão JDBC com configurações recomendadas para performance
     private static final String URL = String.format(
             "jdbc:mysql://%s:%s/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo&rewriteBatchedStatements=true",
-            HOST, PORT, DATABASE
+            Config.DB_HOST, Config.DB_PORT, Config.DB_NAME
     );
 
     // ABRIR UMA NOVA CONEXÃO
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(URL, Config.DB_USER, Config.DB_PASSWORD);
     }
 
     // FECHAR CONEXÃO DE FORMA SEGURA

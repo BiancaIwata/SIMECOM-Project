@@ -198,3 +198,24 @@ CREATE TABLE log_java (
     total_erros INT NOT NULL DEFAULT 0,
     data_hora DATETIME NOT NULL
 );
+
+INSERT INTO setores (nome) VALUES
+('Agricultura, Pecuária, Produção Florestal, Pesca e Aqüicultura'),
+('Indústrias Extrativas'),
+('Indústrias de Transformação'),
+('Eletricidade e Gás'),
+('Água, Esgoto, Atividades de Gestão de Resíduos e Descontaminação'),
+('Construção'),
+('Comércio; Reparação de Veículos Automotores e Motocicletas'),
+('Transporte, Armazenagem e Correio'),
+('Alojamento e Alimentação'),
+('Informação e Comunicação'),
+('Atividades Financeiras, de Seguros e Serviços Relacionados'),
+('Atividades Imobiliárias'),
+('Atividades Profissionais, Científicas e Técnicas'),
+('Atividades Administrativas e Serviços Complementares'),
+('Administração Pública, Defesa e Seguridade Social'),
+('Educação'),
+('Saúde Humana e Serviços Sociais'),
+('Artes, Cultura, Esporte e Recreação'),
+('Outras Atividades de Serviços');
