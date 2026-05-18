@@ -254,6 +254,8 @@ select {
   cursor: pointer;
   outline: none;
   transition: 0.2s;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 select:focus {
@@ -267,9 +269,32 @@ select:focus {
   height: 90% !important;
 }
 #pieChart {
+  flex: 1;
   width: 100% !important;
-  height: 90% !important;
+  height: 100% !important;
+  max-width: none;
+  display: block;
 }
+
+.graficoPie {
+  width: 380px;
+  height: 500px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#pieChart {
+  width: 100% !important;
+  max-width: 320px !important;
+
+  height: 400px !important;
+  max-height: 400px !important;
+
+  margin-top: 20px;
+}
+
 .graficoLinha {
   width: 90%;
   max-width: 1100px;
@@ -277,15 +302,8 @@ select:focus {
 }
 
 .graficoBar {
-  width: 40%;
-  max-width: 1100px;
+  width: 525px;
   height: 350px;
-}
-
-.graficoPie {
-  width: 90%;
-  max-width: 1100px;
-  height: 500px;
 }
 
 .smallIMG {
@@ -296,4 +314,20 @@ select:focus {
   display: flex;
   padding-bottom: 15px;
   padding-top: 15px;
+}
+
+input {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 9px;
+  border: 1px solid #ddd;
+  background-color: #eaeaea;
+  width: 280px;
+  border: 1.5px solid #1f7ae0;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #6b7a99;
+  background-color: #fff;
+  height: 43px;
 }
