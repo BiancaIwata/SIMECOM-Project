@@ -33,7 +33,7 @@ CREATE TABLE empresas (
     email VARCHAR(150),
     telefone VARCHAR(20),
     uf CHAR(2),
-    status TINYINT('ativo', 'inativo') DEFAULT 'ativo',
+    type CHAR(4) CONSTRAINT chek_type CHECK (type IN ('USER', 'ADM')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
@@ -87,7 +87,7 @@ CREATE TABLE reacoes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT NOT NULL,
     usuario_id INT NOT NULL,
-    tipo TINYINT('like', 'dislike') NOT NULL,
+    type CHAR(7) CONSTRAINT chk_like CHECK (type IN ('like', 'dislike')),
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (post_id, usuario_id),
     FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
