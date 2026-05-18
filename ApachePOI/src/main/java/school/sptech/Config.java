@@ -1,9 +1,5 @@
 package school.sptech;
 
-/**
- * Classe centralizada para leitura de variáveis de ambiente.
- * Garante que todas as configurações sejam validadas na inicialização.
- */
 public class Config {
 
     // ════════════════════════════════════════════════════════════════
@@ -23,11 +19,6 @@ public class Config {
     public static final String S3_BUCKET_NAME = getEnvOrDefault("S3_BUCKET_NAME", "simecom-s3");
     public static final String S3_REGION = getEnvOrDefault("AWS_REGION", "us-east-1");
     public static final String S3_PREFIX = getEnvOrDefault("S3_PREFIX", "01-raw/");
-
-    // ════════════════════════════════════════════════════════════════
-    // LOGGING
-    // ════════════════════════════════════════════════════════════════
-
     public static final String LOG_LEVEL = getEnvOrDefault("LOG_LEVEL", "INFO");
 
     // ════════════════════════════════════════════════════════════════
