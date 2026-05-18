@@ -1,0 +1,16 @@
+{
+  "importCsvPath": "data/IMP.csv",
+  "exportCsvPath": "data/EXP.csv",
+  "tradeType": "BOTH",
+  "yearStart": 1997,
+  "yearEnd": 1997,
+  "monthStart": 2,
+  "monthEnd": 6,
+  "sh4List": [],
+  "countryList": [],
+  "ufList": [],
+  "municipalityList": [],
+  "outputDirectory": "output",
+  "reportTitle": "Novo Relatorio Teste",
+  "prompt": "Gere insights iniciais sobre o recorte filtrado, destacando comparação entre importação e exportação, concentração por SH4 e comportamento mensal."
+}

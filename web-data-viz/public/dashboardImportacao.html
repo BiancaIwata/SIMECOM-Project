@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMECOM - Dashboard Exportação</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/dashboards.css">
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="./assets/logo.png" alt="Simecom">
+                </a>
+            </div>
+
+            <div class="user">
+                <div class="avatar">
+                    <a href="">
+                        <img src="./assets/Group 43.png">
+                    </a>
+                </div>
+                <p>Olá, <span id="nome_usuario">usuário</span>!</p>
+            </div>
+
+            <nav class="menu">
+                <ul>
+                    <li><a href="index.html">
+                            <img src="./assets/home_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="preferencias.html">
+                            <img src="./assets/check_box_padrao.png">
+                            Preferências
+                        </a>
+                    </li>
+                    <li><a href="forum.html">
+                            <img src="./assets/chat_bubble_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Fórum
+                        </a>
+                    </li>
+                    <li class="ativo">
+                        <a href="dashboard.html">
+                            <img src="./assets/space_dashboard_24dp_1F7AE0_FILL0_wght400_GRAD0_opsz24.png">
+                            Dashboards
+                        </a>
+                    </li>
+                    <li class="submenu">
+                        <a href="dashboardMacro.html" class="submenu-item">
+                            Macro
+                        </a>
+                        <a href="dashboardImportacao.html" class="submenu-item  active-text">
+                            Importação
+                        </a>
+                        <a href="dashboardExportacao.html" class="submenu-item">
+                            Exportação
+                        </a>
+                    </li>
+                    <li><a href="./configuracoes.html">
+                            <img src="./assets/icon_configuracoes.png">
+                            Configurações
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+<div class="main">
+            <h1>Importações</h1>
+
+            <div class="cards">
+                <div class="card">
+                    <h4>Total Importado</h4>
+                    <p>$78.897.000</p>
+                    <small class="detalhe">Valor CIF acumulado (2025)</small>
+                </div>
+
+                <div class="card">
+                    <h4>Operações</h4>
+                    <p>9.076</p>
+                    <small class="detalhe">Registro de Importações (YTD)</small>
+                </div>
+
+                <div class="card">
+                    <h4>Principal Origem</h4>
+                    <p>Rio de Janeiro</p>
+                    <small class="detalhe">Maior volume de entrada (Porto/Aeroporto)</small>
+                </div>
+
+                <div class="card">
+                    <h4>Crescimento (YoY)</h4>
+                    <p>45,7%</p>
+                    <small class="detalhe">Comparado ao mesmo período de 2024</small>
+                </div>
+            </div>
+
+            <div class="secao1">
+                <div class="box graficoLinha">
+                    <h3>Evolução Mensal de Importações (2019 - 2025)</h3>
+                    <canvas id="lineChart"></canvas>
+                </div>
+
+                <div class="box tabela">
+                    <h3>Top Municípios Importadores</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Município</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>São Paulo</td></tr>
+                            <tr><td>2</td><td>Rio de Janeiro</td></tr>
+                            <tr><td>3</td><td>Paranaguá</td></tr>
+                            <tr><td>4</td><td>Paracatu</td></tr>
+                            <tr><td>5</td><td>Ouro Fino</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="box">
+                    <h3>Distribuição por Categorias</h3>
+                    <canvas id="pieChart" style="max-width: 450px; margin: auto;"></canvas>
+                </div>
+
+                <div class="box">
+                    <h3>Variação Percentual de Importação</h3>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboardImportacao.js"></script>
+</body>
+
+</html>
+<script>
+    nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
+</script>

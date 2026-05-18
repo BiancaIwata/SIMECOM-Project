@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMECOM - Dashboard Exportação</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/dashboards.css">
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="./assets/logo.png" alt="Simecom">
+                </a>
+            </div>
+
+            <div class="user">
+                <div class="avatar">
+                    <a href="">
+                        <img src="./assets/Group 43.png">
+                    </a>
+                </div>
+                <p>Olá, <span id="nome_usuario">usuário</span>!</p>
+            </div>
+
+            <nav class="menu">
+                <ul>
+                    <li><a href="index.html">
+                            <img src="./assets/home_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="preferencias.html">
+                            <img src="./assets/check_box_padrao.png">
+                            Preferências
+                        </a>
+                    </li>
+                    <li><a href="forum.html">
+                            <img src="./assets/chat_bubble_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
+                            Fórum
+                        </a>
+                    </li>
+                    <li class="ativo">
+                        <a href="dashboard.html">
+                            <img src="./assets/space_dashboard_24dp_1F7AE0_FILL0_wght400_GRAD0_opsz24.png">
+                            Dashboards
+                        </a>
+                    </li>
+                    <li class="submenu">
+                        <a href="dashboardMacro.html" class="submenu-item">
+                            Macro
+                        </a>
+                        <a href="dashboardImportacao.html" class="submenu-item  active-text">
+                            Importação
+                        </a>
+                        <a href="dashboardExportacao.html" class="submenu-item">
+                            Exportação
+                        </a>
+                    </li>
+                    <li><a href="./configuracoes.html">
+                            <img src="./assets/icon_configuracoes.png">
+                            Configurações
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="main">
+            <h1>Setores Overview</h1>
+
+            <div class="cards">
+                <div class="card">
+                    <h4>Selecionar Periodo</h4>
+                    <select id="select-periodo" class="select">
+                        <option value="">Selecione...</option>
+                        <optgroup label="Ano">
+                            <option value="1997">1997</option>
+                            <option value="1998">1998</option>
+                            <option value="1999">1999</option>
+                            <option value="2000">2000</option>
+                            <option value="2001">2001</option>
+                            <option value="2002">2002</option>
+                            <option value="2003">2003</option>
+                            <option value="2004">2004</option>
+                            <option value="2005">2005</option>
+                            <option value="2006">2006</option>
+                            <option value="2007">2007</option>
+                            <option value="2008">2008</option>
+                            <option value="2009">2009</option>
+                            <option value="20010">2010</option>
+                            <option value="20011">2011</option>
+                            <option value="20012">2012</option>
+                            <option value="20013">2013</option>
+                            <option value="20014">2014</option>
+                            <option value="20015">2015</option>
+                            <option value="20016">2016</option>
+                            <option value="20017">2017</option>
+                            <option value="20018">2018</option>
+                            <option value="20019">2019</option>
+                            <option value="20020">2020</option>
+                            <option value="20021">2021</option>
+                        </optgroup>
+                    </select>
+                    <p>2020-2025</p>
+                    <small class="detalhe">Periodo selecionado para dashboard</small>
+                </div>
+
+
+                <div class="card">
+                    <h4>Exportação nos Ultimos 5 anos</h4>
+                    <div class="inside-img">
+                        <p>-69,0%</p><img class="smallIMG" src="./assets/low.png">
+                    </div>
+                    <small class="detalhe">Movimentação que houve ao longo de 5 anos</small>
+                </div>
+
+                <div class="card">
+                    <h4>Importação nos Ultimos 5 anos</h4>
+                    <div class="inside-img">
+                        <p>67,0%</p><img class="smallIMG" src="./assets/grow.png">
+                    </div>
+                    <small class="detalhe">Movimentação que houve ao longo de 5 anos</small>
+                </div>
+            </div>
+
+            <div class="secao1">
+                <div class="box graficoLinha">
+                    <h3>Situação Anual do Mercado Exterior</h3>
+                    <canvas id="lineChart"></canvas>
+                </div>
+
+                <div class="secao1">
+                    <div class="box graficoPie">
+                        <h3>Melhores setores dos ultimos 5 anos</h3>
+                        <small>Setores que mais movimentaram Capital,<br> somando importação e exportação.</small>
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bottom">
+                    <div class="graficoBar box">
+                        <h3>Top 5 Setores Importação</h3>
+                        <small>Os setores que mais movimentaram capital nos ultimos 5 anos somados</small>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                    <div class="graficoBar box">
+                        <h3>Top 5 Setores Exportação</h3>
+                        <small>Os setores que mais movimentaram capital nos ultimos 5 anos somados</small>
+                        <canvas id="barChart2"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="js/dashboardSetor.js"></script>
+</body>
+
+</html>
+<script>
+    nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
+</script>

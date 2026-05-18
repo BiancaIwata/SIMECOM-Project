@@ -33,12 +33,12 @@ import java.util.List;
  * =====================================================================
  */
 public class DataLoaderMain {
-
+    
     /** Prefixo (pasta) no bucket S3 */
     private static final String S3_PREFIX = Config.S3_PREFIX;
 
     /** Diretório local temporário para arquivos baixados do S3 */
-    private static final Path TEMP_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "simecom-s3");
+    private static final Path TEMP_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "simecom-bucket-s3");
 
     public static void main(String[] args) {
         Config.exibirConfiguracao();

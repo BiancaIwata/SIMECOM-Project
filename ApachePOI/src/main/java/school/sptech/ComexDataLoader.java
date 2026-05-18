@@ -214,9 +214,21 @@ public class ComexDataLoader {
         public void startRow(int rowNum) {
             currentRow.clear();
         }
-
         @Override
         public void endRow(int rowNum) {
+            if (currentRow.size() == 1) {
+                String unicaCelula = currentRow.values().iterator().next();
+
+                if (unicaCelula.contains(";")) {
+                    currentRow.clear();
+
+                    String[] cols = unicaCelula.replace("\"", "").split(";");
+
+                    for (int i = 0; i < cols.length; i++) {
+                        currentRow.put(i, cols[i]);
+                    }
+                }
+            }
             if (rowNum == 0) {
                 // ► Primeira linha = header
                 parseHeader();
@@ -288,7 +300,7 @@ public class ComexDataLoader {
             }
 
             for (Map.Entry<Integer, String> e : currentRow.entrySet()) {
-                headerMap.put(e.getKey(), e.getValue().trim().toUpperCase());
+                headerMap.put(e.getKey(), normalizeHeader(e.getValue()));
             }
 
             boolean temNCM = headerMap.containsValue("CO_NCM");
@@ -506,4 +518,12 @@ public class ComexDataLoader {
         while (s.length() < length) s = padChar + s;
         return s;
     }
+
+    private static String normalizeHeader(String s) {
+    if (s == null) return "";
+    return s
+        .replace('\u00A0', ' ') // remove non-breaking space (Excel LOVES this)
+        .trim()
+        .toUpperCase();
+}
 }

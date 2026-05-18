@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/preferencias2.css">
+    <link rel="stylesheet" href="css/configuracoes_adm.css">
     <link rel="icon" href="./assets/logo_simples.png" type="image/png">
-    <title>Preferências | SIMECOM</title>
+    <script src="./js/configuraAdm.js"></script>
+    <title>Configurações de Administrador | SIMECOM</title>
 </head>
 
 <body>
@@ -28,7 +29,7 @@
             </div>
 
             <nav class="menu">
-<ul>
+                <ul>
                     <li><a href="index.html">
                             <img src="./assets/home_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Home
@@ -45,7 +46,7 @@
                             Fórum
                         </a>
                     </li>
-                    <li><a href="./dashboard.html">
+                    <li><a href="./dashboardMacro.html">
                             <img src="./assets/space_dashboard_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
                             Dashboards
                         </a>
@@ -55,56 +56,24 @@
                             Configurações
                         </a>
                     </li>
+                    <li><a href="./configuracoes_adm.html">
+                            <img src="./assets/config_adm.png">
+                            Área do Administrador
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </aside>
 
         <main class="content">
+
             <div class="titulo">
-                <h1>Preferências</h1>
+                <h1>Configurações de Administrador</h1>
+            </div>
+            <!-- ------------------------------------------------------------ -->
+            <div class="card" id="allUsers">
             </div>
 
-            <div class="tabela-container">
-                <table class="tabela">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Estado</th>
-                            <th>Município</th>
-                            <th>Setor</th>
-                        </tr>
-                    </thead>
-                    <tbody class="tabela-body">
-                        <tr class="linha-clara">
-                            <td class="id">1</td>
-                            <td>São Paulo</td>
-                            <td class="municipio">São Paulo</td>
-                            <td>Tecnologia</td>
-                            <td class="acoes">
-                                <img class="btn-editar"
-                                    src="./assets/edit_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                                <img class="btn-excluir"
-                                    src="./assets/delete_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                            </td>
-                        </tr>
-
-                        <tr class="linha-escura">
-                            <td class="id">2</td>
-                            <td>São Paulo</td>
-                            <td class="municipio">São Paulo</td>
-                            <td>Tecnologia</td>
-                            <td class="acoes">
-                                <img class="btn-editar"
-                                    src="./assets/edit_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                                <img class="btn-excluir"
-                                    src="./assets/delete_24dp_0B3C5D_FILL0_wght400_GRAD0_opsz24 1.png">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
 </body>
 
 </html>

@@ -13,7 +13,7 @@ function auth(email, password) {
 }
 
 function getter(id) {
-  var instrucaoSql = `SELECT id, nome, email, senha FROM usuarios WHERE id = '${id}';`;
+  var instrucaoSql = `SELECT id, nome, email, senha, type FROM usuarios WHERE id = '${id}';`;
 
   return database.executar(instrucaoSql);
 }
