@@ -171,7 +171,7 @@ echo ""
 echo "🧪 Testando MySQL (RDS)..."
 if mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" -D "$DB_NAME" -e "SELECT NOW();" > /dev/null 2>&1; then
     echo "✓ Conexão RDS: OK"
-else
+else2
     echo "❌ Conexão RDS: FALHOU"
     exit 1
 fi
