@@ -182,12 +182,26 @@ public class DataLoaderMain {
         Path local = baixarDoS3(ctx.getS3Service(), key);
 
         DataProcessor processor;
-        if (fileName.startsWith("EXP_")) {
-            processor = new ExportacaoProcessor(ctx, extrairNomeArquivo(key));
+        if (fileName.contains("TABELAS_AUXILIARES")) {
+            processor =
+                    new TabelasAuxiliaresProcessor(ctx);
+        } else if (fileName.startsWith("EXP_")) {
+            processor =
+                    new ExportacaoProcessor(
+                            ctx,
+                            extrairNomeArquivo(key)
+                    );
         } else if (fileName.startsWith("IMP_")) {
-            processor = new ImportacaoProcessor(ctx, extrairNomeArquivo(key));
+            processor =
+                    new ImportacaoProcessor(
+                            ctx,
+                            extrairNomeArquivo(key)
+                    );
         } else {
-            System.err.printf("[AVISO] Arquivo '%s' não é reconhecido (EXP_ ou IMP_).%n", fileName);
+            System.err.printf(
+                    "[AVISO] Arquivo '%s' não é reconhecido.\n",
+                    fileName
+            );
             return;
         }
 

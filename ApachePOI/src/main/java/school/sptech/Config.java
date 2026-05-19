@@ -9,14 +9,15 @@ public class Config {
     public static final String DB_HOST = getEnvOrDefault("DB_HOST", "localhost");
     public static final String DB_PORT = getEnvOrDefault("DB_PORT", "3306");
     public static final String DB_NAME = getEnvOrDefault("DB_NAME", "simecom");
-    public static final String DB_USER = getEnvRequired("DB_USER");
-    public static final String DB_PASSWORD = getEnvRequired("DB_PASSWORD");
+    public static final String DB_USER = getEnvOrDefault("DB_USER", "root");
+    public static final String DB_PASSWORD = getEnvOrDefault("DB_PASSWORD", "123@Simecom123");
+
 
     // ════════════════════════════════════════════════════════════════
     // AWS S3
     // ════════════════════════════════════════════════════════════════
 
-    public static final String S3_BUCKET_NAME = getEnvOrDefault("S3_BUCKET_NAME", "simecom-s3");
+    public static final String S3_BUCKET_NAME = getEnvOrDefault("S3_BUCKET_NAME", "simecom-bucket-s3");
     public static final String S3_REGION = getEnvOrDefault("AWS_REGION", "us-east-1");
     public static final String S3_PREFIX = getEnvOrDefault("S3_PREFIX", "01-raw/");
     public static final String LOG_LEVEL = getEnvOrDefault("LOG_LEVEL", "INFO");
@@ -31,9 +32,9 @@ public class Config {
         String value = System.getenv(key);
         if (value == null || value.trim().isEmpty()) {
             throw new RuntimeException(String.format(
-                "[ERRO] Variável de ambiente obrigatória não está definida: %s%n" +
-                "Configure em .env ou nas variáveis do sistema.%n" +
-                "Veja .env.example para detalhes.", key));
+                    "[ERRO] Variável de ambiente obrigatória não está definida: %s%n" +
+                            "Configure em .env ou nas variáveis do sistema.%n" +
+                            "Veja .env.example para detalhes.", key));
         }
         return value;
     }
