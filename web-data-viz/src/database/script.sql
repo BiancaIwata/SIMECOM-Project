@@ -105,13 +105,11 @@ CREATE TABLE codigo_municipio (
 );
 
 -- =========================
--- TABELA: codigo_sh4
+-- TABELA: setores
 -- =========================
-CREATE TABLE codigo_sh4 (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    CO_SH4 CHAR(4) NOT NULL,
-    NO_SH4_POR VARCHAR(80) NOT NULL DEFAULT '',
-    UNIQUE (CO_SH4)
+CREATE TABLE setores (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(150)
 );
 
 -- =========================
@@ -125,11 +123,16 @@ CREATE TABLE codigo_pais (
 );
 
 -- =========================
--- TABELA: setores
+-- TABELA: codigo_sh4
 -- =========================
-CREATE TABLE setores (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(150)
+CREATE TABLE codigo_sh4 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    CO_SH4 CHAR(4) NOT NULL,
+    NO_SH4_POR VARCHAR(80) NOT NULL DEFAULT '',
+    fk_setor INT NULL,
+	CONSTRAINT fk_codigo_sh4_setor
+	FOREIGN KEY (fk_setor) REFERENCES setores(id),
+    UNIQUE (CO_SH4)
 );
 
 -- =========================
@@ -221,3 +224,29 @@ INSERT INTO setores (nome) VALUES
 ('Armas e Munições'),
 ('Mercadorias e Produtos Diversos'),
 ('Objetos de Arte e Antiguidades');
+
+UPDATE codigo_sh4
+SET fk_setor = CASE
+    WHEN LEFT(CO_SH4, 2) BETWEEN '01' AND '05' THEN 1
+    WHEN LEFT(CO_SH4, 2) BETWEEN '06' AND '14' THEN 2
+    WHEN LEFT(CO_SH4, 2) = '15' THEN 3
+    WHEN LEFT(CO_SH4, 2) BETWEEN '16' AND '24' THEN 5
+    WHEN LEFT(CO_SH4, 2) BETWEEN '25' AND '27' THEN 6
+    WHEN LEFT(CO_SH4, 2) BETWEEN '28' AND '38' THEN 7
+    WHEN LEFT(CO_SH4, 2) BETWEEN '39' AND '40' THEN 8
+    WHEN LEFT(CO_SH4, 2) BETWEEN '41' AND '43' THEN 9
+    WHEN LEFT(CO_SH4, 2) BETWEEN '44' AND '46' THEN 10
+    WHEN LEFT(CO_SH4, 2) BETWEEN '47' AND '49' THEN 11
+    WHEN LEFT(CO_SH4, 2) BETWEEN '50' AND '63' THEN 12
+    WHEN LEFT(CO_SH4, 2) BETWEEN '64' AND '67' THEN 13
+    WHEN LEFT(CO_SH4, 2) BETWEEN '68' AND '70' THEN 14
+    WHEN LEFT(CO_SH4, 2) = '71' THEN 15
+    WHEN LEFT(CO_SH4, 2) BETWEEN '72' AND '83' THEN 16
+    WHEN LEFT(CO_SH4, 2) BETWEEN '84' AND '85' THEN 17
+    WHEN LEFT(CO_SH4, 2) BETWEEN '86' AND '89' THEN 18
+    WHEN LEFT(CO_SH4, 2) = '93' THEN 19
+    WHEN LEFT(CO_SH4, 2) BETWEEN '94' AND '96' THEN 20
+    WHEN LEFT(CO_SH4, 2) = '97' THEN 21
+    ELSE fk_setor
+END
+WHERE id >= 1;
