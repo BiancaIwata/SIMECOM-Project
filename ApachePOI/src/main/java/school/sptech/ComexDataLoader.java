@@ -78,8 +78,8 @@ public class ComexDataLoader {
         @Override
         public String toString() {
             return String.format(
-                "ResultadoCarregamento(total=%,d, inseridos=%,d, ignorados=%,d, erros=%,d, formato=%s)",
-                totalLinhas, inseridos, ignorados, erros, formato
+                    "ResultadoCarregamento(total=%,d, inseridos=%,d, ignorados=%,d, erros=%,d, formato=%s)",
+                    totalLinhas, inseridos, ignorados, erros, formato
             );
         }
     }
@@ -150,11 +150,11 @@ public class ComexDataLoader {
                 log.imprimirResumo();
 
                 return new ResultadoCarregamento(
-                    handler.getTotalLinhas(),
-                    handler.getInseridos(),
-                    handler.getIgnorados(),
-                    handler.getErros(),
-                    handler.getFormato().toString()
+                        handler.getTotalLinhas(),
+                        handler.getInseridos(),
+                        handler.getIgnorados(),
+                        handler.getErros(),
+                        handler.getFormato().toString()
                 );
             }
         }
@@ -185,6 +185,8 @@ public class ComexDataLoader {
 
         private Formato formato;
         private PreparedStatement ps;
+        private PreparedStatement psSh4;
+        private PreparedStatement psPais;
         private boolean autoCommitOriginal;
 
         private int totalLinhas = 0;
@@ -251,13 +253,17 @@ public class ComexDataLoader {
                     return;
                 }
 
-                // Auto-inserir códigos SH4 e País desconhecidos
+                // Auto-inserir códigos SH4 e País desconhecidos em batch
+                // Observação: executamos os batches de FK antes do batch principal
+                // para não quebrar as constraints do banco.
                 if (!sh4Conhecidos.contains(dados.sh4)) {
-                    inserirCodigoSh4(conn, dados.sh4);
+                    psSh4.setString(1, dados.sh4);
+                    psSh4.addBatch();
                     sh4Conhecidos.add(dados.sh4);
                 }
                 if (!paisConhecidos.contains(dados.pais)) {
-                    inserirCodigoPais(conn, dados.pais);
+                    psPais.setString(1, dados.pais);
+                    psPais.addBatch();
                     paisConhecidos.add(dados.pais);
                 }
 
@@ -266,8 +272,7 @@ public class ComexDataLoader {
                 inseridos++;
 
                 if (inseridos % BATCH_SIZE == 0) {
-                    ps.executeBatch();
-                    conn.commit();
+                    executarBatches();
                 }
 
             } catch (NumberFormatException e) {
@@ -322,6 +327,10 @@ public class ComexDataLoader {
                 autoCommitOriginal = conn.getAutoCommit();
                 conn.setAutoCommit(false);
                 ps = conn.prepareStatement(sql);
+                psSh4 = conn.prepareStatement(
+                        "INSERT IGNORE INTO codigo_sh4 (CO_SH4, NO_SH4_POR) VALUES (?, '')");
+                psPais = conn.prepareStatement(
+                        "INSERT IGNORE INTO codigo_pais (CO_PAIS, NO_PAIS) VALUES (?, '')");
             } catch (Exception ex) {
                 throw new RuntimeException("Falha ao preparar SQL: " + ex.getMessage(), ex);
             }
@@ -329,12 +338,19 @@ public class ComexDataLoader {
             headerParsed = true;
         }
 
-        /** Flush do batch restante + fechar PreparedStatement */
+        /** Executa os batches pendentes respeitando a ordem das FKs antes da tabela principal. */
+        private void executarBatches() throws Exception {
+            psSh4.executeBatch();
+            psPais.executeBatch();
+            ps.executeBatch();
+            conn.commit();
+        }
+
+        /** Flush do batch restante + fechar PreparedStatements */
         void flushBatch() {
             if (ps == null) return;
             try {
-                ps.executeBatch();
-                conn.commit();
+                executarBatches();
             } catch (Exception e) {
                 System.err.println("[ERRO] Falha no flush final: " + e.getMessage());
                 try {
@@ -344,11 +360,22 @@ public class ComexDataLoader {
                 }
             } finally {
                 try {
+                    fecharSilenciosamente(psSh4);
+                    fecharSilenciosamente(psPais);
+                    fecharSilenciosamente(ps);
                     conn.setAutoCommit(autoCommitOriginal);
-                    ps.close();
                 } catch (Exception e) {
                     System.err.println("[ERRO] Falha ao restaurar autoCommit/fechar PS: " + e.getMessage());
                 }
+            }
+        }
+
+        private void fecharSilenciosamente(PreparedStatement stmt) {
+            if (stmt == null) return;
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                System.err.println("[AVISO] Falha ao fechar PreparedStatement: " + e.getMessage());
             }
         }
     }
@@ -454,12 +481,12 @@ public class ComexDataLoader {
     private static String montarSql(String tabela, Formato formato) {
         if (formato == Formato.NCM) {
             return String.format(
-                "INSERT INTO %s (CO_ANO, CO_MES, CO_NCM, SH4, CO_PAIS, SG_UF_MUN, CO_VIA, CO_URF, QT_ESTAT, KG_LIQUIDO, VL_FOB) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tabela);
+                    "INSERT INTO %s (CO_ANO, CO_MES, CO_NCM, SH4, CO_PAIS, SG_UF_MUN, CO_VIA, CO_URF, QT_ESTAT, KG_LIQUIDO, VL_FOB) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tabela);
         } else {
             return String.format(
-                "INSERT INTO %s (CO_ANO, CO_MES, SH4, CO_PAIS, CO_MUN, SG_UF_MUN, KG_LIQUIDO, VL_FOB) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", tabela);
+                    "INSERT INTO %s (CO_ANO, CO_MES, SH4, CO_PAIS, CO_MUN, SG_UF_MUN, KG_LIQUIDO, VL_FOB) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", tabela);
         }
     }
 
@@ -530,10 +557,10 @@ public class ComexDataLoader {
     }
 
     private static String normalizeHeader(String s) {
-    if (s == null) return "";
-    return s
-        .replace('\u00A0', ' ') // remove non-breaking space (Excel LOVES this)
-        .trim()
-        .toUpperCase();
-}
+        if (s == null) return "";
+        return s
+                .replace('\u00A0', ' ') // remove non-breaking space (Excel LOVES this)
+                .trim()
+                .toUpperCase();
+    }
 }
