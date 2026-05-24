@@ -1,3 +1,8 @@
+var chartLine = null;
+var chartBar = null;
+var chartBar2 = null;
+var chartPie = null;
+
 document.getElementById("select-periodo").addEventListener("change", function () {
     var anoInicial = Number(this.value);
 
@@ -33,6 +38,8 @@ function buscarSituacaoMercado(anoInicial) {
 }
 
 function plotarGraficoLinhas(dados) {
+  if (chartLine) chartLine.destroy();
+
   var labels = [];
   var importacoes = [];
   var exportacoes = [];
@@ -43,88 +50,72 @@ function plotarGraficoLinhas(dados) {
     exportacoes.push(dados[i].exportacoes_milhoes_usd);
   }
 
-  const ctx = document.getElementById("lineChart");
-
-  new Chart(ctx, {
+  chartLine = new Chart(document.getElementById("lineChart"), {
     type: "line",
+
     data: {
       labels: labels,
+
       datasets: [
         {
           label: "Importações (Milhões USD$)",
           data: importacoes,
-          borderColor: "#0036c9",
-          backgroundColor: "rgba(0, 77, 201, 0.1)",
+
+          borderColor: "#0a9317",
+          backgroundColor: "rgba(34,197,94,0.12)",
+
           fill: true,
           tension: 0.45,
           borderWidth: 4,
-          pointBackgroundColor: "#0036c9",
-          pointBorderColor: "#ffffff",
-          pointBorderWidth: 2,
-          pointRadius: 5,
+
+          pointRadius: 6,
           pointHoverRadius: 8,
-          pointHoverBackgroundColor: "#0036c9",
+
+          pointBackgroundColor: "#0a9317",
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
         },
+
         {
           label: "Exportações (Milhões USD$)",
           data: exportacoes,
-          borderColor: "#0a9317",
-          backgroundColor: "rgba(21, 179, 18, 0.1)",
+
+          borderColor: "#0036c9",
+          backgroundColor: "rgba(0, 77, 201, 0.1)",
+
           fill: true,
           tension: 0.45,
           borderWidth: 4,
-          pointBackgroundColor: "#0a9317",
-          pointBorderColor: "#ffffff",
-          pointBorderWidth: 2,
-          pointRadius: 5,
+
+          pointRadius: 6,
           pointHoverRadius: 8,
-          pointHoverBackgroundColor: "#0a9317",
+
+          pointBackgroundColor: "#0036c9",
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
         },
       ],
     },
+
     options: {
       responsive: true,
       maintainAspectRatio: false,
-
-      interaction: {
-        mode: "index",
-        intersect: false,
-      },
 
       plugins: {
         legend: {
           position: "top",
 
           labels: {
-            color: "#111827",
+            usePointStyle: true,
+            pointStyle: "circle",
+
+            padding: 30,
+
+            color: "#1f2937",
 
             font: {
               size: 14,
               weight: "bold",
-            },
-
-            padding: 20,
-            usePointStyle: true,
-            pointStyle: "circle",
-          },
-        },
-
-        tooltip: {
-          backgroundColor: "#ffffff",
-
-          titleColor: "#111827",
-          bodyColor: "#374151",
-
-          borderColor: "#e5e7eb",
-          borderWidth: 1,
-
-          padding: 12,
-
-          displayColors: true,
-
-          callbacks: {
-            label: function (context) {
-              return ` ${context.dataset.label}: $${context.parsed.y}M`;
             },
           },
         },
@@ -138,11 +129,7 @@ function plotarGraficoLinhas(dados) {
           },
 
           ticks: {
-            color: "#374151",
-
-            font: {
-              size: 12,
-            },
+            color: "#6b7280",
           },
         },
 
@@ -155,28 +142,18 @@ function plotarGraficoLinhas(dados) {
           },
 
           ticks: {
-            color: "#374151",
+            color: "#6b7280",
 
-            callback: function (value) {
+            callback: function(value) {
               return "$" + value + "M";
-            },
-          },
-        },
-      },
-
-      animation: {
-        duration: 1800,
-        easing: "easeOutQuart",
-      },
-
-      elements: {
-        line: {
-          cubicInterpolationMode: "monotone",
-        },
-      },
+            }
+          }
+        }
+      }
     }
   });
 }
+
 
 function buscarTopSetores(anoInicial) {
   fetch(`/setores/buscarTopSetores?anoInicial=${anoInicial}`, { cache: 'no-store' })
@@ -193,15 +170,18 @@ function buscarTopSetores(anoInicial) {
 
 // Gráfico de Rosca (Categorias)
 function plotarGraficoPie(dados) {
+  if (chartPie) chartPie.destroy();
+
   var labels = [];
   var valores = [];
 
   for (var i = 0; i < 4; i++) {
-    labels.push(String(dados[i].nome));
+    labels.push(dados[i].nome);
     valores.push(dados[i].valor_total);
   }
 
   var outros = 0;
+
   for (var i = 4; i < dados.length; i++) {
     outros += dados[i].valor_total;
   }
@@ -211,88 +191,52 @@ function plotarGraficoPie(dados) {
 
   chartPie = new Chart(document.getElementById("pieChart"), {
     type: "doughnut",
+
     data: {
       labels: labels,
+
       datasets: [{
         data: valores,
+
         backgroundColor: [
-          "#3b82f6", // azul
-          "#22c55e", // verde
-          "#f59e0b", // amarelo
-          "#ef4444", // vermelho
-          "#8b5cf6", // roxo
+          "#3b82f6",
+          "#22c55e",
+          "#f59e0b",
+          "#ef4444",
+          "#8b5cf6"
         ],
 
-        hoverBackgroundColor: [
-          "#60a5fa",
-          "#4ade80",
-          "#fbbf24",
-          "#f87171",
-          "#a78bfa",
-        ],
+        borderWidth: 8,
+        borderColor: "#fff",
 
-        borderWidth: 5,
-        borderColor: "#ffffff",
-
-        hoverOffset: 18,
-        spacing: 6,
-        cutout: "68%",
+        cutout: "72%",
+        hoverOffset: 6,
       }]
     },
+
     options: {
       responsive: true,
       maintainAspectRatio: false,
-
-      layout: {
-        padding: 25,
-      },
-
-      animation: {
-        animateRotate: true,
-        animateScale: true,
-
-        duration: 1800,
-        easing: "easeOutQuart",
-      },
 
       plugins: {
         legend: {
           position: "bottom",
 
           labels: {
-            color: "#111827",
-
-            padding: 22,
             usePointStyle: true,
             pointStyle: "circle",
+
+            padding: 24,
+
+            color: "#111827",
 
             font: {
               size: 13,
               weight: "bold",
-            },
-          },
-        },
-
-        tooltip: {
-          backgroundColor: "#ffffff",
-
-          titleColor: "#111827",
-          bodyColor: "#374151",
-
-          borderColor: "#e5e7eb",
-          borderWidth: 1,
-
-          padding: 12,
-
-          callbacks: {
-            label: function (context) {
-              return (
-                " " + context.label + ": " + context.parsed + "% da participação"
-              );
-            },
-          },
-        },
-      },
+            }
+          }
+        }
+      }
     }
   });
 }
@@ -310,148 +254,10 @@ function buscarTopSetoresImportacao(anoInicial) {
     });
 }
 
-// Gráfico de Barras (Crescimento)
 function plotarGraficoBarImportacao(dados) {
-  var labels = [];
-  var valores = [];
-
-  for (var i = 0; i < 4; i++) {
-    labels.push(String(dados[i].nome));
-    valores.push(dados[i].valor_total / 1000000).toFixed(2);
-  }
-
-  var outros = 0;
-  for (var i = 4; i < dados.length; i++) {
-    outros += dados[i].valor_total;
-  }
-
-  labels.push("Outros");
-  valores.push(outros / 1000000).toFixed(2);
-
-  chartBar = new Chart(document.getElementById("barChart"), {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Importação",
-        data: valores,
-        backgroundColor: [
-          "#3b82f6", // azul
-          "#22c55e", // verde
-          "#f59e0b", // amarelo
-          "#ef4444", // vermelho
-          "#8b5cf6", // roxo
-        ],
-
-        hoverBackgroundColor: [
-          "#60a5fa",
-          "#4ade80",
-          "#fbbf24",
-          "#f87171",
-          "#a78bfa",
-        ],
-
-        borderWidth: 5,
-        borderColor: "#ffffff",
-
-        hoverOffset: 18,
-        spacing: 6,
-      }]
-    },
-    options: {
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-
-        layout: {
-          padding: {
-            left: 20,
-            right: 20,
-            top: 10,
-            bottom: 10,
-          },
-        },
-
-        animation: {
-          duration: 1800,
-          easing: "easeOutQuart",
-        },
-
-        plugins: {
-          legend: {
-            position: "top",
-
-            labels: {
-              color: "#111827",
-
-              font: {
-                size: 14,
-                weight: "bold",
-              },
-
-              padding: 20,
-              usePointStyle: true,
-            },
-          },
-
-          tooltip: {
-            backgroundColor: "#ffffff",
-            titleColor: "#111827",
-            bodyColor: "#374151",
-
-            borderColor: "#e5e7eb",
-            borderWidth: 1,
-
-            padding: 12,
-
-            callbacks: {
-              label: function (context) {
-                return " Valor movimentado: $" + context.parsed.y + "M";
-              },
-            },
-          },
-        },
-
-        scales: {
-          x: {
-            offset: true,
-
-            grid: {
-              display: false,
-            },
-
-            ticks: {
-              color: "#374151",
-
-              font: {
-                size: 13,
-                weight: "bold",
-              },
-            },
-          },
-
-          y: {
-            beginAtZero: true,
-
-            grid: {
-              color: "rgba(0,0,0,0.05)",
-              drawBorder: false,
-            },
-
-            ticks: {
-              color: "#6b7280",
-
-              callback: function (value) {
-                return "$" + value + "M";
-              },
-            },
-          },
-        },
-      },
-    }
-  });
+  chartBar = criarGraficoBarra("barChart", dados, chartBar);
 }
-
+// Gráfico de Barras (Crescimento)
 function buscarTopSetoresExportacao(anoInicial) {
     fetch(`/setores/buscarTopSetoresExportacao?anoInicial=${anoInicial}`, { cache: 'no-store' })
         .then(function (response) {
@@ -466,145 +272,133 @@ function buscarTopSetoresExportacao(anoInicial) {
 }
 
 function plotarGraficoBarExportacao(dados) {
+  chartBar2 = criarGraficoBarra("barChart2", dados, chartBar2);
+}
+
+function criarGraficoBarra(idCanvas, dados, chartAtual) {
+
+  if (chartAtual) chartAtual.destroy();
+
   var labels = [];
   var valores = [];
 
   for (var i = 0; i < 4; i++) {
-    labels.push(String(dados[i].nome));
-    valores.push(dados[i].valor_total / 1000000).toFixed(2);
+    labels.push(dados[i].nome);
+    valores.push((dados[i].valor_total / 1000000).toFixed(0));
   }
 
   var outros = 0;
+
   for (var i = 4; i < dados.length; i++) {
     outros += dados[i].valor_total;
   }
 
   labels.push("Outros");
-  valores.push(outros / 1000000).toFixed(2);
+  valores.push((outros / 1000000).toFixed(0));
 
-  chartBar = new Chart(document.getElementById("barChart2"), {
+  return new Chart(document.getElementById(idCanvas), {
+
     type: "bar",
+
     data: {
       labels: labels,
+
       datasets: [{
-        label: "Exportação",
         data: valores,
+
         backgroundColor: [
-          "#3b82f6", // azul
-          "#22c55e", // verde
-          "#f59e0b", // amarelo
-          "#ef4444", // vermelho
-          "#8b5cf6", // roxo
+          "#3b82f6",
+          "#22c55e",
+          "#f59e0b",
+          "#ef4444",
+          "#8b5cf6"
         ],
 
-        hoverBackgroundColor: [
-          "#60a5fa",
-          "#4ade80",
-          "#fbbf24",
-          "#f87171",
-          "#a78bfa",
-        ],
+        borderRadius: 18,
+        borderSkipped: false,
 
-        borderWidth: 5,
-        borderColor: "#ffffff",
-
-        hoverOffset: 18,
-        spacing: 6,
+        barThickness: 65,
       }]
     },
+
     options: {
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
 
-        layout: {
-          padding: {
-            left: 20,
-            right: 20,
-            top: 10,
-            bottom: 10,
-          },
+      plugins: {
+        legend: {
+          display: true,
+
+          position: "top",
+
+          labels: {
+            generateLabels(chart) {
+              return labels.map((label, i) => ({
+                text: label,
+                fillStyle: chart.data.datasets[0].backgroundColor[i],
+                strokeStyle: chart.data.datasets[0].backgroundColor[i],
+                hidden: false,
+                index: i,
+                pointStyle: "circle"
+              }));
+            },
+
+            usePointStyle: true,
+
+            color: "#111827",
+
+            padding: 25,
+
+            font: {
+              size: 14,
+              weight: "bold",
+            }
+          }
         },
 
-        animation: {
-          duration: 1800,
-          easing: "easeOutQuart",
-        },
-
-        plugins: {
-          legend: {
-            position: "top",
-
-            labels: {
-              color: "#111827",
-
-              font: {
-                size: 14,
-                weight: "bold",
-              },
-
-              padding: 20,
-              usePointStyle: true,
-            },
-          },
-
-          tooltip: {
-            backgroundColor: "#ffffff",
-            titleColor: "#111827",
-            bodyColor: "#374151",
-
-            borderColor: "#e5e7eb",
-            borderWidth: 1,
-
-            padding: 12,
-
-            callbacks: {
-              label: function (context) {
-                return " Valor movimentado: $" + context.parsed.y + "M";
-              },
-            },
-          },
-        },
-
-        scales: {
-          x: {
-            offset: true,
-
-            grid: {
-              display: false,
-            },
-
-            ticks: {
-              color: "#374151",
-
-              font: {
-                size: 13,
-                weight: "bold",
-              },
-            },
-          },
-
-          y: {
-            beginAtZero: true,
-
-            grid: {
-              color: "rgba(0,0,0,0.05)",
-              drawBorder: false,
-            },
-
-            ticks: {
-              color: "#6b7280",
-
-              callback: function (value) {
-                return "$" + value + "M";
-              },
-            },
-          },
-        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return "$" + context.parsed.y + "M";
+            }
+          }
+        }
       },
+
+      scales: {
+
+        x: {
+          grid: {
+            display: false,
+          },
+
+          ticks: {
+            display: false
+          }
+        },
+
+        y: {
+          beginAtZero: true,
+
+          grid: {
+            color: "rgba(0,0,0,0.05)",
+            drawBorder: false,
+          },
+
+          ticks: {
+            color: "#6b7280",
+
+            callback: function(value) {
+              return "$" + value + "M";
+            }
+          }
+        }
+      }
     }
   });
 }
+
+
 
 buscarSituacaoMercado(2021);
 buscarTopSetores(2021);
