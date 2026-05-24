@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMECOM - Dashboard Setores</title>
+    <title>SIMECOM - Dashboard Municípios</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./css/dashboards.css">
 </head>
@@ -52,10 +52,10 @@
                         </a>
                     </li>
                     <li class="submenu">
-                        <a href="dashboardSetor.html" class="submenu-item  active-text">
+                        <a href="dashboardSetor.html" class="submenu-item">
                             Setores
                         </a>
-                        <a href="dashboardMunicipio.html" class="submenu-item">
+                        <a href="dashboardMunicipio.html" class="submenu-item active-text">
                             Municípios
                         </a>
                     </li>
@@ -69,7 +69,7 @@
         </aside>
 
         <div class="main">
-            <h1>Setores 20XY-20YX</h1>
+            <h1>Municípios 20XY-20YX</h1>
 
             <div class="cards">
                 <div class="card">
@@ -90,18 +90,18 @@
                             <option value="2007">2007</option>
                             <option value="2008">2008</option>
                             <option value="2009">2009</option>
-                            <option value="2010">2010</option>
-                            <option value="2011">2011</option>
-                            <option value="2012">2012</option>
-                            <option value="2013">2013</option>
-                            <option value="2014">2014</option>
-                            <option value="2015">2015</option>
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
+                            <option value="20010">2010</option>
+                            <option value="20011">2011</option>
+                            <option value="20012">2012</option>
+                            <option value="20013">2013</option>
+                            <option value="20014">2014</option>
+                            <option value="20015">2015</option>
+                            <option value="20016">2016</option>
+                            <option value="20017">2017</option>
+                            <option value="20018">2018</option>
+                            <option value="20019">2019</option>
+                            <option value="20020">2020</option>
+                            <option value="20021">2021</option>
                         </optgroup>
                     </select>
 
@@ -110,52 +110,83 @@
 
 
                 <div class="card">
-                    <h4>Exportação nos últimos 5 anos</h4>
-                    <div class="inside-img">
-                        <p>-69,0%</p><img class="smallIMG" src="./assets/low.png">
+                    <h4>Selecionar Munícipio</h4>
+                    <div class="select">
+                        <input class="select_estado" type="text" id="cidadeInput" placeholder="Ex: São..."
+                            autocomplete="off">
+                        <div id="suggestions" class="suggestions"></div>
                     </div>
-                    <small class="detalhe">Movimentação que houve ao longo de 5 anos</small>
+                    <small class="detalhe">Município selecionado para dashboard</small>
                 </div>
 
                 <div class="card">
-                    <h4>Importação nos últimos 5 anos</h4>
+                    <h4>Movimentação nos Últimos 5 anos</h4>
                     <div class="inside-img">
-                        <p>67,0%</p><img class="smallIMG" src="./assets/grow.png">
+                        <p>42,0%</p><img class="smallIMG" src="./assets/grow.png">
                     </div>
-                    <small class="detalhe">Movimentação que houve ao longo de 5 anos</small>
+                    <small class="detalhe">Reference ao município selecionado</small>
                 </div>
+
             </div>
 
             <div class="secao1">
                 <div class="box graficoLinha">
-                    <h3>Situação Anual do Mercado Exterior</h3>
+                    <h3>Situação Anual de São Paulo</h3>
                     <canvas id="lineChart"></canvas>
                 </div>
 
-                <div class="secao1">
-                    <div class="box graficoPie">
-                        <h3>Melhores setores dos últimos 5 anos</h3>
-                        <small>Setores que mais movimentaram Capital,<br> somando importação e exportação.</small>
-                        <canvas id="pieChart"></canvas>
-                    </div>
+                <div class="box tabela">
+                    <h3>Top 10 Municípios Mais Ativos</h3>
+                    <small>Municípios que mais tiveram atividade econômica nos últimos 5 anos</small>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Município</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>São Paulo</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Rio de Janeiro</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Paranaguá</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Paracatu</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Ouro Fino</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <div class="bottom">
-                    <div class="graficoBar box">
-                        <h3>Top 5 Setores Importação</h3>
-                        <small>Os setores que mais movimentaram capital nos últimos 5 anos somados</small>
-                        <canvas id="barChart"></canvas>
-                    </div>
-                    <div class="graficoBar box">
-                        <h3>Top 5 Setores Exportação</h3>
-                        <small>Os setores que mais movimentaram capital nos últimos 5 anos somados</small>
-                        <canvas id="barChart2"></canvas>
-                    </div>
+            <div class="bottom">
+                <div class="graficoBar box">
+                    <h3>Top 5 Municípios Importação</h3>
+                    <small>Os municípios que mais movimentaram capital nos últimos 5 anos somados</small>
+                    <canvas id="barChart"></canvas>
+                </div>
+                <div class="graficoBar box">
+                    <h3>Top 5 Municípios Exportação</h3>
+                    <small>Os municípios que mais movimentaram capital nos últimos 5 anos somados</small>
+                    <canvas id="barChart2"></canvas>
                 </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="js/dashboardSetor.js"></script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboardMunicipio.js"></script>
 </body>
 
 </html>

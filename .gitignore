@@ -1,0 +1,84 @@
+# Git ignore para SIMECOM Project
+
+# ====================================================================
+# ARQUIVOS SENSÍVEIS (NUNCA COMMITIR!)
+# ====================================================================
+
+# Variáveis de ambiente com credenciais reais
+.env
+.env.local
+.env.*.local
+.env.production
+
+# AWS Credentials
+.aws/
+.awscliv2/
+aws_config
+aws_credentials
+
+# SSH Keys
+*.pem
+*.key
+*.pub
+
+# ====================================================================
+# LOMBOK / IDE
+# ====================================================================
+
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ====================================================================
+# BUILD / MAVEN
+# ====================================================================
+
+target/
+*.class
+*.jar
+*.war
+*.nar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.m2/
+
+# ====================================================================
+# OS
+# ====================================================================
+
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.directory
+
+# ====================================================================
+# LOGS
+# ====================================================================
+
+*.log
+logs/
+*.out
+
+# ====================================================================
+# TEMP
+# ====================================================================
+
+tmp/
+temp/
+*.tmp
+*.bak

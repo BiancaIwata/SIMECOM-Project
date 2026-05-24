@@ -14,11 +14,6 @@ import java.util.List;
  *   ► Sucesso na inserção de cada arquivo (com contagem de linhas)
  *   ► Erros por linha, identificando arquivo + número da linha + mensagem
  *
- * Uso:
- *   logJava log = new logJava("EXP_2025.xlsx");
- *   log.sucesso(1709746, 0);           // inserção concluída
- *   log.erro(3042, "FK inválida");      // erro na linha 3042
- *   log.imprimirResumo();               // relatório final
  */
 public class logJava {
 
@@ -51,61 +46,28 @@ public class logJava {
 
     //  REGISTRO DE SUCESSO
     
-    /**
-     * Registra que a inserção do arquivo foi concluída com sucesso.
-     *
-     * @param inseridas  Quantidade de linhas efetivamente inseridas
-     * @param ignoradas  Quantidade de linhas ignoradas (FK inválida, vazias, etc.)
-     */
     public void sucesso(int inseridas, int ignoradas) {
         this.linhasInseridas = inseridas;
         this.linhasIgnoradas = ignoradas;
         this.concluido = true;
-        String ts = LocalDateTime.now().format(FMT);
-        System.out.printf("[LOG %s] SUCESSO — Arquivo '%s': %,d linhas inseridas, %,d ignoradas.%n",
-                ts, nomeArquivo, inseridas, ignoradas);
     }
 
     // REGISTRO DE ERRO POR LINHA
 
-    /**
-     * Registra um erro ocorrido em uma linha específica do arquivo.
-     *
-     * @param linha    Número da linha no CSV (1-based)
-     * @param mensagem Descrição do erro
-     */
     public void erro(int linha, String mensagem) {
         String ts = LocalDateTime.now().format(FMT);
         erros.add(new RegistroErro(linha, mensagem, ts));
-        System.err.printf("[LOG %s] ERRO — Arquivo '%s', linha %d: %s%n",
-                ts, nomeArquivo, linha, mensagem);
     }
 
     //  RELATÓRIO FINAL
 
-    /**
-     * Imprime um resumo completo da operação (sucesso + todos os erros).
-     */
     public void imprimirResumo() {
-        System.out.println();
-        System.out.println("###################################################");
-        System.out.println("#                   LOG — RESUMO                  #");
-        System.out.println("###################################################");
-        System.out.printf("  Arquivo          : %s%n", nomeArquivo);
-        System.out.printf("  Status           : %s%n", concluido ? "CONCLUÍDO" : "NÃO FINALIZADO");
-        System.out.printf("  Linhas inseridas : %,d%n", linhasInseridas);
-        System.out.printf("  Linhas ignoradas : %,d%n", linhasIgnoradas);
-        System.out.printf("  Total de erros   : %,d%n", erros.size());
+        System.out.printf("%s | inseridas=%d | ignoradas=%d | erros=%d%n",
+                nomeArquivo, linhasInseridas, linhasIgnoradas, erros.size());
     }
 
     //  SALVAR NO BANCO DE DADOS
 
-    /**
-     * Salva o resumo da carga na tabela log_java do banco de dados.
-     * Grava as mesmas informações que o imprimirResumo() exibe no console.
-     *
-     * @param conn Conexão ativa com o banco MySQL
-     */
     public void salvarNoBanco(Connection conn) {
         String sql = "INSERT INTO log_java (nome_arquivo, status, linhas_inseridas, linhas_ignoradas, total_erros, data_hora) "
                    + "VALUES (?, ?, ?, ?, ?, NOW())";
@@ -117,9 +79,20 @@ public class logJava {
             ps.setInt(4, linhasIgnoradas);
             ps.setInt(5, erros.size());
             ps.executeUpdate();
-            System.out.println("[LOG] Resumo salvo no banco de dados (tabela log_java).");
+
+            // ✅ COMMIT EXPLÍCITO — força confirmação no banco
+            if (!conn.getAutoCommit()) {
+                conn.commit();
+            }
         } catch (Exception e) {
-            System.err.println("[LOG] Erro ao salvar log no banco: " + e.getMessage());
+            System.err.println("[ERRO] Falha ao salvar log: " + e.getMessage());
+            try {
+                if (!conn.getAutoCommit()) {
+                    conn.rollback();
+                }
+            } catch (Exception rollbackEx) {
+                System.err.println("[ERRO] Falha ao fazer rollback: " + rollbackEx.getMessage());
+            }
         }
     }
 
