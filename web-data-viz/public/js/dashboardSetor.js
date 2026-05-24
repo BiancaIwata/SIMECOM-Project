@@ -7,13 +7,10 @@ document.getElementById("select-periodo").addEventListener("change", function ()
     var anoInicial = Number(this.value);
 
     if (!anoInicial) return;
-        borderColor: "#1f7ae0 ",
-        backgroundColor: "#1f79e052 ",
-
+  
     var anoFinal = anoInicial + 5;
 
-    // Atualiza o texto do período na tela
-    this.closest(".card").querySelector("p").textContent = anoInicial + "-" + anoFinal;
+    document.getElementById("periodoSelecionado").innerHTML = `${anoInicial} - ${anoFinal}`;
 
     // Recarrega todos os gráficos com o novo período
     buscarSituacaoMercado(anoInicial);
@@ -21,16 +18,6 @@ document.getElementById("select-periodo").addEventListener("change", function ()
     buscarTopSetoresExportacao(anoInicial);
     buscarTopSetoresImportacao(anoInicial);
 });
-        pointBackgroundColor: "#1f7ae0 ",
-        pointBorderColor: "#ffffff",
-        pointBorderWidth: 2,
-
-        pointRadius: 5,
-        pointHoverRadius: 8,
-        pointHoverBackgroundColor: "#1f7ae0 ",
-      },
-    ],
-  },
 
 // Gráfico de Linhas (Evolução das Importações)
 function buscarSituacaoMercado(anoInicial) {
@@ -191,21 +178,6 @@ function plotarGraficoPie(dados) {
     labels.push(dados[i].nome);
     valores.push(dados[i].valor_total);
   }
-        backgroundColor: [
-          "#00C853",
-          "#ff2fba",
-          "#00A8E8",
-          "#707070",
-          "#fbbf24",
-        ],
-
-        hoverBackgroundColor: [
-          "#80E4A9",
-          "#FF97DC",
-          "#7FD4F4",
-          "#B8B8B8",
-          "#FDE08D",
-        ],
 
   var outros = 0;
 
@@ -226,11 +198,19 @@ function plotarGraficoPie(dados) {
         data: valores,
 
         backgroundColor: [
-          "#3b82f6",
-          "#22c55e",
-          "#f59e0b",
-          "#ef4444",
-          "#8b5cf6"
+          "#00C853",
+          "#ff2fba",
+          "#00A8E8",
+          "#707070",
+          "#fbbf24",
+        ],
+
+         hoverBackgroundColor: [
+          "#80E4A9",
+          "#FF97DC",
+          "#7FD4F4",
+          "#B8B8B8",
+          "#FDE08D",
         ],
 
         borderWidth: 8,
@@ -301,45 +281,6 @@ function buscarTopSetoresExportacao(anoInicial) {
 function plotarGraficoBarExportacao(dados) {
   chartBar2 = criarGraficoBarra("barChart2", dados, chartBar2);
 }
-// Usando o azul escuro para contrastar com o gráfico de linhas ciano acima
-new Chart(document.getElementById("barChart"), {
-  type: "bar",
-
-  data: {
-    labels: [""],
-
-    datasets: [
-      {
-        label: "Tecnologia",
-        data: [185],
-        backgroundColor: "#00C853",
-        hoverBackgroundColor: "#80E4A9",
-        borderRadius: 14,
-        borderSkipped: false,
-
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-
-      {
-        label: "Soja",
-        data: [260],
-        backgroundColor: "#00A8E8",
-        hoverBackgroundColor: "#7FD4F4",
-        borderRadius: 14,
-        borderSkipped: false,
-
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-
-      {
-        label: "Óleos",
-        data: [140],
-        backgroundColor: "#707070",
-        hoverBackgroundColor: "#B8B8B8",
-        borderRadius: 14,
-        borderSkipped: false,
 
 function criarGraficoBarra(idCanvas, dados, chartAtual) {
 
@@ -373,12 +314,21 @@ function criarGraficoBarra(idCanvas, dados, chartAtual) {
         data: valores,
 
         backgroundColor: [
-          "#3b82f6",
-          "#22c55e",
-          "#f59e0b",
-          "#ef4444",
-          "#8b5cf6"
+          "#00C853",
+          "#ff2fba",
+          "#00A8E8",
+          "#707070",
+          "#fbbf24",
         ],
+
+         hoverBackgroundColor: [
+          "#80E4A9",
+          "#FF97DC",
+          "#7FD4F4",
+          "#B8B8B8",
+          "#FDE08D",
+        ],
+
 
         borderRadius: 18,
         borderSkipped: false,

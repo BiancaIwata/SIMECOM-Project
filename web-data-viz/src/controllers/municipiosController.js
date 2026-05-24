@@ -1,92 +1,101 @@
-var setoresModel = require("../models/setoresModel");
+var municipiosModel = require("../models/municipiosModel");
 
-function buscarSituacaoMercado(req, res) {
-  var anoInicial = Number(req.query.anoInicial);
+function buscarSituacaoAnual(req, res) {
 
-  if (!anoInicial || isNaN(anoInicial)) {
-    return res.status(400).send("anoInicial é obrigatório.");
-  }
+    var anoInicial = Number(req.query.anoInicial);
+    var municipio = req.query.municipio;
 
-  setoresModel.buscarSituacaoMercado(anoInicial)
-    .then(function (resultado) {
-      if (resultado.length > 0) {
-        res.status(200).json(resultado);
-      } else {
-        res.status(204).send("Nenhum resultado encontrado!");
-      }
-    }).catch(function (erro) {
-      console.log(erro);
-      console.log("Houve um erro ao buscar situação do mercado.", erro.sqlMessage);
-      res.status(500).json(erro.sqlMessage);
-    });
+    if (!anoInicial || isNaN(anoInicial)) {
+        return res.status(400).send("anoInicial é obrigatório.");
+    }
+
+    if (!municipio) {
+        return res.status(400).send("municipio é obrigatório.");
+    }
+
+    municipiosModel.buscarSituacaoAnual(anoInicial, municipio)
+        .then(function(resultado) {
+
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+
+        }).catch(function(erro) {
+
+            console.log(erro);
+
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
-function buscarTopSetores(req, res) {
-  var anoInicial = Number(req.query.anoInicial);
+function buscarTopMunicipios(req, res) {
 
-  if (!anoInicial || isNaN(anoInicial)) {
-    return res.status(400).send("anoInicial é obrigatório.");
-  }
+    var anoInicial = Number(req.query.anoInicial);
 
-  setoresModel.buscarTopSetores(anoInicial)
-    .then(function (resultado) {
-      if (resultado.length > 0) {
-        res.status(200).json(resultado);
-      } else {
-        res.status(204).send("Nenhum resultado encontrado!");
-      }
-    }).catch(function (erro) {
-      console.log(erro);
-      console.log("Houve um erro ao buscar top setores.", erro.sqlMessage);
-      res.status(500).json(erro.sqlMessage);
-    });
+    municipiosModel.buscarTopMunicipios(anoInicial)
+        .then(function(resultado) {
+
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+
+        }).catch(function(erro) {
+
+            console.log(erro);
+
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
-function buscarTopSetoresExportacao(req, res) {
-  var anoInicial = Number(req.query.anoInicial);
+function buscarTopMunicipiosImportacao(req, res) {
 
-  if (!anoInicial || isNaN(anoInicial)) {
-    return res.status(400).send("anoInicial é obrigatório.");
-  }
+    var anoInicial = Number(req.query.anoInicial);
 
-  setoresModel.buscarTopSetoresExpotacao(anoInicial)
-    .then(function (resultado) {
-      if (resultado.length > 0) {
-        res.status(200).json(resultado);
-      } else {
-        res.status(204).send("Nenhum resultado encontrado!");
-      }
-    }).catch(function (erro) {
-      console.log(erro);
-      console.log("Houve um erro ao buscar top setores de exportação.", erro.sqlMessage);
-      res.status(500).json(erro.sqlMessage);
-    });
+    municipiosModel.buscarTopMunicipiosImportacao(anoInicial)
+        .then(function(resultado) {
+
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+
+        }).catch(function(erro) {
+
+            console.log(erro);
+
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
-function buscarTopSetoresImportacao(req, res) {
-  var anoInicial = Number(req.query.anoInicial);
+function buscarTopMunicipiosExportacao(req, res) {
 
-  if (!anoInicial || isNaN(anoInicial)) {
-    return res.status(400).send("anoInicial é obrigatório.");
-  }
+    var anoInicial = Number(req.query.anoInicial);
 
-  setoresModel.buscarTopSetoresImportacao(anoInicial)
-    .then(function (resultado) {
-      if (resultado.length > 0) {
-        res.status(200).json(resultado);
-      } else {
-        res.status(204).send("Nenhum resultado encontrado!");
-      }
-    }).catch(function (erro) {
-      console.log(erro);
-      console.log("Houve um erro ao buscar top setores de importação.", erro.sqlMessage);
-      res.status(500).json(erro.sqlMessage);
-    });
+    municipiosModel.buscarTopMunicipiosExportacao(anoInicial)
+        .then(function(resultado) {
+
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+
+        }).catch(function(erro) {
+
+            console.log(erro);
+
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 module.exports = {
-  buscarSituacaoMercado,
-  buscarTopSetores,
-  buscarTopSetoresExportacao,
-  buscarTopSetoresImportacao
+    buscarSituacaoAnual,
+    buscarTopMunicipios,
+    buscarTopMunicipiosImportacao,
+    buscarTopMunicipiosExportacao
 };

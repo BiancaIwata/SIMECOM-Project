@@ -1,22 +1,22 @@
 var express = require("express");
 var router = express.Router();
 
-var setoresController = require("../controllers/setoresController");
+var municipiosController = require("../controllers/municipiosController");
 
-router.get("/buscarSituacaoMercado", function (req, res) {
-    setoresController.buscarSituacaoMercado(req, res);
+router.get("/buscarSituacaoAnual", function (req, res) {
+    municipiosController.buscarSituacaoAnual(req, res);
 });
 
-router.get("/buscarTopSetores", function (req, res) {
-    setoresController.buscarTopSetores(req, res);
+router.get("/buscarTopMunicipios", function (req, res) {
+    municipiosController.buscarTopMunicipios(req, res);
 });
 
-router.get("/buscarTopSetoresExportacao", function (req, res) {
-    setoresController.buscarTopSetoresExportacao(req, res);
+router.get("/buscarTopMunicipiosImportacao", function (req, res) {
+    municipiosController.buscarTopMunicipiosImportacao(req, res);
 });
 
-router.get("/buscarTopSetoresImportacao", function (req, res) {
-    setoresController.buscarTopSetoresImportacao(req, res);
+router.get("/buscarTopMunicipiosExportacao", function (req, res) {
+    municipiosController.buscarTopMunicipiosExportacao(req, res);
 });
 
 module.exports = router;
