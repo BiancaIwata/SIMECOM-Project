@@ -19,6 +19,7 @@ var preferenciasRouter = require("./src/routes/preferencias");
 var preferencesRouter = require("./src/routes/preferences");
 var forumRouter = require("./src/routes/forum");
 var adminRouter = require("./src/routes/admin");
+var setoresRouter = require("./src/routes/setores");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -30,6 +31,8 @@ app.use("/preferencias", preferenciasRouter);
 app.use("/preference", preferencesRouter);
 app.use("/forum", forumRouter);
 app.use("/admin", adminRouter);
+app.use("/setores", setoresRouter);
+
 
 app.listen(PORTA_APP, function () {
   console.log(`Servidor Rodando Em: http://${HOST_APP}:${PORTA_APP} :`);

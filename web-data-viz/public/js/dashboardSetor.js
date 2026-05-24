@@ -13,40 +13,40 @@ new Chart(ctx, {
         label: "Importações (Milhões USD$)",
         data: [180, 300, 220, 80, 210, 215],
 
-        borderColor: "#00c96b",
-        backgroundColor: "rgba(0,201,107,0.10)",
+        borderColor: "#0036c9",
+        backgroundColor: "rgba(0, 77, 201, 0.1)",
 
         fill: true,
         tension: 0.45,
         borderWidth: 4,
 
-        pointBackgroundColor: "#00c96b",
+        pointBackgroundColor: "#0036c9",
         pointBorderColor: "#ffffff",
         pointBorderWidth: 2,
 
         pointRadius: 5,
         pointHoverRadius: 8,
-        pointHoverBackgroundColor: "#00c96b",
+        pointHoverBackgroundColor: "#0036c9",
       },
 
       {
         label: "Exportações (Milhões USD$)",
         data: [80, 100, 200, 100, 250, 215],
 
-        borderColor: "#ef4444",
-        backgroundColor: "rgba(239,68,68,0.10)",
+        borderColor: "#0a9317",
+        backgroundColor: "rgba(21, 179, 18, 0.1)",
 
-        fill: true,
+        fill: true, 
         tension: 0.45,
         borderWidth: 4,
 
-        pointBackgroundColor: "#ef4444",
+        pointBackgroundColor: "#0a9317",
         pointBorderColor: "#ffffff",
         pointBorderWidth: 2,
 
         pointRadius: 5,
         pointHoverRadius: 8,
-        pointHoverBackgroundColor: "#ef4444",
+        pointHoverBackgroundColor: "#0a9317",
       },
     ],
   },
