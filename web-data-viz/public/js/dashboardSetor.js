@@ -1,45 +1,26 @@
-// Gráfico de Linhas (Evolução das Importações)
-// Usando o Ciano (#06b6d4) como destaque principal
-const ctx = document.getElementById("lineChart");
+var chartLine = null;
+var chartBar = null;
+var chartBar2 = null;
+var chartPie = null;
 
-new Chart(ctx, {
-  type: "line",
+document.getElementById("select-periodo").addEventListener("change", function () {
+    var anoInicial = Number(this.value);
 
-  data: {
-    labels: ["2020", "2021", "2022", "2023", "2024", "2025"],
-
-    datasets: [
-      {
-        label: "Importações (Milhões USD$)",
-        data: [180, 300, 220, 80, 210, 215],
-
-        borderColor: "#00c96b",
-        backgroundColor: "rgba(0,201,107,0.10)",
-
-        fill: true,
-        tension: 0.45,
-        borderWidth: 4,
-
-        pointBackgroundColor: "#00c96b",
-        pointBorderColor: "#ffffff",
-        pointBorderWidth: 2,
-
-        pointRadius: 5,
-        pointHoverRadius: 8,
-        pointHoverBackgroundColor: "#00c96b",
-      },
-
-      {
-        label: "Exportações (Milhões USD$)",
-        data: [80, 100, 200, 100, 250, 215],
-
+    if (!anoInicial) return;
         borderColor: "#1f7ae0 ",
         backgroundColor: "#1f79e052 ",
 
-        fill: true,
-        tension: 0.45,
-        borderWidth: 4,
+    var anoFinal = anoInicial + 5;
 
+    // Atualiza o texto do período na tela
+    this.closest(".card").querySelector("p").textContent = anoInicial + "-" + anoFinal;
+
+    // Recarrega todos os gráficos com o novo período
+    buscarSituacaoMercado(anoInicial);
+    buscarTopSetores(anoInicial);
+    buscarTopSetoresExportacao(anoInicial);
+    buscarTopSetoresImportacao(anoInicial);
+});
         pointBackgroundColor: "#1f7ae0 ",
         pointBorderColor: "#ffffff",
         pointBorderWidth: 2,
@@ -51,119 +32,165 @@ new Chart(ctx, {
     ],
   },
 
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
+// Gráfico de Linhas (Evolução das Importações)
+function buscarSituacaoMercado(anoInicial) {
+  fetch(`/setores/buscarSituacaoMercado?anoInicial=${anoInicial}`, { cache: 'no-store' })
+    .then(function (response) {
+      if (response.ok) {
+        response.json().then(resultado => {
+          console.log(resultado)
+          plotarGraficoLinhas(resultado);
+        });
+      } else {
+        console.error('Nenhum dado encontrado ou erro na API');
+      }
+    }).catch(function (error) {
+      console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
+    });
+}
 
-    interaction: {
-      mode: "index",
-      intersect: false,
+function plotarGraficoLinhas(dados) {
+  if (chartLine) chartLine.destroy();
+
+  var labels = [];
+  var importacoes = [];
+  var exportacoes = [];
+
+  for (var i = 0; i < dados.length; i++) {
+    labels.push(String(dados[i].ano));
+    importacoes.push(dados[i].importacoes_milhoes_usd);
+    exportacoes.push(dados[i].exportacoes_milhoes_usd);
+  }
+
+  chartLine = new Chart(document.getElementById("lineChart"), {
+    type: "line",
+
+    data: {
+      labels: labels,
+
+      datasets: [
+        {
+          label: "Importações (Milhões USD$)",
+          data: importacoes,
+
+          borderColor: "#0a9317",
+          backgroundColor: "rgba(34,197,94,0.12)",
+
+          fill: true,
+          tension: 0.45,
+          borderWidth: 4,
+
+          pointRadius: 6,
+          pointHoverRadius: 8,
+
+          pointBackgroundColor: "#0a9317",
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
+        },
+
+        {
+          label: "Exportações (Milhões USD$)",
+          data: exportacoes,
+
+          borderColor: "#0036c9",
+          backgroundColor: "rgba(0, 77, 201, 0.1)",
+
+          fill: true,
+          tension: 0.45,
+          borderWidth: 4,
+
+          pointRadius: 6,
+          pointHoverRadius: 8,
+
+          pointBackgroundColor: "#0036c9",
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
+        },
+      ],
     },
 
-    plugins: {
-      legend: {
-        position: "top",
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
 
-        labels: {
-          color: "#111827",
+      plugins: {
+        legend: {
+          position: "top",
 
-          font: {
-            size: 14,
-            weight: "bold",
+          labels: {
+            usePointStyle: true,
+            pointStyle: "circle",
+
+            padding: 30,
+
+            color: "#1f2937",
+
+            font: {
+              size: 14,
+              weight: "bold",
+            },
+          },
+        },
+      },
+
+      scales: {
+        x: {
+          grid: {
+            color: "rgba(0,0,0,0.05)",
+            drawBorder: false,
           },
 
-          padding: 20,
-          usePointStyle: true,
-          pointStyle: "circle",
-        },
-      },
-
-      tooltip: {
-        backgroundColor: "#ffffff",
-
-        titleColor: "#111827",
-        bodyColor: "#374151",
-
-        borderColor: "#e5e7eb",
-        borderWidth: 1,
-
-        padding: 12,
-
-        displayColors: true,
-
-        callbacks: {
-          label: function (context) {
-            return ` ${context.dataset.label}: $${context.parsed.y}M`;
+          ticks: {
+            color: "#6b7280",
           },
         },
-      },
-    },
 
-    scales: {
-      x: {
-        grid: {
-          color: "rgba(0,0,0,0.05)",
-          drawBorder: false,
-        },
+        y: {
+          beginAtZero: true,
 
-        ticks: {
-          color: "#374151",
-
-          font: {
-            size: 12,
+          grid: {
+            color: "rgba(0,0,0,0.05)",
+            drawBorder: false,
           },
-        },
-      },
 
-      y: {
-        beginAtZero: true,
+          ticks: {
+            color: "#6b7280",
 
-        grid: {
-          color: "rgba(0,0,0,0.05)",
-          drawBorder: false,
-        },
+            callback: function(value) {
+              return "$" + value + "M";
+            }
+          }
+        }
+      }
+    }
+  });
+}
 
-        ticks: {
-          color: "#374151",
 
-          callback: function (value) {
-            return "$" + value + "M";
-          },
-        },
-      },
-    },
-
-    animation: {
-      duration: 1800,
-      easing: "easeOutQuart",
-    },
-
-    elements: {
-      line: {
-        cubicInterpolationMode: "monotone",
-      },
-    },
-  },
-});
+function buscarTopSetores(anoInicial) {
+  fetch(`/setores/buscarTopSetores?anoInicial=${anoInicial}`, { cache: 'no-store' })
+    .then(function (response) {
+      if (response.ok) {
+        response.json().then(function (resultado) {
+          plotarGraficoPie(resultado);
+        });
+      }
+    }).catch(function (error) {
+      console.error(`Erro: ${error.message}`);
+    });
+}
 
 // Gráfico de Rosca (Categorias)
-// Cores de alto contraste para facilitar a leitura rápida
-new Chart(document.getElementById("pieChart"), {
-  type: "doughnut",
+function plotarGraficoPie(dados) {
+  if (chartPie) chartPie.destroy();
 
-  data: {
-    labels: [
-      "Madeira, Carvão e Cortiça",
-      "Plástico e Borracha",
-      "Produtos Minerais",
-      "Material de Transporte",
-      "Outros",
-    ],
+  var labels = [];
+  var valores = [];
 
-    datasets: [
-      {
-        data: [34, 22, 18, 16, 10],
-
+  for (var i = 0; i < 4; i++) {
+    labels.push(dados[i].nome);
+    valores.push(dados[i].valor_total);
+  }
         backgroundColor: [
           "#00C853",
           "#ff2fba",
@@ -180,74 +207,100 @@ new Chart(document.getElementById("pieChart"), {
           "#FDE08D",
         ],
 
-        borderWidth: 5,
-        borderColor: "#ffffff",
+  var outros = 0;
 
-        hoverOffset: 18,
-        spacing: 6,
-        cutout: "68%",
-      },
-    ],
-  },
+  for (var i = 4; i < dados.length; i++) {
+    outros += dados[i].valor_total;
+  }
 
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
+  labels.push("Outros");
+  valores.push(outros);
 
-    layout: {
-      padding: 25,
+  chartPie = new Chart(document.getElementById("pieChart"), {
+    type: "doughnut",
+
+    data: {
+      labels: labels,
+
+      datasets: [{
+        data: valores,
+
+        backgroundColor: [
+          "#3b82f6",
+          "#22c55e",
+          "#f59e0b",
+          "#ef4444",
+          "#8b5cf6"
+        ],
+
+        borderWidth: 8,
+        borderColor: "#fff",
+
+        cutout: "72%",
+        hoverOffset: 6,
+      }]
     },
 
-    animation: {
-      animateRotate: true,
-      animateScale: true,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
 
-      duration: 1800,
-      easing: "easeOutQuart",
-    },
+      plugins: {
+        legend: {
+          position: "bottom",
 
-    plugins: {
-      legend: {
-        position: "bottom",
+          labels: {
+            usePointStyle: true,
+            pointStyle: "circle",
 
-        labels: {
-          color: "#111827",
+            padding: 24,
 
-          padding: 22,
-          usePointStyle: true,
-          pointStyle: "circle",
+            color: "#111827",
 
-          font: {
-            size: 13,
-            weight: "bold",
-          },
-        },
-      },
+            font: {
+              size: 13,
+              weight: "bold",
+            }
+          }
+        }
+      }
+    }
+  });
+}
 
-      tooltip: {
-        backgroundColor: "#ffffff",
+function buscarTopSetoresImportacao(anoInicial) {
+  fetch(`/setores/buscarTopSetoresImportacao?anoInicial=${anoInicial}`, { cache: 'no-store' })
+    .then(function (response) {
+      if (response.ok) {
+        response.json().then(function (resultado) {
+          plotarGraficoBarImportacao(resultado);
+        });
+      }
+    }).catch(function (error) {
+      console.error(`Erro: ${error.message}`);
+    });
+}
 
-        titleColor: "#111827",
-        bodyColor: "#374151",
-
-        borderColor: "#e5e7eb",
-        borderWidth: 1,
-
-        padding: 12,
-
-        callbacks: {
-          label: function (context) {
-            return (
-              " " + context.label + ": " + context.parsed + "% da participação"
-            );
-          },
-        },
-      },
-    },
-  },
-});
-
+function plotarGraficoBarImportacao(dados) {
+  chartBar = criarGraficoBarra("barChart", dados, chartBar);
+}
 // Gráfico de Barras (Crescimento)
+function buscarTopSetoresExportacao(anoInicial) {
+    fetch(`/setores/buscarTopSetoresExportacao?anoInicial=${anoInicial}`, { cache: 'no-store' })
+        .then(function (response) {
+            if (response.ok) {
+                response.json().then(function (resultado) {
+                    plotarGraficoBarExportacao(resultado);
+                });
+            }
+        }).catch(function (error) {
+            console.error(`Erro: ${error.message}`);
+        });
+}
+
+function plotarGraficoBarExportacao(dados) {
+  chartBar2 = criarGraficoBarra("barChart2", dados, chartBar2);
+}
 // Usando o azul escuro para contrastar com o gráfico de linhas ciano acima
 new Chart(document.getElementById("barChart"), {
   type: "bar",
@@ -288,285 +341,132 @@ new Chart(document.getElementById("barChart"), {
         borderRadius: 14,
         borderSkipped: false,
 
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
+function criarGraficoBarra(idCanvas, dados, chartAtual) {
 
-      {
-        label: "Carros",
-        data: [260],
-        backgroundColor: "#ff2fba",
-        hoverBackgroundColor: "#FF97DC",
-        borderRadius: 14,
+  if (chartAtual) chartAtual.destroy();
+
+  var labels = [];
+  var valores = [];
+
+  for (var i = 0; i < 4; i++) {
+    labels.push(dados[i].nome);
+    valores.push((dados[i].valor_total / 1000000).toFixed(0));
+  }
+
+  var outros = 0;
+
+  for (var i = 4; i < dados.length; i++) {
+    outros += dados[i].valor_total;
+  }
+
+  labels.push("Outros");
+  valores.push((outros / 1000000).toFixed(0));
+
+  return new Chart(document.getElementById(idCanvas), {
+
+    type: "bar",
+
+    data: {
+      labels: labels,
+
+      datasets: [{
+        data: valores,
+
+        backgroundColor: [
+          "#3b82f6",
+          "#22c55e",
+          "#f59e0b",
+          "#ef4444",
+          "#8b5cf6"
+        ],
+
+        borderRadius: 18,
         borderSkipped: false,
 
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-
-      {
-        label: "Outros",
-        data: [95],
-        backgroundColor: "#fbbf24",
-        hoverBackgroundColor: "#FDE08D",
-
-        borderRadius: 14,
-        borderSkipped: false,
-
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-    ],
-  },
-
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    layout: {
-      padding: {
-        left: 20,
-        right: 20,
-        top: 10,
-        bottom: 10,
-      },
+        barThickness: 65,
+      }]
     },
 
-    animation: {
-      duration: 1800,
-      easing: "easeOutQuart",
-    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
 
-    plugins: {
-      legend: {
-        position: "top",
+      plugins: {
+        legend: {
+          display: true,
 
-        labels: {
-          color: "#111827",
+          position: "top",
 
-          font: {
-            size: 14,
-            weight: "bold",
+          labels: {
+            generateLabels(chart) {
+              return labels.map((label, i) => ({
+                text: label,
+                fillStyle: chart.data.datasets[0].backgroundColor[i],
+                strokeStyle: chart.data.datasets[0].backgroundColor[i],
+                hidden: false,
+                index: i,
+                pointStyle: "circle"
+              }));
+            },
+
+            usePointStyle: true,
+
+            color: "#111827",
+
+            padding: 25,
+
+            font: {
+              size: 14,
+              weight: "bold",
+            }
+          }
+        },
+
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return "$" + context.parsed.y + "M";
+            }
+          }
+        }
+      },
+
+      scales: {
+
+        x: {
+          grid: {
+            display: false,
           },
 
-          padding: 20,
-          usePointStyle: true,
-        },
-      },
-
-      tooltip: {
-        backgroundColor: "#ffffff",
-        titleColor: "#111827",
-        bodyColor: "#374151",
-
-        borderColor: "#e5e7eb",
-        borderWidth: 1,
-
-        padding: 12,
-
-        callbacks: {
-          label: function (context) {
-            return " Valor movimentado: $" + context.parsed.y + "M";
-          },
-        },
-      },
-    },
-
-    scales: {
-      x: {
-        offset: true,
-
-        grid: {
-          display: false,
+          ticks: {
+            display: false
+          }
         },
 
-        ticks: {
-          color: "#374151",
+        y: {
+          beginAtZero: true,
 
-          font: {
-            size: 13,
-            weight: "bold",
-          },
-        },
-      },
-
-      y: {
-        beginAtZero: true,
-
-        grid: {
-          color: "rgba(0,0,0,0.05)",
-          drawBorder: false,
-        },
-
-        ticks: {
-          color: "#6b7280",
-
-          callback: function (value) {
-            return "$" + value + "M";
-          },
-        },
-      },
-    },
-  },
-});
-
-new Chart(document.getElementById("barChart2"), {
-  type: "bar",
-
-  data: {
-    labels: [""],
-
-    datasets: [
-      {
-        label: "Tecnologia",
-        data: [185],
-        backgroundColor: "#00C853",
-        hoverBackgroundColor: "#80E4A9",
-        borderRadius: 14,
-        borderSkipped: false,
-
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-
-      {
-        label: "Soja",
-        data: [260],
-        backgroundColor: "#00A8E8",
-        hoverBackgroundColor: "#7FD4F4",
-        borderRadius: 14,
-        borderSkipped: false,
-
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-
-      {
-        label: "Óleos",
-        data: [140],
-        backgroundColor: "#707070",
-        hoverBackgroundColor: "#B8B8B8",
-        borderRadius: 14,
-        borderSkipped: false,
-
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-
-      {
-        label: "Carros",
-        data: [260],
-        backgroundColor: "#ff2fba",
-        hoverBackgroundColor: "#FF97DC",
-        borderRadius: 14,
-        borderSkipped: false,
-
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-
-      {
-        label: "Outros",
-        data: [95],
-        backgroundColor: "#fbbf24",
-        hoverBackgroundColor: "#FDE08D",
-
-        borderRadius: 14,
-        borderSkipped: false,
-
-        categoryPercentage: 0.7,
-        barPercentage: 0.8,
-      },
-    ],
-  },
-
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    layout: {
-      padding: {
-        left: 20,
-        right: 20,
-        top: 10,
-        bottom: 10,
-      },
-    },
-
-    animation: {
-      duration: 1800,
-      easing: "easeOutQuart",
-    },
-
-    plugins: {
-      legend: {
-        position: "top",
-
-        labels: {
-          color: "#111827",
-
-          font: {
-            size: 14,
-            weight: "bold",
+          grid: {
+            color: "rgba(0,0,0,0.05)",
+            drawBorder: false,
           },
 
-          padding: 20,
-          usePointStyle: true,
-        },
-      },
+          ticks: {
+            color: "#6b7280",
 
-      tooltip: {
-        backgroundColor: "#ffffff",
-        titleColor: "#111827",
-        bodyColor: "#374151",
+            callback: function(value) {
+              return "$" + value + "M";
+            }
+          }
+        }
+      }
+    }
+  });
+}
 
-        borderColor: "#e5e7eb",
-        borderWidth: 1,
 
-        padding: 12,
 
-        callbacks: {
-          label: function (context) {
-            return " Valor movimentado: $" + context.parsed.y + "M";
-          },
-        },
-      },
-    },
-
-    scales: {
-      x: {
-        offset: true,
-
-        grid: {
-          display: false,
-        },
-
-        ticks: {
-          color: "#374151",
-
-          font: {
-            size: 13,
-            weight: "bold",
-          },
-        },
-      },
-
-      y: {
-        beginAtZero: true,
-
-        grid: {
-          color: "rgba(0,0,0,0.05)",
-          drawBorder: false,
-        },
-
-        ticks: {
-          color: "#6b7280",
-
-          callback: function (value) {
-            return "$" + value + "M";
-          },
-        },
-      },
-    },
-  },
-});
+buscarSituacaoMercado(2021);
+buscarTopSetores(2021);
+buscarTopSetoresExportacao(2021);
+buscarTopSetoresImportacao(2021);
