@@ -1,9 +1,13 @@
 package school.sptech.comex.util;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public final class NumberUtils {
+
+    private static final Locale PT_BR = Locale.of("pt", "BR");
+
     private NumberUtils() {
     }
 
@@ -11,14 +15,47 @@ public final class NumberUtils {
         if (value == null || value.isBlank()) {
             return BigDecimal.ZERO;
         }
-        return new BigDecimal(value.trim().replace(",", "."));
+
+        try {
+            return new BigDecimal(value.trim().replace(",", "."));
+        } catch (NumberFormatException ex) {
+            return BigDecimal.ZERO;
+        }
     }
 
     public static String formatMoney(BigDecimal value) {
-        return value == null ? "0.00" : value.setScale(2, RoundingMode.HALF_UP).toPlainString();
+        if (value == null) {
+            value = BigDecimal.ZERO;
+        }
+
+        NumberFormat formatter = NumberFormat.getNumberInstance(PT_BR);
+        formatter.setMinimumFractionDigits(2);
+        formatter.setMaximumFractionDigits(2);
+
+        return "US$ " + formatter.format(value);
     }
 
     public static String formatPercent(BigDecimal value) {
-        return value == null ? "0.00%" : value.setScale(2, RoundingMode.HALF_UP).toPlainString() + "%";
+        if (value == null) {
+            value = BigDecimal.ZERO;
+        }
+
+        NumberFormat formatter = NumberFormat.getNumberInstance(PT_BR);
+        formatter.setMinimumFractionDigits(2);
+        formatter.setMaximumFractionDigits(2);
+
+        return formatter.format(value) + "%";
+    }
+
+    public static String formatNumber(BigDecimal value) {
+        if (value == null) {
+            value = BigDecimal.ZERO;
+        }
+
+        NumberFormat formatter = NumberFormat.getNumberInstance(PT_BR);
+        formatter.setMinimumFractionDigits(2);
+        formatter.setMaximumFractionDigits(2);
+
+        return formatter.format(value);
     }
 }
