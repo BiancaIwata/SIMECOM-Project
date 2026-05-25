@@ -1,7 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-
 @import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
-
 
 * {
   margin: 0;
@@ -18,29 +16,30 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-header img {
-  width: 164px;
-}
-
 a {
   text-decoration: none;
 }
 
+/* ================= HEADER ================= */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  height: 90px;
+  min-height: 90px;
   width: 80%;
   margin: 0 auto;
+  padding: 20px 0;
+}
+
+header img {
+  width: 164px;
+  max-width: 100%;
 }
 
 .header-buttons {
   display: flex;
   align-items: center;
-
-  gap: 50px;
+  gap: 30px;
   flex-wrap: wrap;
 }
 
@@ -48,7 +47,7 @@ header {
   justify-content: center;
   border: none;
   font-size: 1rem;
-
+  background: transparent;
   cursor: pointer;
 }
 
@@ -58,42 +57,35 @@ header {
   height: 37px;
 }
 
-.botao-circular {
+.botao-circular, .botao-circular-azul {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  border: 2px solid #B8BABC;
-  background-color: #F4F6F8;
-
   height: 40px;
   width: 120px;
   border-radius: 40px;
-
   font-size: 1rem;
-
   cursor: pointer;
+  text-align: center;
+}
+
+.botao-circular {
+  border: 2px solid #B8BABC;
+  background-color: #F4F6F8;
+  color: inherit;
 }
 
 .botao-circular-azul {
   color: #ffffff;
-
   border: none;
   background-color: #1F7AE0;
-
-  height: 40px;
-  width: 120px;
-  border-radius: 40px;
-
-  font-size: 1rem;
-
-  cursor: pointer;
 }
 
+/* ================= CARD 1 ================= */
 .Card1 {
   background-color: #1f7ae0;
   width: 90%;
-  height: 450px;
+  min-height: 450px;
   border-radius: 50px;
   background: linear-gradient(to bottom, #2c7fb8 0%, #1f6fa3 40%, #0f4f75 100%);
   box-shadow: 6px 6px 5px 0 #00000096;
@@ -101,10 +93,13 @@ header {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  margin-top: 20px;
 }
 
 .Card1 img {
   width: 450px;
+  max-width: 90%;
+  height: auto;
   margin: 20px;
 }
 
@@ -112,35 +107,35 @@ header {
   font-family: 'Poppins', sans-serif;
   color: rgb(255, 255, 255);
   font-size: 40px;
-  padding: 90px;
+  padding: 50px;
 }
 
 .WhiteText a {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   color: rgb(255, 255, 255);
-  margin-top: 70px;
   font-size: 15px;
-  text-decoration: none;
   background-color: #1f7ae0;
-  padding: 10px;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding: 15px 40px;
   border-radius: 10px;
+  display: inline-block;
+  margin-top: 40px;
 }
 
 .WhiteText p {
   font-family: 'Inter', sans-serif;
-  margin-top: 50px;
+  margin-top: 30px;
   font-size: 15px;
 }
 
+/* ================= TEXTOS E CARD PACKAGE ================= */
 .text {
   font-family: "Poppins", sans-serif;
   color: #153963;
   margin-top: 70px;
   font-size: 40px;
   text-align: center;
+  padding: 0 20px;
 }
 
 .text p {
@@ -149,18 +144,25 @@ header {
 
 .CardPackage {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   width: 100%;
+  max-width: 1200px;
+  gap: 30px;
+  padding: 40px 20px;
 }
 
 .SmallCard {
   font-family: "Poppins", sans-serif;
-  margin: 50px;
-  outline: none;
-  height: 300px;
-  width: 45%;
+  flex: 1;
+  min-width: 300px;
+  min-height: 300px;
   border: 2.5px solid #7f92a5;
   border-radius: 30px;
-  padding: 50px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .SmallCard h3 {
@@ -168,62 +170,75 @@ header {
   font-size: 30px;
   text-align: left;
   font-weight: normal;
+  margin-bottom: 15px;
 }
 
 .SmallCard p {
   color: #153963;
-  font-size: 20px;
+  font-size: 18px;
   text-align: left;
 }
 
+/* ================= CARD 2 ================= */
 .Card2 {
   display: flex;
   align-items: center;
-  padding-left: 50px;
-  padding-right: 50px;
+  justify-content: space-between;
+  width: 90%;
+  max-width: 1200px;
+  padding: 50px;
+  gap: 40px;
 }
 
 .Card2 img {
   width: 40%;
+  max-width: 400px;
+  height: auto;
 }
 
 .Card2 .text {
   text-align: left;
+  margin-top: 0;
+  padding: 0;
+  flex: 1;
 }
 
 .Card2 .text p {
   font-family: "Inter", sans-serif;
+  margin-top: 20px;
 }
 
+/* ================= FOOTER ================= */
 footer {
   display: flex;
   align-items: center;
-
   background-color: #0B3C5D;
-
   width: 100%;
   min-height: 360px;
   padding: 40px 0;
+  margin-top: 50px;
 }
 
 .div-footer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-
+  align-items: flex-start;
+  flex-wrap: wrap;
   width: 80%;
   margin: 0 auto;
+  gap: 40px;
 }
 
 .footer-texto {
   display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
 }
 
 .div-footer p,
 .div-footer li {
   color: #ffffff;
-
-  padding: 10px 20px;
+  padding: 5px 0;
 }
 
 .div-footer ul {
@@ -237,4 +252,83 @@ footer {
 
 .div-footer img {
   width: 300px;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ================= MEDIA QUERIES (RESPONSIVIDADE) ================= */
+
+/* Tablets e Laptops menores */
+@media (max-width: 1024px) {
+  .Card1 {
+    flex-direction: column;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .WhiteText {
+    padding: 20px;
+  }
+  
+  .Card2 {
+    padding: 30px;
+  }
+}
+
+/* Dispositivos Móveis (Celulares) */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .header-buttons {
+    justify-content: center;
+  }
+  
+  .separate {
+    display: none; /* Esconde a barra separadora no mobile para poupar espaço */
+  }
+
+  .WhiteText {
+    font-size: 28px;
+  }
+
+  .WhiteText p {
+    font-size: 14px;
+  }
+  
+  .text {
+    font-size: 30px;
+  }
+  
+  .text p {
+    font-size: 16px;
+  }
+
+  .Card2 {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .Card2 img {
+    width: 80%;
+  }
+
+  .Card2 .text {
+    text-align: center;
+  }
+
+  .div-footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-texto {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
 }
