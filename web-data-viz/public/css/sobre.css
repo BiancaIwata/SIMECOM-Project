@@ -1,6 +1,4 @@
-/* Importando fonts Poppins e Inter */
-@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
-
+/* Importando fonts Poppins e Inter unificadas */
 @import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Ovo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Tektur:wght@400..900&display=swap');
 
 * {
@@ -14,57 +12,43 @@ body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     background-color: #F4F6F8;
+    overflow-x: hidden; /* Salva a vida no mobile, evita rolagem horizontal indesejada */
 }
 
-a {
-    text-decoration: none;
+a { text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
+
+/* ================= TIPOGRAFIA FLUIDA ================= */
+/* clamp(minimo, ideal(vw), maximo) - Adapta perfeitamente de iPhone SE a TVs 4K */
+h3 {
+    font-size: clamp(2rem, 4vw, 3.75rem);
+    font-family: 'Poppins', sans-serif;
+    color: #0B3C5D;
+    margin-bottom: 20px;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-}
-
+/* ================= HEADER ================= */
 header {    
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    height: 90px;
-    width: 80%;
+    flex-wrap: wrap; /* Permite que o header se adapte se faltar espaço */
+    min-height: 90px;
+    width: 90%;
+    max-width: 1600px;
     margin: 0 auto;
+    padding: 20px 0;
+    gap: 20px;
 }
 
 header img {
-    width: 164px;
+    width: clamp(120px, 15vw, 164px);
 }
-
-h3 {
-    font-size: 3.75rem;
-    font-family: 'Poppins', sans-serif;
-    color: #0B3C5D;
-    margin-bottom: 20px;
-
-}
-
-footer {
-    display: flex;
-    align-items: center;
-
-    background-color: #0B3C5D;
-
-    width: 100%;
-    min-height: 360px;
-    padding: 40px 0;
-}
-
-/* ----------------------------------------------------------------------------------------------- */
 
 .header-buttons {
     display: flex;
     align-items: center;
-
-    gap: 50px;
+    gap: clamp(15px, 3vw, 50px);
     flex-wrap: wrap;
 }
 
@@ -72,7 +56,7 @@ footer {
     justify-content: center;
     border: none;
     font-size: 1rem;
-
+    background: transparent;
     cursor: pointer;
 }
 
@@ -82,283 +66,257 @@ footer {
     height: 37px;
 }
 
-.botao-circular {
+.botao-circular, .botao-circular-azul {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 40px;
+    padding: 0 20px;
+    border-radius: 40px;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+}
 
+.botao-circular {
     border: 2px solid #B8BABC;
     background-color: #F4F6F8;
-
-    height: 40px;
-    width: 120px;
-    border-radius: 40px;
-
-    font-size: 1rem;
-
-    cursor: pointer;
+    color: inherit;
 }
 
 .botao-circular-azul {
     color: #ffffff;
-
     border: none;
     background-color: #1F7AE0;
-
-    height: 40px;
-    width: 120px;
-    border-radius: 40px;
-
-    font-size: 1rem;
-
-    cursor: pointer;
 }
 
-/* ----------------------------------------------------------------------------------------------- */
-
+/* ================= QUEM SOMOS ================= */
 .div-quem-somos {
-    width: 80%;
-    margin: 40px auto;
+    width: 90%;
+    max-width: 1600px;
+    margin: clamp(20px, 5vw, 40px) auto;
 }
 
 .div-texto-img {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
 }
 
 .div-texto-img img {
-    width: 800px;
-    margin-left: 10%;
+    width: 45%;
+    max-width: 700px;
 }
 
-.div-texto p {
+.div-texto {
+    flex: 1; /* Ocupa o restante do espaço */
+}
+
+.div-texto p, .div-solucao p {
     margin-bottom: 23px;
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2vw, 1.3rem);
     color: #0B3C5D;
     text-align: justify;
+    line-height: 1.6;
 }
 
+/* ================= NOSSOS VALORES (GRID OVERLAP MELHORADO) ================= */
 .div-box {
-    width: 80%; 
-    margin: 0 auto; 
-    position: relative;
+    width: 90%; 
+    max-width: 1600px;
+    margin: 40px auto; 
+    display: grid; 
+    border-radius: 40px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1F7AE0 0%, #0B3C5D 100%); /* Cor de fundo caso a imagem falhe ou seja escondida */
 }
 
-.div-box img {
+.div-box > img {
+    grid-area: 1 / 1;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
 }
 
 .div-valores {
-    width: 90%; 
-    margin: -550px auto 0 auto; 
+    grid-area: 1 / 1;
     position: relative;
+    z-index: 2;
+    padding: clamp(40px, 6vw, 80px) 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
 .div-valores h3 {
     color: #ffffff;
+    text-align: center;
 }
 
 .div-itens {
     display: flex;
-    align-items: center;
-
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap; /* Quebra linha sozinho em telas pequenas */
+    gap: clamp(20px, 4vw, 40px);
     text-align: center;
-}
-
-.div-itens img {
-    width: 280px;
-}
-
-.div-itens h5 {
-    font-size: 1.3rem;
-    color: #ffffff;
-    font-family: 'Poppins', sans-serif;
-}
-
-.div-itens p {
-    font-size: 1rem;
-    color: #ffffff;
-}
-
-.div-icon-plus img {
-    width: 100px;
-}
-
-.div-transparencia img {
-    width: 350px;
-}
-
-.div-transparencia h5 {
+    width: 100%;
     margin-top: 40px;
 }
 
-/* ----------------------------------------------------------------------------------------------- */
+.div-itens > div {
+    flex: 1;
+    min-width: 260px; /* Garante que não fiquem esmagados antes de quebrar a linha */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
+.div-itens img, .div-transparencia img {
+    width: 100%;
+    max-width: 250px;
+    margin-bottom: 15px;
+}
+
+.div-transparencia img {
+    max-width: 320px;
+}
+
+.div-itens h5, .div-transparencia h5 {
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 10px;
+}
+
+.div-itens p {
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    color: #ffffff;
+    line-height: 1.5;
+}
+
+.div-icon-plus img {
+    width: clamp(40px, 6vw, 80px);
+    margin: auto 0;
+}
+
+/* ================= SOLUÇÃO ================= */
 .div-solucao {
-    width: 80%;
-    margin: 80px auto;
+    width: 90%;
+    max-width: 1600px;
+    margin: clamp(40px, 8vw, 80px) auto;
 }
 
-.div-solucao p {
-    margin-bottom: 23px;
-    font-size: 1.3rem;
-    color: #0B3C5D;
-    text-align: justify;
+/* ================= FOOTER ================= */
+footer {
+    background-color: #0B3C5D;
+    width: 100%;
+    padding: 60px 0;
 }
-
-/* ----------------------------------------------------------------------------------------------- */
 
 .div-footer {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-
-    width: 80%;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: 90%;
+    max-width: 1600px;
     margin: 0 auto;
+    gap: 40px;
 }
 
 .footer-texto {
     display: flex;
+    flex-wrap: wrap;
+    gap: clamp(20px, 4vw, 50px);
 }
 
-.div-footer p,
-.div-footer li {
+.div-footer p, .div-footer li {
     color: #ffffff;
-
-    padding: 10px 20px;
+    padding: 8px 0;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
 }
 
-.div-footer ul {
-    list-style: none;
-}
+.div-footer ul { list-style: none; }
+.div-footer a { text-decoration: none; color: #ffffff; transition: opacity 0.3s;}
+.div-footer a:hover { opacity: 0.8; }
+.div-footer img { width: clamp(200px, 30vw, 300px); }
 
-.div-footer a {
-    text-decoration: none;
-    color: #ffffff;
-}
+/* ================= MEDIA QUERIES (Ajustes finos para layout vertical) ================= */
 
-.div-footer img {
-    width: 300px;
-}
-
-/* ----------------------------------------------------------------------------------------------- */
-
-@media only screen and (max-width: 768px) {
-
-    header {
-        flex-direction: column;
-        height: auto;
-        gap: 20px;
+/* Dispositivos como iPad Pro, Laptops menores e Tablets (1024px) */
+@media only screen and (max-width: 1024px) {
+    .div-texto-img {
+        flex-direction: column; /* Empilha texto e imagem */
+    }
+    
+    .div-texto-img img {
+        width: 80%;
+        margin-top: 30px;
     }
 
-    h3 {
-        font-size: 2rem;
+    .div-box > img {
+        display: none; /* Esconde a imagem de fundo azul */
+    }
+    
+    /* Nota: Como escondemos a imagem, o background gradient do .div-box (definido acima) 
+       assume o controle. O fundo continua azul e responsivo, e as letras continuam brancas! */
+
+    .div-icon-plus {
+        display: none; /* O ícone de mais não faz sentido quando os itens empilham */
+    }
+}
+
+/* Celulares (Pixel, iPhones 14/15/16) (768px) */
+@media only screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
     }
 
     .header-buttons {
         justify-content: center;
+        width: 100%;
     }
 
     .separate {
-        display: none;
+        display: none; /* Polui a tela no mobile */
     }
 
-    .div-texto-img img {
-        display: none;
+    .div-texto p, .div-solucao p {
+        text-align: left; /* Textos justificados no mobile criam buracos na leitura */
     }
 
     .div-itens {
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .div-icon-plus {
-        display: none;
-    }
-
-    .div-valores {
-        width: 90%;
-        margin: 20px auto;
-    }
-
-    .div-valores h3,
-    .div-valores h5,
-    .div-valores p {
-        color: #0B3C5D;
-    }
-
-    .img_box {
-        display: none;
+        gap: 50px; /* Dá mais respiro entre os blocos quando empilhados */
     }
 
     .div-footer {
         flex-direction: column;
+        align-items: center;
         text-align: center;
-        gap: 30px;
     }
 
     .footer-texto {
         flex-direction: column;
+        align-items: center;
     }
-
 }
 
-@media only screen and (max-width: 992px) {
-    header {
-        max-width: 1400px;
-    }
-
-    h3 {
-        font-size: 3.5rem;
-    }
-
-    .div-texto-img img {
-        display: none;
-    }
-
-    .div-quem-somos,
-    .div-box,
-    .div-solucao,
-    .div-footer {
-        max-width: 1400px;
-    }
-
-    .div-texto p {
-        font-size: 1.2rem;
-    }
-
-    .div-valores h3,
-    .div-valores h5,
-    .div-valores p {
-        color: #0B3C5D;
-    }
-
-    .div-box {
-        width: 80%;
-        margin: 0 auto;
-    }
-
-    .div-valores {
-        width: 100%;
-        margin: 0 auto;
+/* Celulares muito pequenos (iPhone SE) (480px) */
+@media only screen and (max-width: 480px) {
+    .header-buttons {
+        flex-direction: column; /* Empilha os botões no iPhone SE para não espremer */
+        gap: 15px;
     }
     
-    .div-itens {
-        gap: 40px;
-    }
-
-    .img_box {
-        display: none;
-    }
-
-    .div-icon-plus {
-        display: none;
-    }
-
-    .div-solucao p {
-        font-size: 1.25rem;
-    }
-
-    .header-buttons {
-        gap: 50px;
+    .botao-circular, .botao-circular-azul {
+        width: 100%; /* Botões ocupam a largura toda para facilitar o toque */
+        max-width: 300px;
     }
 }
