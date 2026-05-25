@@ -20,6 +20,7 @@ var preferencesRouter = require("./src/routes/preferences");
 var forumRouter = require("./src/routes/forum");
 var adminRouter = require("./src/routes/admin");
 var setoresRouter = require("./src/routes/setores");
+var municipiosRouter = require("./src/routes/municipios");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -32,6 +33,7 @@ app.use("/preference", preferencesRouter);
 app.use("/forum", forumRouter);
 app.use("/admin", adminRouter);
 app.use("/setores", setoresRouter);
+app.use("/municipios", municipiosRouter);
 
 
 app.listen(PORTA_APP, function () {

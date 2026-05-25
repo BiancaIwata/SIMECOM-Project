@@ -69,8 +69,7 @@
         </aside>
 
         <div class="main">
-            <h1>Municípios 20XY-20YX</h1>
-
+            <h1>Municípios <span id="periodoSelecionado">20XY-20YX</span></h1>
             <div class="cards">
                 <div class="card">
                     <h4>Selecionar Período</h4>
@@ -90,22 +89,22 @@
                             <option value="2007">2007</option>
                             <option value="2008">2008</option>
                             <option value="2009">2009</option>
-                            <option value="20010">2010</option>
-                            <option value="20011">2011</option>
-                            <option value="20012">2012</option>
-                            <option value="20013">2013</option>
-                            <option value="20014">2014</option>
-                            <option value="20015">2015</option>
-                            <option value="20016">2016</option>
-                            <option value="20017">2017</option>
-                            <option value="20018">2018</option>
-                            <option value="20019">2019</option>
-                            <option value="20020">2020</option>
-                            <option value="20021">2021</option>
+                            <option value="2010">2010</option>
+                            <option value="2011">2011</option>
+                            <option value="2012">2012</option>
+                            <option value="2013">2013</option>
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
                         </optgroup>
                     </select>
 
-                    <small class="detalhe">Apresenta um Período de +5 anos com base na selação</small>
+                    <small class="detalhe">Apresenta um período de +5 anos com base na selação</small>
                 </div>
 
 
@@ -119,19 +118,11 @@
                     <small class="detalhe">Município selecionado para dashboard</small>
                 </div>
 
-                <div class="card">
-                    <h4>Movimentação nos Últimos 5 anos</h4>
-                    <div class="inside-img">
-                        <p>42,0%</p><img class="smallIMG" src="./assets/grow.png">
-                    </div>
-                    <small class="detalhe">Reference ao município selecionado</small>
-                </div>
-
             </div>
 
             <div class="secao1">
                 <div class="box graficoLinha">
-                    <h3>Situação Anual de São Paulo</h3>
+                    <h3>Situação Anual do Município</h3>
                     <canvas id="lineChart"></canvas>
                 </div>
 
@@ -146,26 +137,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>São Paulo</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Rio de Janeiro</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Paranaguá</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Paracatu</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Ouro Fino</td>
-                            </tr>
+                            <!-- Top Municípios vindo do Banco -->
                         </tbody>
                     </table>
                 </div>
