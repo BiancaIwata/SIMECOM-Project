@@ -1,5 +1,12 @@
 package school.sptech;
 
+import java.util.Properties;
+import java.io.InputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class Config {
 
     // ════════════════════════════════════════════════════════════════
@@ -60,5 +67,21 @@ public class Config {
         System.out.printf("║ S3 Prefixo: %s%n", S3_PREFIX);
         System.out.printf("║ Log Level: %s%n", LOG_LEVEL);
         System.out.println("╚══════════════════════════════════════════════════════╝\n");
+    }
+
+    private static final Properties props = new Properties();
+
+    static {
+        try (InputStream in = Config.class
+                .getClassLoader()
+                .getResourceAsStream("application.properties")) {
+            props.load(in);
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao carregar configurações", e);
+        }
+    }
+
+    public static String get(String key) {
+        return props.getProperty(key);
     }
 }
