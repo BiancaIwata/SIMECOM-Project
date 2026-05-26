@@ -1,11 +1,11 @@
-package com.example.comex.service;
+package school.sptech.comex.service;
 
-import com.example.comex.model.ChartFiles;
-import com.example.comex.model.FilterRequest;
-import com.example.comex.model.MetricsResult;
-import com.example.comex.model.ReportContext;
-import com.example.comex.util.FileUtils;
-import com.example.comex.util.NumberUtils;
+import school.sptech.comex.model.ChartFiles;
+import school.sptech.comex.model.FilterRequest;
+import school.sptech.comex.model.MetricsResult;
+import school.sptech.comex.model.ReportContext;
+import school.sptech.comex.util.FileUtils;
+import school.sptech.comex.util.NumberUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;

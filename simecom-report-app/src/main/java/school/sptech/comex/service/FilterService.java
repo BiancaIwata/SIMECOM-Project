@@ -1,7 +1,7 @@
-package com.example.comex.service;
+package school.sptech.comex.service;
 
-import com.example.comex.model.FilterRequest;
-import com.example.comex.model.TradeRecord;
+import school.sptech.comex.model.FilterRequest;
+import school.sptech.comex.model.TradeRecord;
 
 import java.util.List;
 import java.util.Set;

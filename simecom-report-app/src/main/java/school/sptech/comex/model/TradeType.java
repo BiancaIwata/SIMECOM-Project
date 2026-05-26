@@ -1,4 +1,4 @@
-package com.example.comex.model;
+package school.sptech.comex.model;
 
 public enum TradeType {
     IMPORT,

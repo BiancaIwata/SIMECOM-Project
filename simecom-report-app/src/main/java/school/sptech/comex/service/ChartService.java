@@ -1,8 +1,8 @@
-package com.example.comex.service;
+package school.sptech.comex.service;
 
-import com.example.comex.model.ChartFiles;
-import com.example.comex.model.MetricsResult;
-import com.example.comex.util.FileUtils;
+import school.sptech.comex.model.ChartFiles;
+import school.sptech.comex.model.MetricsResult;
+import school.sptech.comex.util.FileUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;

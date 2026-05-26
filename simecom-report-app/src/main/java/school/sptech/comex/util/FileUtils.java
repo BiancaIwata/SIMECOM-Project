@@ -1,4 +1,4 @@
-package com.example.comex.util;
+package school.sptech.comex.util;
 
 import java.io.IOException;
 import java.nio.file.Files;

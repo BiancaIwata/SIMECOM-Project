@@ -1,9 +1,9 @@
-package com.example.comex.service;
+package school.sptech.comex.service;
 
-import com.example.comex.config.AppConfig;
-import com.example.comex.model.FilterRequest;
-import com.example.comex.model.MetricsResult;
-import com.example.comex.util.NumberUtils;
+import school.sptech.comex.config.AppConfig;
+import school.sptech.comex.model.FilterRequest;
+import school.sptech.comex.model.MetricsResult;
+import school.sptech.comex.util.NumberUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

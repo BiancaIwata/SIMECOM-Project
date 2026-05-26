@@ -1,4 +1,4 @@
-package com.example.comex.config;
+package school.sptech.comex.config;
 
 public class AppConfig {
     private final String aiApiUrl;
