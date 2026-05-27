@@ -182,7 +182,7 @@ public class DataLoaderMain {
         Path local = baixarDoS3(ctx.getS3Service(), key);
 
         DataProcessor processor;
-        if (fileName.contains("TABELAS_AUXILIARES")) {
+        if (fileName.contains("TABELAS_AUXILIARES") || fileName.contains("UF_MUN")) {
             processor =
                     new TabelasAuxiliaresProcessor(ctx);
         } else if (fileName.startsWith("EXP_")) {
