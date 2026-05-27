@@ -9,12 +9,12 @@ function buscarSituacaoAnual(anoInicial, municipio) {
     ano,
     importacoes_milhoes_usd,
     exportacoes_milhoes_usd
-    FROM resumo_anual_municipios
+    FROM dm_situacao_anual_municipios
     WHERE municipio = ?
     AND ano BETWEEN ? AND ?
     ORDER BY ano;`
 
-  console.log({ metodo: "buscarSituacaoAnual", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal, municipio: municipio })
+  
   return database.executar(instrucaoSql, [municipio, anoInicial, anoFinal]);
 }
 
@@ -25,14 +25,14 @@ function buscarTopMunicipios(anoInicial) {
     SELECT
     municipio,
     SUM(valor_total) AS valor_total
-    FROM vw_ranking_municipios
+    FROM dm_ranking_municipios
     WHERE ano BETWEEN ? AND ?
     GROUP BY municipio
     ORDER BY valor_total DESC
     LIMIT 10;
   `;
 
-  console.log({ metodo: "buscarTopMunicipios", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal })
+  
   return database.executar(instrucaoSql, [anoInicial, anoFinal]);
 }
 
@@ -43,13 +43,13 @@ function buscarTopMunicipiosImportacao(anoInicial) {
     SELECT
     municipio,
     SUM(valor_total) AS valor_total
-    FROM vw_importacoes_por_municipio
+    FROM dm_importacoes_por_municipio
     WHERE ano BETWEEN ? AND ?
     GROUP BY municipio
     ORDER BY valor_total DESC;
   `;
 
-  console.log({ metodo: "buscarTopMunicipiosImportacao", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal })
+  
   return database.executar(instrucaoSql, [anoInicial, anoFinal]);
 }
 
@@ -60,14 +60,13 @@ function buscarTopMunicipiosExportacao(anoInicial) {
   SELECT
     municipio,
     SUM(valor_total) AS valor_total
-    FROM vw_exportacoes_por_municipio
+    FROM dm_exportacoes_por_municipio
     WHERE ano BETWEEN ? AND ?
     GROUP BY municipio
     ORDER BY valor_total DESC;
   `;
 
-  console.log({ metodo: "buscarTopMunicipiosExportacao", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal })
-  return database.executar(instrucaoSql, [anoInicial, anoFinal]);
+  
 }
 
 module.exports = {

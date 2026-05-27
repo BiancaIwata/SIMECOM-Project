@@ -8,7 +8,7 @@ function buscarSituacaoMercado(anoInicial) {
     ano,
     importacoes_milhoes_usd,
     exportacoes_milhoes_usd
-    FROM resumo_anual_setores
+    FROM dm_situacao_mercado
     WHERE ano BETWEEN ? AND ?
     ORDER BY ano;
   `;
@@ -24,7 +24,7 @@ function buscarTopSetores(anoInicial) {
     id,
     nome,
     SUM(exportacoes + importacoes) AS valor_total
-    FROM vw_valor_total_por_setor
+    FROM dm_valor_total_por_setor
     WHERE ano BETWEEN ? AND ?
     GROUP BY id, nome
     ORDER BY valor_total DESC;
@@ -41,7 +41,7 @@ function buscarTopSetoresExpotacao(anoInicial) {
     id,
     nome,
     IFNULL(SUM(valor_total), 0) AS valor_total
-    FROM vw_exportacoes_por_setor
+    FROM dm_exportacoes_por_setor
     WHERE ano BETWEEN ? AND ?
     OR ano IS NULL
     GROUP BY id, nome
@@ -59,7 +59,7 @@ function buscarTopSetoresImportacao(anoInicial) {
     id,
     nome,
     IFNULL(SUM(valor_total), 0) AS valor_total
-    FROM vw_importacoes_por_setor
+    FROM dm_importacoes_por_setor
     WHERE ano BETWEEN ? AND ?
     OR ano IS NULL
     GROUP BY id, nome
