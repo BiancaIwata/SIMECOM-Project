@@ -8,7 +8,7 @@ function buscarSituacaoMercado(anoInicial) {
     ano,
     importacoes_milhoes_usd,
     exportacoes_milhoes_usd
-    FROM vw_situacao_mercado
+    FROM resumo_anual_setores
     WHERE ano BETWEEN ? AND ?
     ORDER BY ano;
   `;

@@ -9,7 +9,7 @@ function buscarSituacaoAnual(anoInicial, municipio) {
     ano,
     importacoes_milhoes_usd,
     exportacoes_milhoes_usd
-    FROM vw_situacao_anual_municipios
+    FROM resumo_anual_municipios
     WHERE municipio = ?
     AND ano BETWEEN ? AND ?
     ORDER BY ano;`
