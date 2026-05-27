@@ -14,6 +14,7 @@ function buscarSituacaoAnual(anoInicial, municipio) {
     AND ano BETWEEN ? AND ?
     ORDER BY ano;`
 
+  console.log({ metodo: "buscarSituacaoAnual", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal, municipio: municipio })
   return database.executar(instrucaoSql, [municipio, anoInicial, anoFinal]);
 }
 
@@ -31,6 +32,7 @@ function buscarTopMunicipios(anoInicial) {
     LIMIT 10;
   `;
 
+  console.log({ metodo: "buscarTopMunicipios", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal })
   return database.executar(instrucaoSql, [anoInicial, anoFinal]);
 }
 
@@ -47,6 +49,7 @@ function buscarTopMunicipiosImportacao(anoInicial) {
     ORDER BY valor_total DESC;
   `;
 
+  console.log({ metodo: "buscarTopMunicipiosImportacao", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal })
   return database.executar(instrucaoSql, [anoInicial, anoFinal]);
 }
 
@@ -63,6 +66,7 @@ function buscarTopMunicipiosExportacao(anoInicial) {
     ORDER BY valor_total DESC;
   `;
 
+  console.log({ metodo: "buscarTopMunicipiosExportacao", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal })
   return database.executar(instrucaoSql, [anoInicial, anoFinal]);
 }
 
