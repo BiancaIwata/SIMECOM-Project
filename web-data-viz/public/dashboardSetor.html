@@ -106,6 +106,10 @@
 
                     <small class="detalhe">Apresenta um Período de +5 anos com base na selação</small>
                 </div>
+                <div class="card">
+                    <h4>Relatório</h4>
+                    <button class="btn-salvar" onclick="gerar_relatorio()">Gerar Relatório</button>
+                </div>
 
             </div>
 
@@ -139,6 +143,10 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="js/dashboardSetor.js"></script>
+        <div class="loading-overlay">
+            <h1>Carregando...</h1> <br>
+            <img class="loadgif" src="./assets/blueLoad.gif">
+        </div>
 </body>
 
 </html>
