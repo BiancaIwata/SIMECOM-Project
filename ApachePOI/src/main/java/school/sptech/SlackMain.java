@@ -1,10 +1,9 @@
 package school.sptech;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.time.LocalDate;
 
-public class TesteSlack {
+public class SlackMain {
     public static void main(String[] args) {
 
         System.out.println("=== INICIANDO TESTE COMPLETO ===\n");
@@ -13,7 +12,7 @@ public class TesteSlack {
         System.out.println(">> Conectando ao banco...");
         Connection conn;
         try {
-            conn = SeuDataSource.getConnection();
+            conn = DataSource.getConnection();
             System.out.println("Banco conectado!\n");
         } catch (Exception e) {
             System.err.println("Falha ao conectar no banco: " + e.getMessage());

@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class SeuDataSource {
+public class DataSource {
         private static final String URL = String.format(
-                "jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC",
+                "jdbc:mysql://localhost:3306/simecom",
                 Config.DB_HOST,
                 Config.DB_PORT,
                 Config.DB_NAME

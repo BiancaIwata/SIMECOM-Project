@@ -76,6 +76,7 @@
                     <archive>
                         <manifest>
                             <mainClass>school.sptech.DataLoaderMain</mainClass>
+                            <mainClass>school.sptech.SlackMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

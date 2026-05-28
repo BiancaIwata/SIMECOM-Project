@@ -7,7 +7,7 @@ public class NotificacaoMensal implements Runnable {
 
     @Override
     public void run() {
-        try (Connection conn = SeuDataSource.getConnection()) {
+        try (Connection conn = DataSource.getConnection()) {
 
             LocalDate mesPassado = LocalDate.now().minusMonths(1);
             int ano = mesPassado.getYear();

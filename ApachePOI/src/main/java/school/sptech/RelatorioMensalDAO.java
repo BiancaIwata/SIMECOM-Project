@@ -24,18 +24,25 @@ public class RelatorioMensalDAO {
         return sb.toString();
     }
 
+    // ─────────────────────────────────────────
+    // IMPORTAÇÃO
+    // ─────────────────────────────────────────
     private String gerarBlocoImportacao(int ano, int mes) throws SQLException {
         StringBuilder sb = new StringBuilder();
 
         // Totais gerais
+        // ano é YEAR no MySQL — cast para UNSIGNED evita problema de comparação
         String sqlTotal = """
-            SELECT COUNT(*) AS total, SUM(valor_fob) AS fob, SUM(kg_liquido) AS kg
-            FROM base_importacao
-            WHERE ano = ? AND mes = ?
-            """;
+                SELECT COUNT(*)        AS total,
+                       SUM(valor_fob)  AS fob,
+                       SUM(kg_liquido) AS kg
+                FROM base_importacao
+                WHERE CAST(ano AS UNSIGNED) = ? AND mes = ?
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(sqlTotal)) {
-            ps.setInt(1, ano); ps.setInt(2, mes);
+            ps.setInt(1, ano);
+            ps.setInt(2, mes);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 sb.append(String.format(
@@ -49,18 +56,22 @@ public class RelatorioMensalDAO {
             }
         }
 
-        // Top 3 setores
+        // Top 3 setores — JOIN com setores pelo setor_id
         String sqlSetores = """
-            SELECT s.nome, SUM(b.valor_fob) AS fob
-            FROM base_importacao b
-            JOIN setores s ON b.setor_id = s.id
-            WHERE b.ano = ? AND b.mes = ?
-            GROUP BY s.nome ORDER BY fob DESC LIMIT 3
-            """;
+                SELECT s.nome,
+                       SUM(b.valor_fob) AS fob
+                FROM base_importacao b
+                JOIN setores s ON s.id = b.setor_id
+                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
+                GROUP BY s.id, s.nome
+                ORDER BY fob DESC
+                LIMIT 3
+                """;
 
         sb.append("*Top Setores:*\n");
         try (PreparedStatement ps = conn.prepareStatement(sqlSetores)) {
-            ps.setInt(1, ano); ps.setInt(2, mes);
+            ps.setInt(1, ano);
+            ps.setInt(2, mes);
             ResultSet rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
@@ -69,18 +80,46 @@ public class RelatorioMensalDAO {
             }
         }
 
-        // Top 3 municípios
+        // Top 3 municípios — JOIN com codigo_municipio pelo campo codigo
         String sqlMun = """
-            SELECT m.nome, SUM(b.valor_fob) AS fob
-            FROM base_importacao b
-            JOIN codigo_municipio m ON b.co_mun = m.codigo
-            WHERE b.ano = ? AND b.mes = ?
-            GROUP BY m.nome ORDER BY fob DESC LIMIT 3
-            """;
+                SELECT m.nome,
+                       SUM(b.valor_fob) AS fob
+                FROM base_importacao b
+                JOIN codigo_municipio m ON m.codigo = b.co_mun
+                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
+                GROUP BY m.codigo, m.nome
+                ORDER BY fob DESC
+                LIMIT 3
+                """;
 
         sb.append("\n*Top Municípios:*\n");
         try (PreparedStatement ps = conn.prepareStatement(sqlMun)) {
-            ps.setInt(1, ano); ps.setInt(2, mes);
+            ps.setInt(1, ano);
+            ps.setInt(2, mes);
+            ResultSet rs = ps.executeQuery();
+            int i = 1;
+            while (rs.next()) {
+                sb.append(String.format("%d. %s — `US$ %,.2f`\n",
+                        i++, rs.getString("nome"), rs.getDouble("fob")));
+            }
+        }
+
+        // Top 3 países de origem — JOIN com codigo_pais pelo campo codigo
+        String sqlPais = """
+                SELECT p.nome,
+                       SUM(b.valor_fob) AS fob
+                FROM base_importacao b
+                JOIN codigo_pais p ON p.codigo = b.co_pais
+                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
+                GROUP BY p.codigo, p.nome
+                ORDER BY fob DESC
+                LIMIT 3
+                """;
+
+        sb.append("\n*Top Países de Origem:*\n");
+        try (PreparedStatement ps = conn.prepareStatement(sqlPais)) {
+            ps.setInt(1, ano);
+            ps.setInt(2, mes);
             ResultSet rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
@@ -92,18 +131,24 @@ public class RelatorioMensalDAO {
         return sb.toString();
     }
 
-
+    // ─────────────────────────────────────────
+    // EXPORTAÇÃO
+    // ─────────────────────────────────────────
     private String gerarBlocoExportacao(int ano, int mes) throws SQLException {
         StringBuilder sb = new StringBuilder();
 
+        // Totais gerais
         String sqlTotal = """
-            SELECT COUNT(*) AS total, SUM(valor_fob) AS fob, SUM(kg_liquido) AS kg
-            FROM base_exportacao
-            WHERE ano = ? AND mes = ?
-            """;
+                SELECT COUNT(*)        AS total,
+                       SUM(valor_fob)  AS fob,
+                       SUM(kg_liquido) AS kg
+                FROM base_exportacao
+                WHERE CAST(ano AS UNSIGNED) = ? AND mes = ?
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(sqlTotal)) {
-            ps.setInt(1, ano); ps.setInt(2, mes);
+            ps.setInt(1, ano);
+            ps.setInt(2, mes);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 sb.append(String.format(
@@ -119,16 +164,20 @@ public class RelatorioMensalDAO {
 
         // Top 3 setores
         String sqlSetores = """
-            SELECT s.nome, SUM(b.valor_fob) AS fob
-            FROM base_exportacao b
-            JOIN setores s ON b.setor_id = s.id
-            WHERE b.ano = ? AND b.mes = ?
-            GROUP BY s.nome ORDER BY fob DESC LIMIT 3
-            """;
+                SELECT s.nome,
+                       SUM(b.valor_fob) AS fob
+                FROM base_exportacao b
+                JOIN setores s ON s.id = b.setor_id
+                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
+                GROUP BY s.id, s.nome
+                ORDER BY fob DESC
+                LIMIT 3
+                """;
 
         sb.append("*Top Setores:*\n");
         try (PreparedStatement ps = conn.prepareStatement(sqlSetores)) {
-            ps.setInt(1, ano); ps.setInt(2, mes);
+            ps.setInt(1, ano);
+            ps.setInt(2, mes);
             ResultSet rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
@@ -139,16 +188,44 @@ public class RelatorioMensalDAO {
 
         // Top 3 municípios
         String sqlMun = """
-            SELECT m.nome, SUM(b.valor_fob) AS fob
-            FROM base_exportacao b
-            JOIN codigo_municipio m ON b.co_mun = m.codigo
-            WHERE b.ano = ? AND b.mes = ?
-            GROUP BY m.nome ORDER BY fob DESC LIMIT 3
-            """;
+                SELECT m.nome,
+                       SUM(b.valor_fob) AS fob
+                FROM base_exportacao b
+                JOIN codigo_municipio m ON m.codigo = b.co_mun
+                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
+                GROUP BY m.codigo, m.nome
+                ORDER BY fob DESC
+                LIMIT 3
+                """;
 
         sb.append("\n*Top Municípios:*\n");
         try (PreparedStatement ps = conn.prepareStatement(sqlMun)) {
-            ps.setInt(1, ano); ps.setInt(2, mes);
+            ps.setInt(1, ano);
+            ps.setInt(2, mes);
+            ResultSet rs = ps.executeQuery();
+            int i = 1;
+            while (rs.next()) {
+                sb.append(String.format("%d. %s — `US$ %,.2f`\n",
+                        i++, rs.getString("nome"), rs.getDouble("fob")));
+            }
+        }
+
+        // Top 3 países de destino
+        String sqlPais = """
+                SELECT p.nome,
+                       SUM(b.valor_fob) AS fob
+                FROM base_exportacao b
+                JOIN codigo_pais p ON p.codigo = b.co_pais
+                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
+                GROUP BY p.codigo, p.nome
+                ORDER BY fob DESC
+                LIMIT 3
+                """;
+
+        sb.append("\n*Top Países de Destino:*\n");
+        try (PreparedStatement ps = conn.prepareStatement(sqlPais)) {
+            ps.setInt(1, ano);
+            ps.setInt(2, mes);
             ResultSet rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
