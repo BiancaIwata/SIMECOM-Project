@@ -9,7 +9,7 @@ function buscarSituacaoAnual(anoInicial, municipio) {
     ano,
     importacoes_milhoes_usd,
     exportacoes_milhoes_usd
-    FROM dm_situacao_anual_municipios
+    FROM vw_situacao_anual_municipios
     WHERE municipio = ?
     AND ano BETWEEN ? AND ?
     ORDER BY ano;`
@@ -25,7 +25,7 @@ function buscarTopMunicipios(anoInicial) {
     SELECT
     municipio,
     SUM(valor_total) AS valor_total
-    FROM dm_ranking_municipios
+    FROM vw_ranking_municipios
     WHERE ano BETWEEN ? AND ?
     GROUP BY municipio
     ORDER BY valor_total DESC
@@ -43,7 +43,7 @@ function buscarTopMunicipiosImportacao(anoInicial) {
     SELECT
     municipio,
     SUM(valor_total) AS valor_total
-    FROM dm_importacoes_por_municipio
+    FROM vw_importacoes_por_municipio
     WHERE ano BETWEEN ? AND ?
     GROUP BY municipio
     ORDER BY valor_total DESC;
@@ -60,7 +60,7 @@ function buscarTopMunicipiosExportacao(anoInicial) {
   SELECT
     municipio,
     SUM(valor_total) AS valor_total
-    FROM dm_exportacoes_por_municipio
+    FROM vw_exportacoes_por_municipio
     WHERE ano BETWEEN ? AND ?
     GROUP BY municipio
     ORDER BY valor_total DESC;
