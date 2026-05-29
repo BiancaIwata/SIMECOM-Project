@@ -46,7 +46,8 @@ function buscarTopMunicipiosImportacao(anoInicial) {
     FROM vw_importacoes_por_municipio
     WHERE ano BETWEEN ? AND ?
     GROUP BY municipio
-    ORDER BY valor_total DESC;
+    ORDER BY valor_total DESC
+    LIMIT 10;
   `;
 
   console.log({ metodo: "buscarTopMunicipiosImportacao", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal })
@@ -63,7 +64,8 @@ function buscarTopMunicipiosExportacao(anoInicial) {
     FROM vw_exportacoes_por_municipio
     WHERE ano BETWEEN ? AND ?
     GROUP BY municipio
-    ORDER BY valor_total DESC;
+    ORDER BY valor_total DESC
+    LIMIT 10;
   `;
 
   console.log({ metodo: "buscarTopMunicipiosExportacao", sql: instrucaoSql, anoInicial: anoInicial, anoFinal: anoFinal })

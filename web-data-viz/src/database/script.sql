@@ -250,3 +250,210 @@ SET fk_setor = CASE
     ELSE fk_setor
 END
 WHERE id >= 1;
+
+-- =========================
+-- OTIMIZACAO DE CONSULTAS PARA DASHBOARDS (ALTO VOLUME)
+-- =========================
+-- Com 56M+ linhas nas tabelas base, as dashboards nao devem agregar direto
+-- em base_importacao/base_exportacao a cada request.
+-- Esta secao cria:
+-- 1) indices para filtro/agrupamento
+-- 2) tabelas agregadas por ano/municipio e ano/setor
+-- 3) procedure de refresh
+-- 4) views consumidas pela API
+
+-- =========================
+-- INDICES BASE IMPORTACAO
+-- =========================
+CREATE INDEX idx_bi_ano_mun ON base_importacao (CO_ANO, CO_MUN);
+CREATE INDEX idx_bi_ano_setor ON base_importacao (CO_ANO, SETORES_ID);
+CREATE INDEX idx_bi_mun_ano ON base_importacao (CO_MUN, CO_ANO);
+CREATE INDEX idx_bi_setor_ano ON base_importacao (SETORES_ID, CO_ANO);
+
+-- =========================
+-- INDICES BASE EXPORTACAO
+-- =========================
+CREATE INDEX idx_be_ano_mun ON base_exportacao (CO_ANO, CO_MUN);
+CREATE INDEX idx_be_ano_setor ON base_exportacao (CO_ANO, SETORES_ID);
+CREATE INDEX idx_be_mun_ano ON base_exportacao (CO_MUN, CO_ANO);
+CREATE INDEX idx_be_setor_ano ON base_exportacao (SETORES_ID, CO_ANO);
+
+-- =========================
+-- TABELAS AGREGADAS (MATERIALIZADAS)
+-- =========================
+CREATE TABLE dashboard_aggr_municipio_ano (
+    ano SMALLINT UNSIGNED NOT NULL,
+    co_mun CHAR(10) NOT NULL,
+    municipio VARCHAR(35) NOT NULL,
+    importacoes_total DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    exportacoes_total DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    PRIMARY KEY (ano, co_mun),
+    KEY idx_dam_municipio_ano (municipio, ano)
+);
+
+CREATE TABLE dashboard_aggr_setor_ano (
+    ano SMALLINT UNSIGNED NOT NULL,
+    id INT NOT NULL,
+    nome VARCHAR(150) NOT NULL,
+    importacoes_total DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    exportacoes_total DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    PRIMARY KEY (ano, id),
+    KEY idx_das_nome_ano (nome, ano)
+);
+
+-- =========================
+-- PROCEDURE DE REFRESH DAS AGREGACOES
+-- =========================
+DROP PROCEDURE IF EXISTS sp_refresh_dashboard_aggregates;
+
+DELIMITER $$
+CREATE PROCEDURE sp_refresh_dashboard_aggregates()
+BEGIN
+    TRUNCATE TABLE dashboard_aggr_municipio_ano;
+    TRUNCATE TABLE dashboard_aggr_setor_ano;
+
+    INSERT INTO dashboard_aggr_municipio_ano (ano, co_mun, municipio, importacoes_total, exportacoes_total)
+    SELECT
+        z.ano,
+        z.co_mun,
+        MAX(z.municipio) AS municipio,
+        SUM(z.importacoes_total) AS importacoes_total,
+        SUM(z.exportacoes_total) AS exportacoes_total
+    FROM (
+        SELECT
+            bi.CO_ANO AS ano,
+            bi.CO_MUN AS co_mun,
+            COALESCE(cm.NO_MUN, bi.CO_MUN) AS municipio,
+            SUM(bi.VL_FOB) AS importacoes_total,
+            0 AS exportacoes_total
+        FROM base_importacao bi
+        LEFT JOIN codigo_municipio cm
+            ON cm.CO_MUN_GEO = bi.CO_MUN
+        GROUP BY bi.CO_ANO, bi.CO_MUN, cm.NO_MUN
+
+        UNION ALL
+
+        SELECT
+            be.CO_ANO AS ano,
+            be.CO_MUN AS co_mun,
+            COALESCE(cm.NO_MUN, be.CO_MUN) AS municipio,
+            0 AS importacoes_total,
+            SUM(be.VL_FOB) AS exportacoes_total
+        FROM base_exportacao be
+        LEFT JOIN codigo_municipio cm
+            ON cm.CO_MUN_GEO = be.CO_MUN
+        GROUP BY be.CO_ANO, be.CO_MUN, cm.NO_MUN
+    ) z
+    GROUP BY z.ano, z.co_mun;
+
+    INSERT INTO dashboard_aggr_setor_ano (ano, id, nome, importacoes_total, exportacoes_total)
+    SELECT
+        z.ano,
+        z.id,
+        MAX(z.nome) AS nome,
+        SUM(z.importacoes_total) AS importacoes_total,
+        SUM(z.exportacoes_total) AS exportacoes_total
+    FROM (
+        SELECT
+            bi.CO_ANO AS ano,
+            s.id,
+            s.nome,
+            SUM(bi.VL_FOB) AS importacoes_total,
+            0 AS exportacoes_total
+        FROM base_importacao bi
+        INNER JOIN setores s
+            ON s.id = bi.SETORES_ID
+        GROUP BY bi.CO_ANO, s.id, s.nome
+
+        UNION ALL
+
+        SELECT
+            be.CO_ANO AS ano,
+            s.id,
+            s.nome,
+            0 AS importacoes_total,
+            SUM(be.VL_FOB) AS exportacoes_total
+        FROM base_exportacao be
+        INNER JOIN setores s
+            ON s.id = be.SETORES_ID
+        GROUP BY be.CO_ANO, s.id, s.nome
+    ) z
+    GROUP BY z.ano, z.id;
+END $$
+DELIMITER ;
+
+-- Executar refresh inicial apos carga de dados.
+CALL sp_refresh_dashboard_aggregates();
+
+-- =========================
+-- VIEWS PARA AS DASHBOARDS
+-- =========================
+DROP VIEW IF EXISTS vw_situacao_mercado;
+CREATE VIEW vw_situacao_mercado AS
+SELECT
+    ano,
+    ROUND(SUM(importacoes_total) / 1000000, 2) AS importacoes_milhoes_usd,
+    ROUND(SUM(exportacoes_total) / 1000000, 2) AS exportacoes_milhoes_usd
+FROM dashboard_aggr_setor_ano
+GROUP BY ano;
+
+DROP VIEW IF EXISTS vw_valor_total_por_setor;
+CREATE VIEW vw_valor_total_por_setor AS
+SELECT
+    ano,
+    id,
+    nome,
+    exportacoes_total AS exportacoes,
+    importacoes_total AS importacoes
+FROM dashboard_aggr_setor_ano;
+
+DROP VIEW IF EXISTS vw_exportacoes_por_setor;
+CREATE VIEW vw_exportacoes_por_setor AS
+SELECT
+    ano,
+    id,
+    nome,
+    exportacoes_total AS valor_total
+FROM dashboard_aggr_setor_ano;
+
+DROP VIEW IF EXISTS vw_importacoes_por_setor;
+CREATE VIEW vw_importacoes_por_setor AS
+SELECT
+    ano,
+    id,
+    nome,
+    importacoes_total AS valor_total
+FROM dashboard_aggr_setor_ano;
+
+DROP VIEW IF EXISTS vw_situacao_anual_municipios;
+CREATE VIEW vw_situacao_anual_municipios AS
+SELECT
+    ano,
+    municipio,
+    ROUND(importacoes_total / 1000000, 2) AS importacoes_milhoes_usd,
+    ROUND(exportacoes_total / 1000000, 2) AS exportacoes_milhoes_usd
+FROM dashboard_aggr_municipio_ano;
+
+DROP VIEW IF EXISTS vw_ranking_municipios;
+CREATE VIEW vw_ranking_municipios AS
+SELECT
+    ano,
+    municipio,
+    (importacoes_total + exportacoes_total) AS valor_total
+FROM dashboard_aggr_municipio_ano;
+
+DROP VIEW IF EXISTS vw_importacoes_por_municipio;
+CREATE VIEW vw_importacoes_por_municipio AS
+SELECT
+    ano,
+    municipio,
+    importacoes_total AS valor_total
+FROM dashboard_aggr_municipio_ano;
+
+DROP VIEW IF EXISTS vw_exportacoes_por_municipio;
+CREATE VIEW vw_exportacoes_por_municipio AS
+SELECT
+    ano,
+    municipio,
+    exportacoes_total AS valor_total
+FROM dashboard_aggr_municipio_ano;

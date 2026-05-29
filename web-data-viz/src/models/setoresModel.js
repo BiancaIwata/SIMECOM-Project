@@ -43,9 +43,9 @@ function buscarTopSetoresExpotacao(anoInicial) {
     IFNULL(SUM(valor_total), 0) AS valor_total
     FROM vw_exportacoes_por_setor
     WHERE ano BETWEEN ? AND ?
-    OR ano IS NULL
     GROUP BY id, nome
-    ORDER BY valor_total DESC;
+    ORDER BY valor_total DESC
+    LIMIT 10;
   `;
 
   return database.executar(instrucaoSql, [anoInicial, anoFinal]);
@@ -61,9 +61,9 @@ function buscarTopSetoresImportacao(anoInicial) {
     IFNULL(SUM(valor_total), 0) AS valor_total
     FROM vw_importacoes_por_setor
     WHERE ano BETWEEN ? AND ?
-    OR ano IS NULL
     GROUP BY id, nome
-    ORDER BY valor_total DESC;
+    ORDER BY valor_total DESC
+    LIMIT 10;
   `;
 
   return database.executar(instrucaoSql, [anoInicial, anoFinal]);

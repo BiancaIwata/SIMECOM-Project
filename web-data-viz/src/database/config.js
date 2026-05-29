@@ -5,8 +5,13 @@ var mySqlConfig = {
     database: process.env.DB_DATABASE,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT
+    port: process.env.DB_PORT,
+    waitForConnections: true,
+    connectionLimit: Number(process.env.DB_POOL_SIZE) || 20,
+    queueLimit: 0
 };
+
+var pool = mysql.createPool(mySqlConfig);
 
 function executar(instrucao, valores = []) {
 
@@ -16,18 +21,12 @@ function executar(instrucao, valores = []) {
     // }
 
     return new Promise(function (resolve, reject) {
-        var conexao = mysql.createConnection(mySqlConfig);
-        conexao.connect();
-        conexao.query(instrucao, valores, function (erro, resultados) {
-            conexao.end();
+        pool.query(instrucao, valores, function (erro, resultados) {
             if (erro) {
                 reject(erro);
+                return;
             }
-            console.log(resultados);
             resolve(resultados);
-        });
-        conexao.on('error', function (erro) {
-            return ("ERRO NO MySQL SERVER: ", erro.sqlMessage);
         });
     });
 }
