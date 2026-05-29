@@ -24,6 +24,26 @@ public class RelatorioMensalDAO {
         return sb.toString();
     }
 
+    public int[] buscarAnoMesMaisRecente() throws SQLException {
+        String sql = """
+                SELECT CAST(ano AS UNSIGNED) AS max_ano, mes AS max_mes
+                FROM base_importacao
+                ORDER BY max_ano DESC, max_mes DESC
+                LIMIT 1
+                """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                return new int[]{ rs.getInt("max_ano"), rs.getInt("max_mes") };
+            }
+        }
+ 
+        java.time.LocalDate mesPassado = java.time.LocalDate.now().minusMonths(1);
+        return new int[]{ mesPassado.getYear(), mesPassado.getMonthValue() };
+    }
+
     // ─────────────────────────────────────────
     // IMPORTAÇÃO
     // ─────────────────────────────────────────
