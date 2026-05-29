@@ -25,21 +25,21 @@ public class RelatorioMensalDAO {
     }
 
     public int[] buscarAnoMesMaisRecente() throws SQLException {
+        // CO_ANO agora é SMALLINT UNSIGNED — sem necessidade de CAST
         String sql = """
-                SELECT CAST(ano AS UNSIGNED) AS max_ano, mes AS max_mes
+                SELECT CO_ANO AS max_ano, CO_MES AS max_mes
                 FROM base_importacao
-                ORDER BY max_ano DESC, max_mes DESC
+                ORDER BY CO_ANO DESC, CO_MES DESC
                 LIMIT 1
                 """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
             if (rs.next()) {
                 return new int[]{ rs.getInt("max_ano"), rs.getInt("max_mes") };
             }
         }
- 
+
         java.time.LocalDate mesPassado = java.time.LocalDate.now().minusMonths(1);
         return new int[]{ mesPassado.getYear(), mesPassado.getMonthValue() };
     }
@@ -50,14 +50,13 @@ public class RelatorioMensalDAO {
     private String gerarBlocoImportacao(int ano, int mes) throws SQLException {
         StringBuilder sb = new StringBuilder();
 
-        // Totais gerais
-        // ano é YEAR no MySQL — cast para UNSIGNED evita problema de comparação
+        // Totais gerais — CO_ANO é SMALLINT UNSIGNED, comparação direta com int funciona
         String sqlTotal = """
-                SELECT COUNT(*)        AS total,
-                       SUM(valor_fob)  AS fob,
-                       SUM(kg_liquido) AS kg
+                SELECT COUNT(*) AS total,
+                       SUM(VL_FOB) AS fob,
+                       SUM(KG_LIQUIDO) AS kg
                 FROM base_importacao
-                WHERE CAST(ano AS UNSIGNED) = ? AND mes = ?
+                WHERE CO_ANO = ? AND CO_MES = ?
                 """;
 
         try (PreparedStatement ps = conn.prepareStatement(sqlTotal)) {
@@ -67,7 +66,7 @@ public class RelatorioMensalDAO {
             if (rs.next()) {
                 sb.append(String.format(
                         "*Importações — %02d/%d*\n" +
-                                "Registros: `%d` | FOB: `US$ %,.2f` | Peso: `%,.0f kg`\n\n",
+                        "Registros: `%d` | FOB: `US$ %,.2f` | Peso: `%,.0f kg`\n\n",
                         mes, ano,
                         rs.getLong("total"),
                         rs.getDouble("fob"),
@@ -76,13 +75,14 @@ public class RelatorioMensalDAO {
             }
         }
 
-        // Top 3 setores — JOIN com setores pelo setor_id
+        // Top 3 setores — JOIN com setores pelo SETORES_ID
         String sqlSetores = """
                 SELECT s.nome,
-                       SUM(b.valor_fob) AS fob
+                SUM(b.VL_FOB) AS fob
                 FROM base_importacao b
-                JOIN setores s ON s.id = b.setor_id
-                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
+                JOIN codigo_sh4 sh ON sh.CO_SH4 = b.SH4
+                JOIN setores s ON s.id = sh.fk_setor
+                WHERE b.CO_ANO = ? AND b.CO_MES = ?
                 GROUP BY s.id, s.nome
                 ORDER BY fob DESC
                 LIMIT 3
@@ -100,14 +100,14 @@ public class RelatorioMensalDAO {
             }
         }
 
-        // Top 3 municípios — JOIN com codigo_municipio pelo campo codigo
+        // Top 3 municípios — JOIN com codigo_municipio pelo CO_MUN_GEO
         String sqlMun = """
-                SELECT m.nome,
-                       SUM(b.valor_fob) AS fob
+                SELECT m.NO_MUN AS nome,
+                       SUM(b.VL_FOB) AS fob
                 FROM base_importacao b
-                JOIN codigo_municipio m ON m.codigo = b.co_mun
-                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
-                GROUP BY m.codigo, m.nome
+                JOIN codigo_municipio m ON m.CO_MUN_GEO = b.CO_MUN
+                WHERE b.CO_ANO = ? AND b.CO_MES = ?
+                GROUP BY m.CO_MUN_GEO, m.NO_MUN
                 ORDER BY fob DESC
                 LIMIT 3
                 """;
@@ -124,14 +124,14 @@ public class RelatorioMensalDAO {
             }
         }
 
-        // Top 3 países de origem — JOIN com codigo_pais pelo campo codigo
+        // Top 3 países de origem — JOIN com codigo_pais pelo CO_PAIS
         String sqlPais = """
-                SELECT p.nome,
-                       SUM(b.valor_fob) AS fob
+                SELECT p.NO_PAIS AS nome,
+                SUM(b.VL_FOB) AS fob
                 FROM base_importacao b
-                JOIN codigo_pais p ON p.codigo = b.co_pais
-                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
-                GROUP BY p.codigo, p.nome
+                JOIN codigo_pais p ON p.CO_PAIS = b.CO_PAIS
+                WHERE b.CO_ANO = ? AND b.CO_MES = ?
+                GROUP BY p.CO_PAIS, p.NO_PAIS
                 ORDER BY fob DESC
                 LIMIT 3
                 """;
@@ -158,13 +158,13 @@ public class RelatorioMensalDAO {
         StringBuilder sb = new StringBuilder();
 
         // Totais gerais
-        String sqlTotal = """
-                SELECT COUNT(*)        AS total,
-                       SUM(valor_fob)  AS fob,
-                       SUM(kg_liquido) AS kg
-                FROM base_exportacao
-                WHERE CAST(ano AS UNSIGNED) = ? AND mes = ?
-                """;
+        String sqlTotal = """ 
+        SELECT COUNT(*) AS total,
+                SUM(VL_FOB) AS fob,
+                SUM(KG_LIQUIDO) AS kg
+        FROM base_exportacao
+        WHERE CO_ANO = ? AND CO_MES = ?
+        """;
 
         try (PreparedStatement ps = conn.prepareStatement(sqlTotal)) {
             ps.setInt(1, ano);
@@ -173,7 +173,7 @@ public class RelatorioMensalDAO {
             if (rs.next()) {
                 sb.append(String.format(
                         "*Exportações — %02d/%d*\n" +
-                                "Registros: `%d` | FOB: `US$ %,.2f` | Peso: `%,.0f kg`\n\n",
+                        "Registros: `%d` | FOB: `US$ %,.2f` | Peso: `%,.0f kg`\n\n",
                         mes, ano,
                         rs.getLong("total"),
                         rs.getDouble("fob"),
@@ -185,10 +185,11 @@ public class RelatorioMensalDAO {
         // Top 3 setores
         String sqlSetores = """
                 SELECT s.nome,
-                       SUM(b.valor_fob) AS fob
+                       SUM(b.VL_FOB) AS fob
                 FROM base_exportacao b
-                JOIN setores s ON s.id = b.setor_id
-                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
+                JOIN codigo_sh4 sh ON sh.CO_SH4 = b.SH4
+                JOIN setores s ON s.id = sh.fk_setor
+                WHERE b.CO_ANO = ? AND b.CO_MES = ?
                 GROUP BY s.id, s.nome
                 ORDER BY fob DESC
                 LIMIT 3
@@ -208,12 +209,12 @@ public class RelatorioMensalDAO {
 
         // Top 3 municípios
         String sqlMun = """
-                SELECT m.nome,
-                       SUM(b.valor_fob) AS fob
+                SELECT m.NO_MUN AS nome,
+                       SUM(b.VL_FOB) AS fob
                 FROM base_exportacao b
-                JOIN codigo_municipio m ON m.codigo = b.co_mun
-                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
-                GROUP BY m.codigo, m.nome
+                JOIN codigo_municipio m ON m.CO_MUN_GEO = b.CO_MUN
+                WHERE b.CO_ANO = ? AND b.CO_MES = ?
+                GROUP BY m.CO_MUN_GEO, m.NO_MUN
                 ORDER BY fob DESC
                 LIMIT 3
                 """;
@@ -232,12 +233,12 @@ public class RelatorioMensalDAO {
 
         // Top 3 países de destino
         String sqlPais = """
-                SELECT p.nome,
-                       SUM(b.valor_fob) AS fob
+                SELECT p.NO_PAIS AS nome,
+                       SUM(b.VL_FOB) AS fob
                 FROM base_exportacao b
-                JOIN codigo_pais p ON p.codigo = b.co_pais
-                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
-                GROUP BY p.codigo, p.nome
+                JOIN codigo_pais p ON p.CO_PAIS = b.CO_PAIS
+                WHERE b.CO_ANO = ? AND b.CO_MES = ?
+                GROUP BY p.CO_PAIS, p.NO_PAIS
                 ORDER BY fob DESC
                 LIMIT 3
                 """;

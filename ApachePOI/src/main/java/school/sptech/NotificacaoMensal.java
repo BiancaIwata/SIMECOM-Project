@@ -7,7 +7,7 @@ public class NotificacaoMensal implements Runnable {
 
     @Override
     public void run() {
-        try (Connection conn = DataSource.getConnection()) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
 
             RelatorioMensalDAO dao = new RelatorioMensalDAO(conn);
             
