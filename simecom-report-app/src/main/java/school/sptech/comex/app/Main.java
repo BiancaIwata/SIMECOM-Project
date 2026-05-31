@@ -1,17 +1,17 @@
-package com.example.comex.app;
+package school.sptech.comex.app;
 
-import com.example.comex.config.AppConfig;
-import com.example.comex.model.FilterRequest;
-import com.example.comex.model.ReportContext;
-import com.example.comex.model.TradeRecord;
-import com.example.comex.model.TradeType;
-import com.example.comex.service.AiInsightService;
-import com.example.comex.service.CalculationService;
-import com.example.comex.service.ChartService;
-import com.example.comex.service.CsvReaderService;
-import com.example.comex.service.FilterService;
-import com.example.comex.service.LocalInsightService;
-import com.example.comex.service.PdfReportService;
+import school.sptech.comex.config.AppConfig;
+import school.sptech.comex.model.FilterRequest;
+import school.sptech.comex.model.ReportContext;
+import school.sptech.comex.model.TradeRecord;
+import school.sptech.comex.model.TradeType;
+import school.sptech.comex.service.AiInsightService;
+import school.sptech.comex.service.CalculationService;
+import school.sptech.comex.service.ChartService;
+import school.sptech.comex.service.CsvReaderService;
+import school.sptech.comex.service.FilterService;
+import school.sptech.comex.service.LocalInsightService;
+import school.sptech.comex.service.PdfReportService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.file.Path;

@@ -39,7 +39,6 @@ public class logJava {
         this.nomeArquivo = nomeArquivo;
     }
 
-    /** Construtor sem arquivo (compatível com Main.java original) */
     public logJava() {
         this.nomeArquivo = "desconhecido";
     }

@@ -195,7 +195,7 @@ h3 {
 }
 
 .secao1 .box:nth-child(1) {
-  flex: 2 1 600px; 
+  flex: 2 1 600px;
   width: auto;
 }
 
@@ -210,10 +210,10 @@ h3 {
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   width: 100%;
-  position: relative; 
+  position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 .graficoLinha,
@@ -300,4 +300,51 @@ input {
   display: flex;
   padding-bottom: 15px;
   padding-top: 15px;
+}
+
+button {
+  background-color: #1f7ae0;
+  color: #fff;
+  border: none;
+  padding: 11px 28px;
+  border-radius: 9px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease-in-out;
+  margin: 10px;
+}
+
+button:hover {
+  background-color: #1a65c0;
+  transform: scale(1.05);
+}
+
+/* MUDAR O DISPLAUY AQUI PARA O LOADING!!!! */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background: rgba(0, 55, 117, 0.25);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  pointer-events: all;
+  backdrop-filter: blur(2px);
+}
+
+.loading-text {
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+}
+
+.loadgif {
+  width: 5%;
 }

@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
+    <groupId>school.sptech</groupId>
     <artifactId>comex-report-app</artifactId>
     <version>1.0.0</version>
     <name>comex-report-app</name>
@@ -46,7 +46,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.comex.app.Main</mainClass>
+                            <mainClass>school.sptech.comex.app.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

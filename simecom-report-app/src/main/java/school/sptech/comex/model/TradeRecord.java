@@ -1,4 +1,4 @@
-package com.example.comex.model;
+package school.sptech.comex.model;
 
 import java.math.BigDecimal;
 

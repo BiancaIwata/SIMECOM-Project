@@ -1,8 +1,8 @@
-package com.example.comex.service;
+package school.sptech.comex.service;
 
-import com.example.comex.model.MetricsResult;
-import com.example.comex.model.TradeRecord;
-import com.example.comex.model.TradeType;
+import school.sptech.comex.model.MetricsResult;
+import school.sptech.comex.model.TradeRecord;
+import school.sptech.comex.model.TradeType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

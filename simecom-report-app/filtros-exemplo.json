@@ -1,9 +1,9 @@
 {
-  "importCsvPath": "data/IMP.csv",
-  "exportCsvPath": "data/EXP.csv",
+  "importCsvPath": "data/IMP_2022_MUN.csv",
+  "exportCsvPath": "data/EXP_2022_MUN.csv",
   "tradeType": "BOTH",
-  "yearStart": 1997,
-  "yearEnd": 1997,
+  "yearStart": 2022,
+  "yearEnd": 2022,
   "monthStart": 2,
   "monthEnd": 6,
   "sh4List": [],
@@ -11,6 +11,6 @@
   "ufList": [],
   "municipalityList": [],
   "outputDirectory": "output",
-  "reportTitle": "Novo Relatorio Teste",
+  "reportTitle": "Relatorio Para Clara",
   "prompt": "Gere insights iniciais sobre o recorte filtrado, destacando comparação entre importação e exportação, concentração por SH4 e comportamento mensal."
 }

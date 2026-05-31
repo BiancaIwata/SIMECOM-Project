@@ -1,9 +1,9 @@
-package com.example.comex.service;
+package school.sptech.comex.service;
 
-import com.example.comex.model.TradeRecord;
-import com.example.comex.model.TradeType;
-import com.example.comex.util.CsvUtils;
-import com.example.comex.util.NumberUtils;
+import school.sptech.comex.model.TradeRecord;
+import school.sptech.comex.model.TradeType;
+import school.sptech.comex.util.CsvUtils;
+import school.sptech.comex.util.NumberUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
