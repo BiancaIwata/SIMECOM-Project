@@ -22,6 +22,7 @@ var adminRouter = require("./src/routes/admin");
 var setoresRouter = require("./src/routes/setores");
 var municipiosRouter = require("./src/routes/municipios");
 var slackEventsRouter = require("./src/routes/slackEvents");
+var relatorioRouter = require("./src/routes/relatorio");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -36,7 +37,7 @@ app.use("/admin", adminRouter);
 app.use("/setores", setoresRouter);
 app.use("/municipios", municipiosRouter);
 app.use("/slackEvents", slackEventsRouter);
-
+app.use("/relatorio", relatorioRouter);
 
 app.listen(PORTA_APP, function () {
   console.log(`Servidor Rodando Em: http://${HOST_APP}:${PORTA_APP} :`);

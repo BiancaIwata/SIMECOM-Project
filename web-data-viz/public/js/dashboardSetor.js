@@ -3,35 +3,41 @@ var chartBar = null;
 var chartBar2 = null;
 var chartPie = null;
 
-document.getElementById("select-periodo").addEventListener("change", function () {
+document
+  .getElementById("select-periodo")
+  .addEventListener("change", function () {
     var anoInicial = Number(this.value);
 
     if (!anoInicial) return;
-  
+
     var anoFinal = anoInicial + 5;
 
-    document.getElementById("periodoSelecionado").innerHTML = `${anoInicial} - ${anoFinal}`;
+    document.getElementById("periodoSelecionado").innerHTML =
+      `${anoInicial} - ${anoFinal}`;
 
     // Recarrega todos os gráficos com o novo período
     buscarSituacaoMercado(anoInicial);
     buscarTopSetores(anoInicial);
     buscarTopSetoresExportacao(anoInicial);
     buscarTopSetoresImportacao(anoInicial);
-});
+  });
 
 // Gráfico de Linhas (Evolução das Importações)
 function buscarSituacaoMercado(anoInicial) {
-  fetch(`/setores/buscarSituacaoMercado?anoInicial=${anoInicial}`, { cache: 'no-store' })
+  fetch(`/setores/buscarSituacaoMercado?anoInicial=${anoInicial}`, {
+    cache: "no-store",
+  })
     .then(function (response) {
       if (response.ok) {
-        response.json().then(resultado => {
-          console.log(resultado)
+        response.json().then((resultado) => {
+          console.log(resultado);
           plotarGraficoLinhas(resultado);
         });
       } else {
-        console.error('Nenhum dado encontrado ou erro na API');
+        console.error("Nenhum dado encontrado ou erro na API");
       }
-    }).catch(function (error) {
+    })
+    .catch(function (error) {
       console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
     });
 }
@@ -143,26 +149,28 @@ function plotarGraficoLinhas(dados) {
           ticks: {
             color: "#6b7280",
 
-            callback: function(value) {
+            callback: function (value) {
               return "$" + value + "M";
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   });
 }
 
-
 function buscarTopSetores(anoInicial) {
-  fetch(`/setores/buscarTopSetores?anoInicial=${anoInicial}`, { cache: 'no-store' })
+  fetch(`/setores/buscarTopSetores?anoInicial=${anoInicial}`, {
+    cache: "no-store",
+  })
     .then(function (response) {
       if (response.ok) {
         response.json().then(function (resultado) {
           plotarGraficoPie(resultado);
         });
       }
-    }).catch(function (error) {
+    })
+    .catch(function (error) {
       console.error(`Erro: ${error.message}`);
     });
 }
@@ -194,31 +202,33 @@ function plotarGraficoPie(dados) {
     data: {
       labels: labels,
 
-      datasets: [{
-        data: valores,
+      datasets: [
+        {
+          data: valores,
 
-        backgroundColor: [
-          "#00C853",
-          "#ff2fba",
-          "#00A8E8",
-          "#707070",
-          "#fbbf24",
-        ],
+          backgroundColor: [
+            "#00C853",
+            "#ff2fba",
+            "#00A8E8",
+            "#707070",
+            "#fbbf24",
+          ],
 
-         hoverBackgroundColor: [
-          "#80E4A9",
-          "#FF97DC",
-          "#7FD4F4",
-          "#B8B8B8",
-          "#FDE08D",
-        ],
+          hoverBackgroundColor: [
+            "#80E4A9",
+            "#FF97DC",
+            "#7FD4F4",
+            "#B8B8B8",
+            "#FDE08D",
+          ],
 
-        borderWidth: 8,
-        borderColor: "#fff",
+          borderWidth: 8,
+          borderColor: "#fff",
 
-        cutout: "72%",
-        hoverOffset: 6,
-      }]
+          cutout: "72%",
+          hoverOffset: 6,
+        },
+      ],
     },
 
     options: {
@@ -240,23 +250,26 @@ function plotarGraficoPie(dados) {
             font: {
               size: 13,
               weight: "bold",
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   });
 }
 
 function buscarTopSetoresImportacao(anoInicial) {
-  fetch(`/setores/buscarTopSetoresImportacao?anoInicial=${anoInicial}`, { cache: 'no-store' })
+  fetch(`/setores/buscarTopSetoresImportacao?anoInicial=${anoInicial}`, {
+    cache: "no-store",
+  })
     .then(function (response) {
       if (response.ok) {
         response.json().then(function (resultado) {
           plotarGraficoBarImportacao(resultado);
         });
       }
-    }).catch(function (error) {
+    })
+    .catch(function (error) {
       console.error(`Erro: ${error.message}`);
     });
 }
@@ -266,16 +279,19 @@ function plotarGraficoBarImportacao(dados) {
 }
 // Gráfico de Barras (Crescimento)
 function buscarTopSetoresExportacao(anoInicial) {
-    fetch(`/setores/buscarTopSetoresExportacao?anoInicial=${anoInicial}`, { cache: 'no-store' })
-        .then(function (response) {
-            if (response.ok) {
-                response.json().then(function (resultado) {
-                    plotarGraficoBarExportacao(resultado);
-                });
-            }
-        }).catch(function (error) {
-            console.error(`Erro: ${error.message}`);
+  fetch(`/setores/buscarTopSetoresExportacao?anoInicial=${anoInicial}`, {
+    cache: "no-store",
+  })
+    .then(function (response) {
+      if (response.ok) {
+        response.json().then(function (resultado) {
+          plotarGraficoBarExportacao(resultado);
         });
+      }
+    })
+    .catch(function (error) {
+      console.error(`Erro: ${error.message}`);
+    });
 }
 
 function plotarGraficoBarExportacao(dados) {
@@ -283,7 +299,6 @@ function plotarGraficoBarExportacao(dados) {
 }
 
 function criarGraficoBarra(idCanvas, dados, chartAtual) {
-
   if (chartAtual) chartAtual.destroy();
 
   var labels = [];
@@ -304,37 +319,37 @@ function criarGraficoBarra(idCanvas, dados, chartAtual) {
   valores.push((outros / 1000000).toFixed(0));
 
   return new Chart(document.getElementById(idCanvas), {
-
     type: "bar",
 
     data: {
       labels: labels,
 
-      datasets: [{
-        data: valores,
+      datasets: [
+        {
+          data: valores,
 
-        backgroundColor: [
-          "#00C853",
-          "#ff2fba",
-          "#00A8E8",
-          "#707070",
-          "#fbbf24",
-        ],
+          backgroundColor: [
+            "#00C853",
+            "#ff2fba",
+            "#00A8E8",
+            "#707070",
+            "#fbbf24",
+          ],
 
-         hoverBackgroundColor: [
-          "#80E4A9",
-          "#FF97DC",
-          "#7FD4F4",
-          "#B8B8B8",
-          "#FDE08D",
-        ],
+          hoverBackgroundColor: [
+            "#80E4A9",
+            "#FF97DC",
+            "#7FD4F4",
+            "#B8B8B8",
+            "#FDE08D",
+          ],
 
+          borderRadius: 18,
+          borderSkipped: false,
 
-        borderRadius: 18,
-        borderSkipped: false,
-
-        barThickness: 65,
-      }]
+          barThickness: 65,
+        },
+      ],
     },
 
     options: {
@@ -355,7 +370,7 @@ function criarGraficoBarra(idCanvas, dados, chartAtual) {
                 strokeStyle: chart.data.datasets[0].backgroundColor[i],
                 hidden: false,
                 index: i,
-                pointStyle: "circle"
+                pointStyle: "circle",
               }));
             },
 
@@ -368,29 +383,28 @@ function criarGraficoBarra(idCanvas, dados, chartAtual) {
             font: {
               size: 14,
               weight: "bold",
-            }
-          }
+            },
+          },
         },
 
         tooltip: {
           callbacks: {
-            label: function(context) {
+            label: function (context) {
               return "$" + context.parsed.y + "M";
-            }
-          }
-        }
+            },
+          },
+        },
       },
 
       scales: {
-
         x: {
           grid: {
             display: false,
           },
 
           ticks: {
-            display: false
-          }
+            display: false,
+          },
         },
 
         y: {
@@ -404,17 +418,40 @@ function criarGraficoBarra(idCanvas, dados, chartAtual) {
           ticks: {
             color: "#6b7280",
 
-            callback: function(value) {
+            callback: function (value) {
               return "$" + value + "M";
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   });
 }
 
+async function gerar_relatorio() {
+  const response = await fetch("/relatorio", {
+    method: "POST",
+  });
 
+  if (!response.ok) {
+    alert("Erro ao gerar relatório");
+    return;
+  }
+
+  const blob = await response.blob();
+
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "relatorio.xlsx";
+
+  document.body.appendChild(a);
+  a.click();
+
+  a.remove();
+  window.URL.revokeObjectURL(url);
+}
 
 buscarSituacaoMercado(2021);
 buscarTopSetores(2021);
