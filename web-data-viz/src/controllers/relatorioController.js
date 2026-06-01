@@ -6,10 +6,10 @@ function gerar(req, res) {
     .gerarRelatorio()
     .then(function () {
       const arquivo = path.resolve(
-        "/home/ec2-user/relatorios/saida/relatorio.xlsx",
+        "../simecom-report-app/output/relatorio_comex.pdf",
       );
 
-      res.download(arquivo, "relatorio.xlsx");
+      res.download(arquivo, "relatorio.pdf");
     })
     .catch(function (erro) {
       console.error(erro);
