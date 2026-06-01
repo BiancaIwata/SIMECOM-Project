@@ -6,38 +6,9 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * =====================================================================
- *  SIMECOM - Data Loader S3 (Comércio Exterior - MDIC)
- * =====================================================================
- *
- *  Pipeline de carga de dados do MDIC a partir de um bucket AWS S3,
- *  inserindo diretamente no banco de dados MySQL 'simecom'.
- *
- *  Utiliza padrões de herança (DataProcessor e subclasses) e composição
- *  (ProcessorContext para agregar Connection e S3Service).
- *
- *  Modos de execução:
- *
- *    ► SEM ARGUMENTOS — lista os arquivos disponíveis no bucket (não processa)
- *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain"
- *
- *    ► COM ARGUMENTO — processa UM arquivo específico por vez
- *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="EXP_2017.xlsx"
- *
- *    ► ARGUMENTO "todos" — processa TODOS os arquivos
- *      mvn exec:java -Dexec.mainClass="school.sptech.DataLoaderMain" -Dexec.args="todos"
- *
- *  Permite rodar arquivo por arquivo em EC2 com pouca memória,
- *  liberando o heap entre cada execução.
- * =====================================================================
- */
 public class DataLoaderMain {
-    
-    /** Prefixo (pasta) no bucket S3 */
-    private static final String S3_PREFIX = Config.S3_PREFIX;
 
-    /** Diretório local temporário para arquivos baixados do S3 */
+    private static final String S3_PREFIX = Config.S3_PREFIX;
     private static final Path TEMP_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "simecom-bucket-s3");
 
     public static void main(String[] args) {
@@ -53,8 +24,6 @@ public class DataLoaderMain {
             modoUnico(arquivoAlvo);
         }
     }
-
-    //  MODO 1: LISTAR — Mostra os arquivos disponíveis no bucket
 
     private static void modoListar() {
         try (S3Service s3 = new S3Service()) {
@@ -75,8 +44,6 @@ public class DataLoaderMain {
             System.err.println("[ERRO] " + e.getMessage());
         }
     }
-
-    //  MODO 2: ÚNICO — Processa um arquivo específico
 
     private static void modoUnico(String nomeArquivo) {
         long startTime = System.currentTimeMillis();
@@ -109,8 +76,6 @@ public class DataLoaderMain {
         }
     }
 
-    //  MODO 3: TODOS — Processa todos os arquivos (sem duplicação)
-
     private static void modoTodos() {
         long startTime = System.currentTimeMillis();
         int arquivosProcessados = 0;
@@ -124,7 +89,6 @@ public class DataLoaderMain {
                 return;
             }
 
-            // Classificar arquivos por tipo
             List<String> exportacoes = new ArrayList<>();
             List<String> importacoes = new ArrayList<>();
 
@@ -139,7 +103,6 @@ public class DataLoaderMain {
             Connection conn = DatabaseConnection.getConnection();
 
             try (ProcessorContext ctx = new ProcessorContext(conn, s3, S3_PREFIX)) {
-                // Processar exportações
                 for (String key : exportacoes) {
                     try {
                         processarArquivo(ctx, key, extrairNomeArquivo(key).toUpperCase());
@@ -150,7 +113,6 @@ public class DataLoaderMain {
                     }
                 }
 
-                // Processar importações
                 for (String key : importacoes) {
                     try {
                         processarArquivo(ctx, key, extrairNomeArquivo(key).toUpperCase());
@@ -175,33 +137,19 @@ public class DataLoaderMain {
         }
     }
 
-    //  PROCESSAMENTO COM HERANÇA E COMPOSIÇÃO
-
     private static void processarArquivo(ProcessorContext ctx, String key, String fileName)
             throws Exception {
         Path local = baixarDoS3(ctx.getS3Service(), key);
 
         DataProcessor processor;
-        if (fileName.contains("TABELAS_AUXILIARES") || fileName.contains("UF_MUN2")) {
-            processor =
-                    new TabelasAuxiliaresProcessor(ctx);
+        if (fileName.contains("TABELAS_AUXILIARES") || fileName.contains("UF_MUN2") || fileName.contains("PAIS")) {
+            processor = new TabelasAuxiliaresProcessor(ctx);
         } else if (fileName.startsWith("EXP_")) {
-            processor =
-                    new ExportacaoProcessor(
-                            ctx,
-                            extrairNomeArquivo(key)
-                    );
+            processor = new ExportacaoProcessor(ctx, extrairNomeArquivo(key));
         } else if (fileName.startsWith("IMP_")) {
-            processor =
-                    new ImportacaoProcessor(
-                            ctx,
-                            extrairNomeArquivo(key)
-                    );
+            processor = new ImportacaoProcessor(ctx, extrairNomeArquivo(key));
         } else {
-            System.err.printf(
-                    "[AVISO] Arquivo '%s' não é reconhecido.\n",
-                    fileName
-            );
+            System.err.printf("[AVISO] Arquivo '%s' não é reconhecido.\n", fileName);
             return;
         }
 
@@ -210,8 +158,6 @@ public class DataLoaderMain {
             System.err.printf("[ERRO] Processamento falhou: %s%n", resultado.getMensagem());
         }
     }
-
-    //  UTILITÁRIOS
 
     private static String localizarArquivo(List<String> arquivos, String nomeArquivo) {
         for (String key : arquivos) {
@@ -225,6 +171,7 @@ public class DataLoaderMain {
     private static String classificarTipo(String nomeArquivo) {
         if (nomeArquivo.startsWith("EXP_")) return "EXPORTACAO";
         if (nomeArquivo.startsWith("IMP_")) return "IMPORTACAO";
+        if (nomeArquivo.contains("PAIS")) return "TABELA_AUXILIAR";
         return "DESCONHECIDO";
     }
 
