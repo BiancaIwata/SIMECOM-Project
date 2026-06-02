@@ -13,7 +13,7 @@ function redirectAuth(req, res) {
     });
 
     fetch('https://slack.com/api/oauth.v2.access', {
-        method: post,
+        method: "POST",
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
