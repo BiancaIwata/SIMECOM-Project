@@ -43,7 +43,7 @@ function redirectAuth(req, res) {
         slackModel
             .atualizar(accessToken, userId, simecomUserId)
             .then(function () {
-              res.redirect("http://simecom.duckdns.org/dashboardSetor.html");
+              res.redirect("http://simecom.duckdns.org:8080/dashboardSetor.html");
             })
             .catch(function (erro) {
               console.log(erro);
