@@ -40,8 +40,6 @@ function redirectAuth(req, res) {
 
         console.log(`Usuário do Slack autorizado: ${userId} para o usuário Simecom: ${simecomUserId}`);
 
-        res.status(200).send("Autenticação com Slack realizada!");
-
         slackModel
             .atualizar(accessToken, userId, simecomUserId)
             .then(function () {
