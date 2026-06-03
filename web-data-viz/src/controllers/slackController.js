@@ -43,7 +43,7 @@ function redirectAuth(req, res) {
         slackModel
             .atualizar(accessToken, userId, simecomUserId)
             .then(function () {
-              res.redirect("https://barricade-designer-guidance.ngrok-free.dev/dashboardSetor.html");
+              res.redirect("http://simecom.duckdns.org/dashboardSetor.html");
             })
             .catch(function (erro) {
               console.log(erro);
