@@ -104,30 +104,6 @@ public class RelatorioMensalDAO {
             }
         }
 
-        // Top 3 países de origem — JOIN com codigo_pais pelo campo codigo
-        String sqlPais = """
-                SELECT p.nome,
-                       SUM(b.valor_fob) AS fob
-                FROM base_importacao b
-                JOIN codigo_pais p ON p.codigo = b.co_pais
-                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
-                GROUP BY p.codigo, p.nome
-                ORDER BY fob DESC
-                LIMIT 3
-                """;
-
-        sb.append("\n*Top Países de Origem:*\n");
-        try (PreparedStatement ps = conn.prepareStatement(sqlPais)) {
-            ps.setInt(1, ano);
-            ps.setInt(2, mes);
-            ResultSet rs = ps.executeQuery();
-            int i = 1;
-            while (rs.next()) {
-                sb.append(String.format("%d. %s — `US$ %,.2f`\n",
-                        i++, rs.getString("nome"), rs.getDouble("fob")));
-            }
-        }
-
         return sb.toString();
     }
 
@@ -200,30 +176,6 @@ public class RelatorioMensalDAO {
 
         sb.append("\n*Top Municípios:*\n");
         try (PreparedStatement ps = conn.prepareStatement(sqlMun)) {
-            ps.setInt(1, ano);
-            ps.setInt(2, mes);
-            ResultSet rs = ps.executeQuery();
-            int i = 1;
-            while (rs.next()) {
-                sb.append(String.format("%d. %s — `US$ %,.2f`\n",
-                        i++, rs.getString("nome"), rs.getDouble("fob")));
-            }
-        }
-
-        // Top 3 países de destino
-        String sqlPais = """
-                SELECT p.nome,
-                       SUM(b.valor_fob) AS fob
-                FROM base_exportacao b
-                JOIN codigo_pais p ON p.codigo = b.co_pais
-                WHERE CAST(b.ano AS UNSIGNED) = ? AND b.mes = ?
-                GROUP BY p.codigo, p.nome
-                ORDER BY fob DESC
-                LIMIT 3
-                """;
-
-        sb.append("\n*Top Países de Destino:*\n");
-        try (PreparedStatement ps = conn.prepareStatement(sqlPais)) {
             ps.setInt(1, ano);
             ps.setInt(2, mes);
             ResultSet rs = ps.executeQuery();

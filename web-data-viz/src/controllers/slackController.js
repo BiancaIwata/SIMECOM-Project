@@ -1,8 +1,15 @@
+var slackModel = require("../models/slackModel");
+
 function redirectAuth(req, res) {
     var slackCode = req.query.code;
+    var simecomUserId = req.query.state;
     
     if(!slackCode) {
         return res.status(400).send("Código de autorização não encontrado.");
+    }
+
+    if(!simecomUserId) {
+        return res.status(400).send("ID do usuário Simecom (state) não encontrado.");
     }
 
     const bodyParams = new URLSearchParams({
@@ -25,17 +32,29 @@ function redirectAuth(req, res) {
     .then(function (slackData) {
         if(!slackData.ok) {
             console.error("Erro retornado pelo Slack: ", slackData.error);
-            return res.status(400).send("Erro.");
+            return res.status(400).send("Erro na autenticação com o Slack.");
         }
         
         const userId = slackData.authed_user.id;
         const accessToken = slackData.access_token;
-        console.log(`Usuário autorizado: ${userId}`);
+
+        console.log(`Usuário do Slack autorizado: ${userId} para o usuário Simecom: ${simecomUserId}`);
 
         res.status(200).send("Autenticação com Slack realizada!");
+
+        slackModel
+            .atualizar(accessToken, userId, simecomUserId)
+            .then(function () {
+              res.redirect("http://simecom.duckdns.org:8080/dashboardSetor.html");
+            })
+            .catch(function (erro) {
+              console.log(erro);
+              console.log("\nHouve um erro ao realizar a atualização!");
+              res.status(500).json(erro.sqlMessage);
+            });
     })
     .catch(function (error) {
-        console.error("Erro de comunicação com o Slack: ", error)
+        console.error("Erro no processo de autenticação/banco:   ", error)
         res.status(400).send(error);
     })
 }

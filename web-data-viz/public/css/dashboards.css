@@ -348,3 +348,32 @@ button:hover {
 .loadgif {
   width: 5%;
 }
+
+.slack {
+  display: flex;
+  align-items: center;  
+  margin-left: 85px;
+}
+
+.btn-slack {
+  display:flex;
+  align-items:center;
+  height: 60px;
+  gap:8px;
+  background:#4A154B;
+  color:white;
+  text-decoration:none;
+  padding:12px 18px;
+  border-radius:8px;
+  font-weight:600;
+  transition:.2s;
+}
+
+.btn-slack:hover{
+  transform: scale(1.05);
+  opacity:.95;
+}
+
+.btn-slack img {
+  width: 30px;
+}
