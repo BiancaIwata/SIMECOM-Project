@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class RelatorioMensalDAO {
 
@@ -51,8 +52,7 @@ public class RelatorioMensalDAO {
                         mes, ano,
                         rs.getLong("total"),
                         rs.getDouble("fob"),
-                        rs.getDouble("kg")
-                ));
+                        rs.getDouble("kg")));
             }
         }
 
@@ -133,8 +133,7 @@ public class RelatorioMensalDAO {
                         mes, ano,
                         rs.getLong("total"),
                         rs.getDouble("fob"),
-                        rs.getDouble("kg")
-                ));
+                        rs.getDouble("kg")));
             }
         }
 
@@ -187,5 +186,20 @@ public class RelatorioMensalDAO {
         }
 
         return sb.toString();
+    }
+
+    public List<String> buscarDestinatariosSlack() throws SQLException {
+        List<String> listaIds = new java.util.ArrayList<>();
+
+        String sql = "SELECT slack_user_id FROM usuarios WHERE slack_user_id IS NOT NULL";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                listaIds.add(rs.getString("slack_user_id"));
+            }
+        }
+        return listaIds;
     }
 }
