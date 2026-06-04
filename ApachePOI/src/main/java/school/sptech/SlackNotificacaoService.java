@@ -33,16 +33,4 @@ public class SlackNotificacaoService {
             return false;
         }
     }
-
-    public String buscarUserIdPorEmail(String email) {
-        try {
-            var response = client.usersLookupByEmail(req -> req.email(email));
-            if (response.isOk()) {
-                return response.getUser().getId();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

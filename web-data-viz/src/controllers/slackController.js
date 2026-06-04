@@ -52,7 +52,7 @@ function redirectAuth(req, res) {
             });
     })
     .catch(function (error) {
-        console.error("Erro no processo de autenticação/banco:   ", error)
+        console.error("Erro no processo de autenticação/banco: ", error)
         res.status(400).send(error);
     })
 }
