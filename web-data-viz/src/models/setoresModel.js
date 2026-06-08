@@ -20,7 +20,7 @@ function buscarTopSetores(anoInicial) {
   const anoFinal = anoInicial + 5;
 
   var instrucaoSql = `
-  SELECT
+  SELECT 
     id,
     nome,
     SUM(exportacoes + importacoes) AS valor_total

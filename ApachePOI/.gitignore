@@ -40,3 +40,6 @@ build/
 
 # .gitignore
 src/main/resources/application.properties
+
+Config.java
+TabelasAuxiliaresProcessor.java

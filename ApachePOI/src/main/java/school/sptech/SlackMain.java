@@ -14,7 +14,7 @@ public class SlackMain {
         System.out.println(">> Conectando ao banco...");
         Connection conn;
         try {
-            conn = DataSource.getConnection();
+            conn = DatabaseConnection.getConnection();
             System.out.println("Banco conectado!\n");
         } catch (Exception e) {
             System.err.println("Falha ao conectar no banco: " + e.getMessage());
@@ -25,7 +25,7 @@ public class SlackMain {
         String resumo;
         int anoRecente;
         int mesRecente;
-
+        
         try {
             RelatorioMensalDAO dao = new RelatorioMensalDAO(conn);
 
@@ -90,7 +90,5 @@ public class SlackMain {
             e.printStackTrace();
             return;
         }
-
-        System.out.println("\n=== TESTE CONCLUÍDO COM SUCESSO ===");
     }
 }
