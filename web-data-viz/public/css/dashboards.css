@@ -156,6 +156,8 @@ h3 {
   flex: 1;
   padding: 20px;
   margin-left: 240px;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .cards {
@@ -192,6 +194,11 @@ h3 {
   gap: 20px;
   flex-wrap: wrap;
   margin-bottom: 30px;
+  width: 100%;
+}
+
+.secao1 > * {
+  min-width: 0;
 }
 
 .secao1 .box:nth-child(1) {
@@ -214,6 +221,7 @@ h3 {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
 }
 
 .graficoLinha,
@@ -250,10 +258,19 @@ table td {
   display: flex;
   width: 100%;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .bottom .box {
   flex: 1 1 300px;
+  min-width: 0;
+}
+
+.box canvas {
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  height: 100% !important;
 }
 
 select {
