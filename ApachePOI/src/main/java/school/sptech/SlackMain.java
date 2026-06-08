@@ -19,17 +19,23 @@ public class SlackMain {
             return;
         }
 
-        // 2. Gera o relatório
-        System.out.println(">> Gerando relatório mensal...");
+        System.out.println(">> Buscando dados mais recentes no banco...");
         String resumo;
+        int anoRecente;
+        int mesRecente;
+        
         try {
             RelatorioMensalDAO dao = new RelatorioMensalDAO(conn);
 
-            // Troque para o mês/ano que tem dados no seu banco
-            int ano = 2024;
-            int mes = 4;
+            // Busca dinamicamente o último ano e mês disponíveis
+            int[] dataRecente = dao.buscarAnoMesMaisRecente();
+            anoRecente = dataRecente[0];
+            mesRecente = dataRecente[1];
+            
+            System.out.printf("Dados encontrados referentes a: %02d/%d%n", mesRecente, anoRecente);
+            System.out.println(">> Gerando relatório...");
 
-            resumo = dao.gerarResumoMensal(ano, mes);
+            resumo = dao.gerarResumoMensal(anoRecente, mesRecente);
             System.out.println("Relatório gerado:\n");
             System.out.println("─────────────────────────────");
             System.out.println(resumo);
@@ -44,10 +50,10 @@ public class SlackMain {
         // 3. Envia para o Slack
         System.out.println(">> Enviando para o Slack...");
         try {
-            LocalDate mesPassado = LocalDate.now().minusMonths(1);
+            // Repare que aqui usamos as variáveis dinâmicas no título do Slack também
             String mensagemFinal = String.format(
                     ":bar_chart: *Atualização Mensal SIMECOM — %02d/%d*\n\n%s",
-                    mesPassado.getMonthValue(), mesPassado.getYear(), resumo
+                    mesRecente, anoRecente, resumo
             );
 
             SlackNotificacaoService slack = new SlackNotificacaoService();
