@@ -111,6 +111,13 @@
                     <button class="btn-salvar" onclick="gerar_relatorio()">Gerar Relatório</button>
                 </div>
 
+                <div class="slack">
+                    <a id="linkSlack" href="#" class="btn-slack">
+                        <img src="./assets/SLA-Slack-from-Salesforce-logo.png">
+                        Ativar notificações no Slack
+                    </a>
+                </div>
+
             </div>
 
             <div class="secao1">
@@ -150,6 +157,10 @@
 </body>
 
 </html>
-<script>
+<script>    
     nome_usuario.innerHTML = sessionStorage.NOME_USUARIO
+
+    let link = `https://slack.com/oauth/v2/authorize?scope=chat:write&client_id=10779300964529.11073656284069&redirect_uri=https://barricade-designer-guidance.ngrok-free.dev/slackEvents/redirectAuth&state=${sessionStorage.ID_USUARIO}`;
+
+    document.getElementById("linkSlack").href = link;
 </script>

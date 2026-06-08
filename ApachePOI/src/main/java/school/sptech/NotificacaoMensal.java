@@ -2,6 +2,7 @@ package school.sptech;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.List;
 
 public class NotificacaoMensal implements Runnable {
 
@@ -21,9 +22,23 @@ public class NotificacaoMensal implements Runnable {
             String mensagemFinal = String.format(
                     ":bar_chart: *Atualização Mensal SIMECOM — %02d/%d*\n\n%s", mes, ano, resumo);
 
-            String canal = Config.get("slack.canal");
             SlackNotificacaoService slack = new SlackNotificacaoService();
-            slack.enviarMensagem(canal, mensagemFinal);
+            
+            List<String> idsUsuarios = dao.buscarDestinatariosSlack();
+
+            if (idsUsuarios.isEmpty()) {
+                System.out.println("Nenhum usuário com integração ativa no Slack para receber o relatório.");
+                return;
+            }
+
+            for (String slackUserId : idsUsuarios) {
+                System.out.println("Enviando relatório mensal para o usuário Slack: " + slackUserId);
+                boolean ok = slack.enviarMensagem(slackUserId, mensagemFinal);
+                
+                if (!ok) {
+                    System.err.println("Falha ao enviar para o usuário: " + slackUserId);
+                }
+            }
 
         } catch (Exception e) {
             System.err.println("Erro ao enviar notificação: " + e.getMessage());

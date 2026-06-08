@@ -6,7 +6,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class TabelasAuxiliaresProcessor extends DataProcessor {
@@ -29,6 +28,7 @@ public class TabelasAuxiliaresProcessor extends DataProcessor {
             DataFormatter formatter = new DataFormatter();
 
             boolean ehMunicipio = false;
+            boolean ehPais = false;
 
             for (Cell cell : header) {
                 String nomeColuna = formatter.formatCellValue(cell).trim();
@@ -40,10 +40,15 @@ public class TabelasAuxiliaresProcessor extends DataProcessor {
                 ) {
                     ehMunicipio = true;
                     break;
+                } else if (nomeColuna.equalsIgnoreCase("CO_PAIS")) {
+                    ehPais = true;
+                    break;
                 }
             }
 
-            if (ehMunicipio) {
+            if (ehPais) {
+                inseridos = processarPaises(sheet, formatter);
+            } else if (ehMunicipio) {
                 inseridos = processarMunicipios(sheet, formatter);
             } else {
                 inseridos = processarSh4(sheet, formatter);
@@ -52,6 +57,67 @@ public class TabelasAuxiliaresProcessor extends DataProcessor {
 
         return ProcessingResult.sucesso(inseridos);
     }
+
+    private int processarPaises(Sheet sheet, DataFormatter formatter) throws Exception {
+        int inseridos = 0;
+
+        String sql = """
+            INSERT INTO codigo_pais (CO_PAIS, NO_PAIS)
+            VALUES (?, ?)
+            ON DUPLICATE KEY UPDATE
+                NO_PAIS = VALUES(NO_PAIS)
+        """;
+
+        Row header = sheet.getRow(0);
+
+        int colCoPais = -1;
+        int colNoPais = -1;
+
+        for (Cell cell : header) {
+            String nomeColuna = formatter.formatCellValue(cell).trim();
+
+            if (nomeColuna.equalsIgnoreCase("CO_PAIS")) {
+                colCoPais = cell.getColumnIndex();
+            } else if (nomeColuna.equalsIgnoreCase("NO_PAIS")) {
+                colNoPais = cell.getColumnIndex();
+            }
+        }
+
+        if (colCoPais == -1 || colNoPais == -1) {
+            throw new RuntimeException("Colunas essenciais (CO_PAIS ou NO_PAIS) não encontradas no arquivo auxiliar.");
+        }
+
+        try (PreparedStatement ps = context.getConnection().prepareStatement(sql)) {
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+
+                String coPais = formatter.formatCellValue(row.getCell(colCoPais)).trim();
+                String noPais = formatter.formatCellValue(row.getCell(colNoPais)).trim();
+
+                if (coPais.isEmpty() || noPais.isEmpty()) continue;
+
+                coPais = coPais.replaceAll("\\D", "");
+
+                ps.setString(1, coPais);
+                ps.setString(2, noPais);
+                ps.addBatch();
+
+                inseridos++;
+
+                if (inseridos % 1000 == 0) {
+                    ps.executeBatch();
+                }
+            }
+
+            ps.executeBatch();
+        }
+
+        System.out.println("[AUX] Países inseridos/atualizados na EC2: " + inseridos);
+
+        return inseridos;
+    }
+
     private int processarMunicipios(Sheet sheet, DataFormatter formatter) throws Exception {
         int inseridos = 0;
 

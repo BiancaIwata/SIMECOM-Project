@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class RelatorioMensalDAO {
 
@@ -70,8 +71,7 @@ public class RelatorioMensalDAO {
                         mes, ano,
                         rs.getLong("total"),
                         rs.getDouble("fob"),
-                        rs.getDouble("kg")
-                ));
+                        rs.getDouble("kg")));
             }
         }
 
@@ -123,31 +123,7 @@ public class RelatorioMensalDAO {
                         i++, rs.getString("nome"), rs.getDouble("fob")));
             }
         }
-
-        // Top 3 países de origem — JOIN com codigo_pais pelo CO_PAIS
-        String sqlPais = """
-                SELECT p.NO_PAIS AS nome,
-                SUM(b.VL_FOB) AS fob
-                FROM base_importacao b
-                JOIN codigo_pais p ON p.CO_PAIS = b.CO_PAIS
-                WHERE b.CO_ANO = ? AND b.CO_MES = ?
-                GROUP BY p.CO_PAIS, p.NO_PAIS
-                ORDER BY fob DESC
-                LIMIT 3
-                """;
-
-        sb.append("\n*Top Países de Origem:*\n");
-        try (PreparedStatement ps = conn.prepareStatement(sqlPais)) {
-            ps.setInt(1, ano);
-            ps.setInt(2, mes);
-            ResultSet rs = ps.executeQuery();
-            int i = 1;
-            while (rs.next()) {
-                sb.append(String.format("%d. %s — `US$ %,.2f`\n",
-                        i++, rs.getString("nome"), rs.getDouble("fob")));
-            }
-        }
-
+      
         return sb.toString();
     }
 
@@ -177,8 +153,7 @@ public class RelatorioMensalDAO {
                         mes, ano,
                         rs.getLong("total"),
                         rs.getDouble("fob"),
-                        rs.getDouble("kg")
-                ));
+                        rs.getDouble("kg")));
             }
         }
 
@@ -231,30 +206,42 @@ public class RelatorioMensalDAO {
             }
         }
 
-        // Top 3 países de destino
-        String sqlPais = """
-                SELECT p.NO_PAIS AS nome,
-                       SUM(b.VL_FOB) AS fob
-                FROM base_exportacao b
-                JOIN codigo_pais p ON p.CO_PAIS = b.CO_PAIS
-                WHERE b.CO_ANO = ? AND b.CO_MES = ?
-                GROUP BY p.CO_PAIS, p.NO_PAIS
-                ORDER BY fob DESC
-                LIMIT 3
-                """;
+        return sb.toString();
+    }
 
-        sb.append("\n*Top Países de Destino:*\n");
-        try (PreparedStatement ps = conn.prepareStatement(sqlPais)) {
-            ps.setInt(1, ano);
-            ps.setInt(2, mes);
-            ResultSet rs = ps.executeQuery();
-            int i = 1;
+    public List<String> buscarDestinatariosSlack() throws SQLException {
+        List<String> listaIds = new java.util.ArrayList<>();
+
+        String sql = "SELECT slack_user_id FROM usuarios WHERE slack_user_id IS NOT NULL";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
-                sb.append(String.format("%d. %s — `US$ %,.2f`\n",
-                        i++, rs.getString("nome"), rs.getDouble("fob")));
+                listaIds.add(rs.getString("slack_user_id"));
             }
         }
+        return listaIds;
+    }
 
-        return sb.toString();
+    public int[] buscarAnoMesMaisRecente() throws SQLException {
+        String sql = """
+                SELECT CAST(CO_ANO AS UNSIGNED) AS max_ano, CO_MES AS max_mes
+                FROM base_importacao
+                ORDER BY max_ano DESC, max_mes DESC
+                LIMIT 1
+                """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                // Retorna um array onde o índice 0 é o ano e o 1 é o mês
+                return new int[]{ rs.getInt("max_ano"), rs.getInt("max_mes") };
+            }
+        }
+        
+        java.time.LocalDate mesPassado = java.time.LocalDate.now().minusMonths(1);
+        return new int[]{ mesPassado.getYear(), mesPassado.getMonthValue() };
     }
 }

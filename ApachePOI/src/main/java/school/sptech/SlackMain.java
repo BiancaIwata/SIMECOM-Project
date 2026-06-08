@@ -2,6 +2,8 @@ package school.sptech;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.List;
+
 
 public class SlackMain {
     public static void main(String[] args) {
@@ -19,7 +21,6 @@ public class SlackMain {
             return;
         }
 
-       // 2. Gera o relatório com os dados mais recentes do banco
         System.out.println(">> Buscando dados mais recentes no banco...");
         String resumo;
         int anoRecente;
@@ -32,7 +33,7 @@ public class SlackMain {
             int[] dataRecente = dao.buscarAnoMesMaisRecente();
             anoRecente = dataRecente[0];
             mesRecente = dataRecente[1];
-            
+
             System.out.printf("Dados encontrados referentes a: %02d/%d%n", mesRecente, anoRecente);
             System.out.println(">> Gerando relatório...");
 
@@ -51,19 +52,36 @@ public class SlackMain {
         // 3. Envia para o Slack
         System.out.println(">> Enviando para o Slack...");
         try {
-            // Repare que aqui usamos as variáveis dinâmicas no título do Slack também
             String mensagemFinal = String.format(
                     ":bar_chart: *Atualização Mensal SIMECOM — %02d/%d*\n\n%s",
                     mesRecente, anoRecente, resumo
             );
 
             SlackNotificacaoService slack = new SlackNotificacaoService();
-            boolean ok = slack.enviarMensagem(Config.get("slack.canal"), mensagemFinal);
 
-            if (ok) {
-                System.out.println("Mensagem enviada ao Slack com sucesso!");
+           
+            RelatorioMensalDAO dao = new RelatorioMensalDAO(conn);
+            List<String> idsUsuarios = dao.buscarDestinatariosSlack();
+
+            if (idsUsuarios.isEmpty()) {
+                System.out.println("Nenhum usuário encontrado com integração do Slack ativa.");
+                return;
+            }
+
+            // Envia para a DM de cada usuário encontrado
+            boolean peloMenosUmEnviado = false;
+            for (String slackUserId : idsUsuarios) {
+                System.out.println("Disparando para o usuário: " + slackUserId);
+                boolean ok = slack.enviarMensagem(slackUserId, mensagemFinal);
+                if (ok) {
+                    peloMenosUmEnviado = true;
+                }
+            }
+
+            if (peloMenosUmEnviado) {
+                System.out.println("Relatórios enviados ao Slack com sucesso!");
             } else {
-                System.err.println("Slack retornou erro. Verifique a URL do webhook.");
+                System.err.println("Slack retornou erro para todos os usuários. Verifique os tokens.");
                 return;
             }
 
