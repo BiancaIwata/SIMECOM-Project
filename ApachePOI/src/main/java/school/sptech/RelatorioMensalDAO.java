@@ -26,7 +26,6 @@ public class RelatorioMensalDAO {
     }
 
     public int[] buscarAnoMesMaisRecente() throws SQLException {
-        // CO_ANO agora é SMALLINT UNSIGNED — sem necessidade de CAST
         String sql = """
                 SELECT CO_ANO AS max_ano, CO_MES AS max_mes
                 FROM base_importacao
@@ -222,26 +221,5 @@ public class RelatorioMensalDAO {
             }
         }
         return listaIds;
-    }
-
-    public int[] buscarAnoMesMaisRecente() throws SQLException {
-        String sql = """
-                SELECT CAST(CO_ANO AS UNSIGNED) AS max_ano, CO_MES AS max_mes
-                FROM base_importacao
-                ORDER BY max_ano DESC, max_mes DESC
-                LIMIT 1
-                """;
-
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            
-            if (rs.next()) {
-                // Retorna um array onde o índice 0 é o ano e o 1 é o mês
-                return new int[]{ rs.getInt("max_ano"), rs.getInt("max_mes") };
-            }
-        }
-        
-        java.time.LocalDate mesPassado = java.time.LocalDate.now().minusMonths(1);
-        return new int[]{ mesPassado.getYear(), mesPassado.getMonthValue() };
     }
 }
