@@ -106,25 +106,27 @@ function buscarTopMunicipiosExportacao(anoInicial) {
 // =========================================================================
 // Faz as consultas sozinho para encher a RAM ao iniciar a API
 // =========================================================================
-setTimeout(() => {
-  console.log("🔥 [MUNICÍPIO] Iniciando cache warming para a apresentação...");
+// =========================================================================
+// O "ESQUENTA SEGURO": Faz as consultas UMA POR UMA para não travar o banco
+// =========================================================================
+setTimeout(async () => {
+  console.log("🔥 [MUNICÍPIO] Iniciando cache warming sequencial seguro...");
   
-  // Anos de exemplo que você vai apresentar
   const anosParaEsquentar = [2018, 2019, 2020]; 
-  // Município de exemplo que estará selecionado por padrão na sua tela
-  const municipioPadraoParaApresentar = 'São Paulo'; 
+  const municipioPadraoParaApresentar = 'São Paulo'; // mude para o seu padrão
 
-  anosParaEsquentar.forEach(ano => {
-    buscarSituacaoAnual(ano, municipioPadraoParaApresentar);
-    buscarTopMunicipios(ano);
-    buscarTopMunicipiosImportacao(ano);
-    buscarTopMunicipiosExportacao(ano);
-  });
-}, 15000); // 2.5s para não conflitar muito com o carregamento do outro arquivo
+  for (const ano of anosParaEsquentar) {
+    try {
+      console.log(`⏳ [MUNICÍPIO] Pré-processando ${municipioPadraoParaApresentar} em ${ano}...`);
+      await buscarSituacaoAnual(ano, municipioPadraoParaApresentar);
+      await buscarTopMunicipios(ano);
+      await buscarTopMunicipiosImportacao(ano);
+      await buscarTopMunicipiosExportacao(ano);
+      console.log(`✅ [MUNICÍPIO] Dados de ${ano} guardados na RAM!`);
+    } catch (erro) {
+      console.error(`❌ [MUNICÍPIO] Erro no ano ${ano}:`, erro);
+    }
+  }
 
-module.exports = {
-    buscarSituacaoAnual,
-    buscarTopMunicipios,
-    buscarTopMunicipiosImportacao,
-    buscarTopMunicipiosExportacao
-};
+  console.log("🚀 [MUNICÍPIO] Cache totalmente aquecido!");
+}, 8000); // Espera 8 segundos para rodar depois do arquivo de setores

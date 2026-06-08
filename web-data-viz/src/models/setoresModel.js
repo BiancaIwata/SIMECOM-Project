@@ -111,23 +111,26 @@ function buscarTopSetoresImportacao(anoInicial) {
 // =========================================================================
 // Faz as consultas sozinho para encher a RAM ao iniciar a API
 // =========================================================================
-setTimeout(() => {
-  console.log("🔥 [SETOR] Iniciando cache warming para a apresentação...");
+// =========================================================================
+// O "ESQUENTA SEGURO": Faz as consultas UMA POR UMA para não travar o banco
+// =========================================================================
+setTimeout(async () => {
+  console.log("🔥 [SETOR] Iniciando cache warming sequencial seguro...");
   
-  // Coloque aqui os anos que você vai usar na apresentação (Exemplo: 2018, 2019, 2020)
   const anosParaEsquentar = [2018, 2019, 2020]; 
   
-  anosParaEsquentar.forEach(ano => {
-    buscarSituacaoMercado(ano);
-    buscarTopSetores(ano);
-    buscarTopSetoresExpotacao(ano);
-    buscarTopSetoresImportacao(ano);
-  });
-}, 15000);
-
-module.exports = {
-  buscarSituacaoMercado,
-  buscarTopSetores,
-  buscarTopSetoresExpotacao,
-  buscarTopSetoresImportacao
-};
+  for (const ano of anosParaEsquentar) {
+    try {
+      console.log(`⏳ [SETOR] Pré-processando o ano ${ano} no banco...`);
+      await buscarSituacaoMercado(ano);
+      await buscarTopSetores(ano);
+      await buscarTopSetoresExpotacao(ano);
+      await buscarTopSetoresImportacao(ano);
+      console.log(`✅ [SETOR] Ano ${ano} guardado com sucesso na RAM!`);
+    } catch (erro) {
+      console.error(`❌ [SETOR] Erro ao carregar ano ${ano}:`, erro);
+    }
+  }
+  
+  console.log("🚀 [SETOR] Cache totalmente aquecido e pronto para a banca!");
+}, 5000); // Espera 5 segundos para o banco ligar totalmente
