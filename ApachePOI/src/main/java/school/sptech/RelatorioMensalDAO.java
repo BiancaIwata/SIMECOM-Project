@@ -204,7 +204,6 @@ public class RelatorioMensalDAO {
     }
 
     public int[] buscarAnoMesMaisRecente() throws SQLException {
-        // Ordena do maior para o menor e pega o primeiro (LIMIT 1)
         String sql = """
                 SELECT CAST(CO_ANO AS UNSIGNED) AS max_ano, CO_MES AS max_mes
                 FROM base_importacao
