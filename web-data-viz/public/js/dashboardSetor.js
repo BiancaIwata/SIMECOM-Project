@@ -1,3 +1,6 @@
+setores.js:
+
+
 var chartLine = null;
 var chartBar = null;
 var chartBar2 = null;
@@ -453,7 +456,7 @@ async function gerar_relatorio() {
   window.URL.revokeObjectURL(url);
 }
 
-buscarSituacaoMercado(2018);
-buscarTopSetores(2018);
-buscarTopSetoresExportacao(2018);
-buscarTopSetoresImportacao(2018);
+buscarSituacaoMercado(2021);
+buscarTopSetores(2021);
+buscarTopSetoresExportacao(2021);
+buscarTopSetoresImportacao(2021);
