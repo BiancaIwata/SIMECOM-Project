@@ -13,7 +13,7 @@ public class Config {
     // BANCO DE DADOS
     // ════════════════════════════════════════════════════════════════
 
-    public static final String DB_HOST = getEnvOrDefault("DB_HOST", "localhost");
+    public static final String DB_HOST = getEnvOrDefault("DB_HOST", "32.198.149.171");
     public static final String DB_PORT = getEnvOrDefault("DB_PORT", "3306");
     public static final String DB_NAME = getEnvOrDefault("DB_NAME", "simecom");
     public static final String DB_USER = getEnvOrDefault("DB_USER", "root");
