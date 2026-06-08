@@ -1,5 +1,3 @@
-setores.js:
-
 
 var chartLine = null;
 var chartBar = null;
